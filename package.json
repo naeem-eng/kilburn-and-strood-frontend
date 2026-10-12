@@ -1,0 +1,43 @@
+{
+  "name": "kilburn",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "eslint",
+    "analyze": "ANALYZE=true next build --webpack"
+  },
+  "dependencies": {
+    "@next/bundle-analyzer": "^16.3.1",
+    "@strapi/blocks-react-renderer": "^1.0.2",
+    "date-fns": "^4.4.0",
+    "gsap": "^3.15.0",
+    "lodash": "^4.18.1",
+    "next": "16.3.1",
+    "qs": "^6.15.3",
+    "react": "19.2.8",
+    "react-countup": "^6.5.3",
+    "react-dom": "19.2.8",
+    "react-markdown": "^10.1.0",
+    "rehype-raw": "^7.0.0",
+    "remark-breaks": "^4.0.0",
+    "remark-gfm": "^4.0.1",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/lodash": "^4.17.25",
+    "@types/node": "^26",
+    "@types/qs": "^6.15.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "16.3.1",
+    "husky": "^9.1.7",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

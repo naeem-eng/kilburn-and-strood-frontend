@@ -1,0 +1,572 @@
+&::view-transition-group(*) {
+  animation-fill-mode: both;
+}
+
+html[data-active-view-transition="testimonialSlider"] {
+  --animation-duration: 0.7s;
+  --animation-ease: cubic-bezier(0.25, 1, 0.5, 1);
+
+  .section:has(.testimonialSlider) {
+    &+.section {
+      view-transition-name: section;
+    }
+  }
+
+  header {
+    view-transition-name: header;
+  }
+  .logo-container {
+    view-transition-name: logo;
+  }
+
+  .testimonialSlider {
+    .image {
+      view-transition-name: image;
+    }
+
+    .quote {
+      view-transition-name: quote;
+    }
+
+    .blockquote-container {
+      view-transition-name: blockquote-container;
+    }
+
+    .blockquote {
+      view-transition-name: blockquote;
+    }
+
+    .cite {
+      view-transition-name: cite;
+    }
+
+    .controls-container {
+      view-transition-name: controls-container;
+    }
+  }
+
+
+  &::view-transition-group(header) {
+    z-index: 10;
+  }
+
+  
+  &::view-transition-group(logo) {
+    z-index: 11;
+  }
+
+  &::view-transition-old(image) {
+    z-index: 0;
+    opacity: 1;
+    animation: none;
+  }
+
+  &::view-transition-new(image) {
+    z-index: 1;
+    animation-name: clip-in-left;
+    animation-duration: var(--animation-duration);
+    animation-timing-function: var(--animation-ease);
+    animation-delay: 0.01s;
+  }
+
+  &[data-direction="left"] {
+    &::view-transition-new(image) {
+      animation-name: clip-in-right;
+    }
+  }
+
+  &::view-transition-group(quote) {
+    z-index: 2;
+  }
+
+  &::view-transition-old(quote),
+  &::view-transition-new(quote) {
+    animation: none;
+  }
+
+  &::view-transition-group(blockquote-container) {
+    overflow: clip;
+    animation-duration: calc(var(--animation-duration) * 0.5);
+    animation-timing-function: var(--animation-ease);
+  }
+
+  &::view-transition-old(blockquote-container) {
+    animation: none;
+    opacity: 0;
+  }
+
+  &::view-transition-new(blockquote-container) {
+    height: 100%;
+    animation: none;
+    animation-delay: 0s;
+  }
+
+  &::view-transition-group(blockquote),
+  &::view-transition-group(cite),
+  &::view-transition-group(image) {
+    overflow: clip;
+  }
+
+  &::view-transition-old(blockquote) {
+    animation-name: to-left;
+    animation-duration: calc(var(--animation-duration) * 0.25);
+    animation-timing-function: var(--animation-ease);
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom;
+  }
+
+  &::view-transition-new(blockquote) {
+    animation-name: from-right;
+    animation-duration: var(--animation-duration);
+    animation-timing-function: var(--animation-ease);
+    animation-delay: calc(var(--animation-duration) * 0.25);
+  }
+
+  &::view-transition-old(cite) {
+    animation-name: to-left;
+    animation-duration: var(--animation-duration);
+    animation-timing-function: var(--animation-ease);
+  }
+
+  &::view-transition-new(cite) {
+    animation-name: from-right;
+    animation-duration: var(--animation-duration);
+    animation-timing-function: var(--animation-ease);
+    animation-delay: calc(var(--animation-duration) * 0.25 + 0.01s);
+  }
+
+
+  &[data-direction="left"] {
+    &::view-transition-old(blockquote) {
+      animation-name: to-right;
+    }
+
+    &::view-transition-new(blockquote) {
+      animation-name: from-left;
+    }
+
+    &::view-transition-old(cite) {
+      animation-name: to-right;
+    }
+
+    &::view-transition-new(cite) {
+      animation-name: from-left;
+    }
+  }
+
+  &::view-transition-old(controls-container) {
+    opacity: 0;
+    animation: none;
+  }
+
+  &::view-transition-new(controls-container) {
+    animation-duration: 0s;
+  }
+}
+
+html[data-active-view-transition="tabbedContent"] {
+  --animation-duration: 0.4s;
+  --animation-ease: cubic-bezier(0.25, 1, 0.5, 1);
+
+  .section:has(.tabbedContent) {
+    &+.section {
+      view-transition-name: section;
+    }
+  }
+
+  .tabbedContent {
+    .tabs-container {
+      view-transition-name: tabs-container;
+    }
+    .tabs-overflow-controls {
+      view-transition-name: tabs-overflow-controls;
+    }
+    .text-container {
+      view-transition-name: text-container;
+    }
+    .content-right {
+      view-transition-name: content-right;
+    }
+    .media-bottom {
+      view-transition-name: media-bottom;
+    }
+    .media-side {
+      view-transition-name: media-side;
+    }
+  }
+
+  &::view-transition-group(text-container),
+  &::view-transition-group(content-right),
+  &::view-transition-group(media-bottom),
+  &::view-transition-group(media-side) {
+    overflow: clip;
+  }
+
+  &::view-transition-group(content-right) {
+    animation-delay: 0.1s;
+  }
+  &::view-transition-group(tabs-overflow-controls) {
+    z-index: 50;
+    animation: none;
+  }
+  &::view-transition-group(media-side) {
+    animation-delay: 0.2s;
+  }
+  
+  &::view-transition-old(content-right),
+  &::view-transition-old(text-container),
+  &::view-transition-old(media-side) {
+    animation-name: clip-out-top;
+    animation-duration: var(--animation-duration);
+    animation-timing-function: var(--animation-ease);
+  }
+  &::view-transition-new(content-right),
+  &::view-transition-new(text-container),
+  &::view-transition-new(media-side) {
+    animation-name: clip-in-top;
+    animation-duration: calc(var(--animation-duration) * 2);
+    animation-timing-function: var(--animation-ease);
+    animation-delay: var(--animation-duration);
+  }
+  
+  &[data-direction="left"] {
+    &::view-transition-group(text-container) {
+      animation-delay: 0.2s;
+    }
+    &::view-transition-group(content-right) {
+      animation-delay: 0.1s;
+    }
+    &::view-transition-group(media-side) {
+      animation-delay: 0s;
+    }
+  }
+  
+  &::view-transition-new(media-bottom) {
+    height: 100%;
+    object-fit: cover;
+    object-position: bottom;
+    z-index: 1;
+    opacity: 1;
+    animation: none;
+    animation-delay: 0s;
+  }
+  &::view-transition-old(media-bottom),
+  &::view-transition-old(tabs-container) {
+    opacity: 0;
+    animation: none;
+  }
+
+  &::view-transition-new(tabs-container) {
+    animation-duration: 0s;
+  }
+
+  &::view-transition-old(tabs-overflow-controls),
+  &::view-transition-new(tabs-overflow-controls) {
+    animation: none;
+    opacity: 1;
+  }
+
+  
+
+
+}
+
+html[data-active-view-transition="peopleHighlight"] {
+  --animation-duration: 0.8s;
+  --animation-ease: cubic-bezier(0.25, 1, 0.5, 1);
+
+  header {
+    view-transition-name: header;
+  }
+  .logo-container {
+    view-transition-name: logo;
+  }
+
+  .section:has(.peopleHighlight) {
+    &+.section {
+      view-transition-name: section;
+    }
+  }
+
+  .peopleHighlight {
+    .image-1 {
+      view-transition-name: image-1;
+    }
+
+    .image-2 {
+      view-transition-name: image-2;
+    }
+
+    .text-container {
+      view-transition-name: text-container;
+    }
+
+    .text-content {
+      view-transition-name: text-content;
+    }
+
+    .link {
+      view-transition-name: link;
+    }
+
+    .controls-container {
+      view-transition-name: controls-container;
+    }
+  }
+
+  &::view-transition-group(header) {
+    z-index: 10;
+  }
+
+  &::view-transition-group(logo) {
+    z-index: 11;
+  }
+
+
+  &::view-transition-old(image-1),
+  &::view-transition-old(image-2) {
+    z-index: 0;
+    opacity: 1;
+    animation: none;
+  }
+
+
+  &::view-transition-new(image-1),
+  &::view-transition-new(image-2) {
+    animation-name: clip-in-left;
+    z-index: 1;
+    animation-duration: var(--animation-duration);
+    animation-timing-function: var(--animation-ease);
+  }
+
+  &::view-transition-new(image-2) {
+    animation-name: clip-in-bottom;
+  }
+
+
+  &::view-transition-new(image-1),
+  &::view-transition-new(image-2),
+  &::view-transition-old(image-1),
+  &::view-transition-old(image-2) {
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    animation-delay: 0.1s;
+  }
+
+  &::view-transition-group(text-container) {
+    overflow: clip;
+    animation-duration: calc(var(--animation-duration) * 0.5);
+    animation-timing-function: var(--animation-ease);
+  }
+
+  &::view-transition-old(text-container) {
+    animation: none;
+    opacity: 0;
+  }
+
+  &::view-transition-new(text-container) {
+    object-position: top;
+    object-fit: cover;
+    height: 100%;
+    animation: none;
+    animation-delay: 0s;
+  }
+
+  &::view-transition-group(text-content),
+  &::view-transition-group(link) {
+    clip-path: inset(0 -1.5rem 0 -10rem);
+  }
+
+  &::view-transition-group(image-1),
+  &::view-transition-group(image-2) {
+    overflow: clip;
+  }
+
+  &::view-transition-old(text-content) {
+    animation-name: to-left;
+    animation-duration: calc(var(--animation-duration) * 0.25);
+    animation-timing-function: var(--animation-ease);
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom;
+  }
+
+  &::view-transition-new(text-content) {
+    animation-name: from-right;
+    animation-duration: var(--animation-duration);
+    animation-timing-function: var(--animation-ease);
+    animation-delay: calc(var(--animation-duration) * 0.25);
+  }
+
+  &::view-transition-old(link) {
+    animation-name: to-left;
+    animation-duration: var(--animation-duration);
+    animation-timing-function: var(--animation-ease);
+  }
+
+  &::view-transition-new(link) {
+    animation-name: from-right;
+    animation-duration: var(--animation-duration);
+    animation-timing-function: var(--animation-ease);
+    animation-delay: calc(var(--animation-duration) * 0.25 + 0.01s);
+  }
+
+  &::view-transition-old(controls-container) {
+    opacity: 0;
+    animation: none;
+  }
+
+  &::view-transition-new(controls-container) {
+    animation-duration: 0s;
+  }
+
+  &[data-direction="left"] {
+
+    &::view-transition-new(image-1) {
+      animation-name: clip-in-right;
+    }
+
+    &::view-transition-new(image-2) {
+      animation-name: clip-in-top;
+    }
+
+    &::view-transition-old(text-content) {
+      animation-name: to-right;
+    }
+
+    &::view-transition-new(text-content) {
+      animation-name: from-left;
+    }
+
+    &::view-transition-old(link) {
+      animation-name: to-right;
+    }
+
+    &::view-transition-new(link) {
+      animation-name: from-left;
+    }
+  }
+
+}
+
+
+@keyframes to-right {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(100% + 2rem));
+    opacity: 0;
+  }
+}
+
+@keyframes from-left {
+  from {
+    transform: translateX(calc(-100% - 2rem));
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes to-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-100% - 2rem));
+    opacity: 0;
+  }
+}
+
+@keyframes from-right {
+  from {
+    transform: translateX(calc(100% + 2rem));
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes clip-in-right {
+  from {
+    scale: 1.15;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes clip-in-left {
+  from {
+    scale: 1.15;
+    clip-path: inset(0 0 0 100%);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes clip-in-bottom {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes clip-out-bottom {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+
+  to {
+    clip-path: inset(100% 0 0 0);
+  }
+}
+@keyframes clip-in-top {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes clip-out-top {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+@keyframes clip-round-y {
+  0%, 100% {
+    clip-path: inset(0);
+  }
+
+  50% {
+    clip-path: inset(100% 0 0);
+  }
+  51% {
+    clip-path: inset(0 0 100%);
+  }
+  
+}
