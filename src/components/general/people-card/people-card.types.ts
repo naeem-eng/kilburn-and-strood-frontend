@@ -9,4 +9,5 @@ export type PeopleCardProps = {
     imageAlt?: string;
     imageWidth?: number;
     imageHeight?: number;
+    type?: any
 }
