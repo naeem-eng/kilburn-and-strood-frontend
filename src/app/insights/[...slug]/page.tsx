@@ -131,6 +131,7 @@ const Article = async ({
 
 
         {data?.sections && <Sections color={data?.color?.name} sections={data?.sections || []} isAnimation={false} />}
+        
 
         <div className="flex flex-col md:flex-row mt-4xl gap-y-[5vw] md:gap-x-[5vw] px-sm md:px-xl">
           {speakers?.props && <div className='w-full md:max-w-1/2'>
