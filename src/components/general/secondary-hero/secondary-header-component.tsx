@@ -17,7 +17,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
     if (props?.text) animatedFieldsOrder.push('text')
     if (props?.cta?.length) animatedFieldsOrder.push('button')
 
-        console.log({props})
+        
 
     const getAnimationAttributes = createIncrementalAnimationAttributes<AnimatedFieldKey>({
         distances: ['20svh', '12svh', '8svh', '4svh'],
@@ -104,7 +104,12 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                                         type={cta?.type || "text"}
                                         textColor={`text-${props?.color || 'yellow'}`}
                                         buttonClassName="mt-0"
-                                        attributes={{ ...getAnimationAttributes('button'), ...getTabletAnimationAttributes('button'), ...getMobileAnimationAttributes('button') }}
+                                        attributes={{
+                                            ...getAnimationAttributes('button'),
+                                            ...getTabletAnimationAttributes('button'),
+                                            ...getMobileAnimationAttributes('button'),
+                                            ...(cta?.toContactForm ? { 'data-scroll-to': 'contactForm' } : {}),
+                                        }}
                                     >
                                         {cta?.text}
                                     </Button>

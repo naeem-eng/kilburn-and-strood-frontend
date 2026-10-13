@@ -9,7 +9,7 @@ import EmbedCode from "../embed-code";
 
 const GetInTouch: React.FC<GetInTouchProps> = (props) => { 
     return (
-     <div id="contactForm" className={`${props?.className ? props?.className : ''} relative z-2 bg-white py-4xl! min-h-screen `}>
+     <div id="contactForm" data-animation-component data-animation="true" className={`${props?.className ? props?.className : ''} relative z-2 bg-white py-4xl! min-h-screen `}>
 
         <div className='flex md:px-xl px-sm mt-md gap-x-3xl gap-y-lg flex-col md:flex-row '>
             {(props?.title || props?.text) &&  <div className='flex-1  md:flex-1/2 '>

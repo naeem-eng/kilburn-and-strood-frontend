@@ -9,12 +9,12 @@ export type GetKeyContactsParserType = {
   
 
 
-export function getKeyContactsParser(peopleList: any) {
+export function getKeyContactsParser(peopleList: any, title: string = "Key contacts"): GetKeyContactsParserType | null {
   if(!peopleList?.length) return null;
 
   return {
     component: 'components.key-contact',
-    title: "Key contacts",
+    title: title || "Key contacts",
     peoples: peopleList?.map((person: any) => {
       let description = undefined as string | undefined;
       person?.peopleRoles?.map((v:any, index:number) => {

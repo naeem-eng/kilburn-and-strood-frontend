@@ -42,6 +42,8 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
   const pathname = usePathname();
   const router = useRouter();
 
+  const scrollToTargetRef = useRef<((target: string | HTMLElement) => void) | null>(null);
+  
   const items = React.Children.toArray(children);
 
   const parseAnimationVars = React.useCallback((element: HTMLElement, attribute: string): gsap.TweenVars | null => {
@@ -624,6 +626,41 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
         },
       });
     }
+
+    // Smooth scroll to an element by id (used by data-scroll-to and #hash links)
+    const scrollToTarget = (target: string | HTMLElement) => {
+      const el = typeof target === "string"
+        ? document.getElementById(decodeURIComponent(target.replace(/^#/, "")))
+        : target;
+      if (!el) return;
+
+      const isDesktopFullpage = interactive && window.innerWidth >= 1280;
+
+      if (isDesktopFullpage) {
+        const sectionIndex = components.findIndex(
+          (section) => section === el || section.contains(el)
+        );
+        if (sectionIndex !== -1) {
+          // A click should always win over an in-progress wheel scroll
+          activeScrollTween?.kill();
+          animating = false;
+          gotoSection(sectionIndex, sectionIndex > currentIndex ? 1 : -1);
+          return;
+        }
+      }
+
+      // Mobile / non-interactive: normal smooth scroll, offset by the header
+      const header = document.getElementById("header");
+      activeScrollTween?.kill();
+      activeScrollTween = gsap.to(window, {
+        scrollTo: { y: el, offsetY: header?.offsetHeight ?? 0 },
+        duration: 1.2,
+        ease: "power3.inOut",
+      });
+    };
+    scrollToTargetRef.current = scrollToTarget;
+
+    
     if (interactive) {
       mm.add('(min-width: 1280px)', () => {
         gsap.set(handlers, {
@@ -912,14 +949,37 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
         return;
       }
 
+      
+
       const target = event.target as HTMLElement | null;
+
+      // NEW: smooth scroll for anything with data-scroll-to="someId"
+      const scrollEl = target?.closest<HTMLElement>("[data-scroll-to]");
+      if (scrollEl) {
+        event.preventDefault();
+        event.stopPropagation(); // stops Button's own onClick / Link from running
+        scrollToTargetRef.current?.(scrollEl.getAttribute("data-scroll-to") || "");
+        return;
+      }
+
+
+
       const anchor = target?.closest("a[href]") as HTMLAnchorElement | null;
       if (!anchor) return;
       if (anchor.closest("[data-page-transition='off']")) return;
       if (anchor.closest("[data-scroll-ignore]")) return;
 
       const href = anchor.getAttribute("href");
-      if (!href || href.startsWith("#")) return;
+       // NEW: smooth scroll for href="#someId" links
+      if (href?.startsWith("#")) {
+        if (href?.length > 1) {
+          event.preventDefault();
+          event.stopPropagation(); // stops the browser's instant jump / Next Link
+          scrollToTargetRef.current?.(href.slice(1));
+        }
+        return;
+      }
+
       if (anchor.target === "_blank" || anchor.hasAttribute("download")) return;
 
       const url = new URL(anchor.href, window.location.href);

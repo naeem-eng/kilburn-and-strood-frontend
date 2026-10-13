@@ -72,6 +72,12 @@ const Pages = async ({
           fullCTAComponent: { populate: '*' }
         }
       },
+      people: {
+            populate: {
+              people_roles: { populate: '*' },
+              profile_photo: { populate: '*' }
+            },
+        },
     },
     specificPopulate: {
       '/api/offices': {
@@ -79,7 +85,7 @@ const Pages = async ({
           populate: {
             people_roles: { populate: '*' },
             profile_photo: { populate: '*' }
-          }
+          },
         },
         contact: { populate: '*' }
       }
@@ -87,7 +93,6 @@ const Pages = async ({
     isPreview: isPreview, // ← no draftMode
   });
 
-  // console.log({page})
 
 
   if (!page) notFound();
@@ -99,6 +104,10 @@ const Pages = async ({
   const getFullCtaParser = fullCtaParser(data?.fullCta);
   const contactParser    = getInTouchParser(data?.contact);
   const keyContactsParser = getKeyContactsParser(data?.keyContacts);
+  const peopleParser = getKeyContactsParser(data?.people, data?.peopleTitle);
+
+
+  // console.log({peopleParser, data}, data?.people)
 
   const relatedContentRaw = isServicePage && data?.name
     ? await fetchRelatedContent({ serviceName: data.name })
@@ -116,6 +125,7 @@ const Pages = async ({
         {keyContactsParser && <KeyContacts {...keyContactsParser} />}
         {contactParser && <GetInTouch {...contactParser.props} />}
         {parsedRelatedContent && parsedRelatedContent.items.length > 0 && <RelatedContentCarousel {...parsedRelatedContent} isAnimation={isAnimation} />}
+        {peopleParser && <KeyContacts {...peopleParser} />}
         {getFullCtaParser && <FullCta isAnimation={isAnimation} {...getFullCtaParser.props} />}
       </FullPageSlider>
     </div>
