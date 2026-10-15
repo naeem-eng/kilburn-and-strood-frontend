@@ -9,7 +9,7 @@ import remarkGfm from 'remark-gfm';
 import remarkBreak from 'remark-breaks';
 import { createIncrementalAnimationAttributes } from "@/components/helpers/animation";
 import BodyMarkdown from "@/components/helpers/body-markdown/BodyMarkdown";
-import { colorParser } from "@/parsers";
+import { colorParser, textSafeColor, textOnFillClass } from "@/parsers";
 
 const LatestInsight: React.FC<LatestInsightProps> = (props) => {
   const isAnimation = props?.isAnimation || false;
@@ -189,7 +189,8 @@ const LatestInsight: React.FC<LatestInsightProps> = (props) => {
       >
         {(props.titleAboveText) &&
           <TextXl
-            className={`text-balance text-${props?.color || 'dark-purple'}`}
+            as="h2"
+            className={`text-balance text-${textSafeColor(props?.color || 'dark-purple')}`}
           >
             {props.titleAboveText}
           </TextXl>
@@ -254,7 +255,7 @@ const LatestInsight: React.FC<LatestInsightProps> = (props) => {
             }}
             icon="right-arrow"
             type={props?.cta?.type || "text"}
-            textColor={`text-${props?.cta?.color || props?.color || 'bright-red'}`}
+            textColor={`text-${textSafeColor(props?.cta?.color || props?.color || 'bright-red')}`}
             buttonClassName=""
             href={props?.cta?.href || "#"}
           >
@@ -286,7 +287,7 @@ const LatestInsight: React.FC<LatestInsightProps> = (props) => {
             <Button
               icon="right-arrow"
               type={props?.topCta?.type || "text"}
-              textColor={props?.color ? (props?.color?.includes("dark") ? "text-white" : "text-dark-gray") : "text-dark-gray"}
+              textColor={textOnFillClass(props?.color || "yellow")}
               buttonClassName=""
               href={props?.topCta?.href || "#"}
             >

@@ -181,7 +181,7 @@ const ContentCarousal: React.FC<ContentCarousalProps> = (props) => {
   // // //console.log(getParsedItems?.length)
 
   return (
-    <div className={`w-full relative flex flex-col py-2xl justify-center items-start bg-white flex-1 overflow-hidden `}>
+    <section aria-roledescription="carousel" aria-label={props?.title || "Related content"} className={`w-full relative flex flex-col py-2xl justify-center items-start bg-white flex-1 overflow-hidden `}>
 
       <div className="px-sm md:px-xl mb-xl">
         <TitleSm>
@@ -214,7 +214,7 @@ const ContentCarousal: React.FC<ContentCarousalProps> = (props) => {
                     const showImage = item?.isMedia;
 
                     return (
-                      <Link href={`${item?.url || '#'}`} key={i} className="w-full group bg-light-gray flex-1 h-auto flex flex-col text-left">
+                      <Link href={`${item?.url || '#'}`} key={i} onFocus={() => setSelectedIndex(Math.max(0, Math.min(index, getParsedItems.length - colsNumber + 1)))} className="w-full group bg-light-gray flex-1 h-auto flex flex-col text-left">
                         {
                           item?.mediaType === 'image' && item?.mediaSrc && showImage && (
                             <div className="overflow-hidden h-[40%] md:h-[46%] xl:h-[56%]">
@@ -226,17 +226,17 @@ const ContentCarousal: React.FC<ContentCarousalProps> = (props) => {
                         {
                           item?.mediaType === 'video' && item?.mediaSrc && showImage && (
                             <div className="">
-                              <video autoPlay loop draggable={false} src={item?.mediaSrc} width={731} height={337} className="w-full  object-cover" />
+                              <video autoPlay loop muted playsInline aria-hidden="true" draggable={false} src={item?.mediaSrc} width={731} height={337} className="w-full  object-cover" />
                             </div>
                           )
                         }
 
                         <div className="p-md flex flex-col gap-y-sm flex-1 min-h-0 group-hover:bg-dark-gray transition-colors duration-600 ease-in-out">
-                          <Small className="text-medium-gray group-hover:text-white transition-colors duration-600 ease-in-out">{item?.itemType}</Small>
+                          <Small className="text-dark-gray/75 group-hover:text-white transition-colors duration-600 ease-in-out">{item?.itemType}</Small>
 
                           <TextMd fontClassName={'font-gt-ultra! text-md! leading-md!'} className="transition-colors duration-600 ease-in-out text-dark-gray line-clamp-4 mb-sm  group-hover:text-white ">{item?.title}</TextMd>
 
-                          <Small className="transition-colors duration-600 ease-in-out text-medium-gray mt-auto  group-hover:text-white">{item?.date}</Small>
+                          <Small className="transition-colors duration-600 ease-in-out text-dark-gray/75 mt-auto  group-hover:text-white">{item?.date}</Small>
                         </div>
                       </Link>
                     )
@@ -248,18 +248,18 @@ const ContentCarousal: React.FC<ContentCarousalProps> = (props) => {
         </div>
         {/* arrows */}
         <div className="h-auto py-md sm:h-0 w-ful flex flex-row justify-end items-center gap-x-sm sm:px-0 px-md sm:mt-0 mt-md">
-          {<button disabled={selectedIndex > 0 ? false : true} onClick={onLeftAnimate} className="sm:absolute top-1/2 transform sm:-translate-y-1/2 left-0 sm:w-[4vw] sm:h-[4vw] sm:bg-bright-red flex justify-center items-center cursor-pointer disabled:md:opacity-0 disabled:opacity-50">
+          {<button type="button" aria-label="Previous items" disabled={selectedIndex > 0 ? false : true} onClick={onLeftAnimate} className="sm:absolute top-1/2 transform sm:-translate-y-1/2 left-0 sm:w-[4vw] sm:h-[4vw] sm:bg-bright-red flex justify-center items-center cursor-pointer disabled:md:opacity-0 disabled:opacity-50">
             <LeftArrowIcon className="h-xl w-xl sm:h-md sm:w-md sm:fill-white fill-dark-gray" fill="inherit" />
           </button>}
           {/* {// //console.log(selectedIndex,cols.length,colsNumber)} */}
-          {<button disabled={selectedIndex <= getParsedItems.length - (colsNumber == 1 ? 2 : colsNumber) ? false : true} onClick={onRightAnimate} className="sm:absolute top-1/2 transform sm:-translate-y-1/2 right-0 sm:w-[4vw] sm:h-[4vw] sm:bg-bright-red flex justify-center items-center cursor-pointer disabled:md:opacity-0 disabled:opacity-50">
+          {<button type="button" aria-label="Next items" disabled={selectedIndex <= getParsedItems.length - (colsNumber == 1 ? 2 : colsNumber) ? false : true} onClick={onRightAnimate} className="sm:absolute top-1/2 transform sm:-translate-y-1/2 right-0 sm:w-[4vw] sm:h-[4vw] sm:bg-bright-red flex justify-center items-center cursor-pointer disabled:md:opacity-0 disabled:opacity-50">
             <RightArrowIcon className="h-xl w-xl sm:h-md sm:w-md sm:fill-white fill-dark-gray" fill="inherit" />
           </button>}
         </div>
         {/* arrows */}
       </div>
 
-    </div>
+    </section>
   );
 };
 

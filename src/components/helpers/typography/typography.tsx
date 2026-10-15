@@ -45,7 +45,7 @@ export const TitleLg = memo(({
 });
 
 export const TitleMd = memo(({
-    as: Component = "h3",
+    as: Component = "h2", // section title directly under the page h1
     text,
     children,
     className = "",
@@ -110,7 +110,7 @@ export const TextLg = memo(({
 
 
 export const TextMd = memo(({
-    as: Component = "h6",
+    as: Component = "p", // body copy, not a heading: pass as="h2" etc. where it really is one
     text,
     children,
     className = "",

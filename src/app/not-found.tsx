@@ -11,7 +11,7 @@ export default function NotFound() {
             <div className='bg-white  mt-lg min-h-0 h-[80%] flex flex-row justify-start items-center w-full md:w-[60%] relative z-1'>
               <div className='bg-bright-red min-w-[5vw] min-h-full'></div>
               <div className='mx-xl md:w-[65%]'>
-                <TitleSm className='mb-md'>
+                <TitleSm as="h1" className='mb-md'>
                   <span className='text-bright-red'>404</span><br />
                   Page not found
                 </TitleSm>

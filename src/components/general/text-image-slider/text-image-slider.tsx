@@ -2,7 +2,7 @@
 
 import { TextMd, TextXl, TitleLg, TitleMd, TitleSm } from "@/components/helpers/typography";
 import { TextImageSliderProps } from "./text-image-slider.types";
-import { colorParser } from "@/parsers";
+import { colorParser, textSafeColor } from "@/parsers";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/helpers/buttons";
@@ -137,6 +137,9 @@ const TextImageSlider: React.FC<TextImageSliderProps> = (props) => {
         ref={(el) => {
           slideRefs.current[index] = el;
         }}
+        inert={activeIndex !== index}
+        aria-roledescription="slide"
+        aria-label={`${index + 1} of ${props?.items?.length}`}
         className={`h-full min-w-[80vw] w-[80vw] flex-col md:flex-row flex md:gap-x-lg transform ${active ? 'scale-100 opacity-100' : 'scale-60 md:translate-y-[-8vw]'} origin-top-left transition-all duration-500 ease-in-out `}
       >
         {item.imageSrc && <div
@@ -149,7 +152,7 @@ const TextImageSlider: React.FC<TextImageSliderProps> = (props) => {
           data-mobile-middle='{"y": "0%", "x": "0%" }'
           data-mobile-to='{"y": "-50%"}'
         >
-          <Image unoptimized={true} src={item.imageSrc} alt={item.imageAlt || "Image 1"} width={item?.imageWidth || 710} height={item?.imageHeight || 473} className="absolute inset-0 w-full h-full object-cover" />
+          <Image unoptimized={true} src={item.imageSrc} alt={item.imageAlt || ""} width={item?.imageWidth || 710} height={item?.imageHeight || 473} className="absolute inset-0 w-full h-full object-cover" />
         </div>}
         <div className={
           `flex-1 flex gap-y-sm flex-col mt-2xl md:mt-0 md:mr-2xl px-sm md:px-0 transition-all md:pb-sm  ${textActive ? 'duration-500 opacity-100' : 'duration-300 transition-delay-1000 opacity-0'} ${activeIndex === index ? 'translate-y-0' : activeIndex > index ? 'translate-y-1/4 -translate-x-full' : '-translate-y-1/4 translate-x-full'}`
@@ -159,7 +162,7 @@ const TextImageSlider: React.FC<TextImageSliderProps> = (props) => {
             <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreak]}
               components={{
                 p: ({ children }) => <TextXl attributes={textActive ? { ...getSlideTextAnimationAttributes('slideTitle'), ...getSlideTextMobileAnimationAttributes('slideTitle') } : {}} className={`text-dark-gray  ${isAnimation ? 'line-clamp-10' : ''}`}>{children}</TextXl>,
-                strong: ({ children }) => <TextXl as="span" className={`text-${props?.color || 'dark-gray'}`}>{children}</TextXl>
+                strong: ({ children }) => <TextXl as="span" className={`text-${textSafeColor(props?.color || 'dark-gray')}`}>{children}</TextXl>
               }}
             >
               {item.title}
@@ -178,7 +181,7 @@ const TextImageSlider: React.FC<TextImageSliderProps> = (props) => {
             }}
           >{item.text}</BodyMarkdown>}
           {
-            item.cta && <Button icon='right-arrow' textColor={`text-${props?.color || 'dark-gray'}`} buttonClassName="mt-0" type={item.cta.type} href={item.cta.href} attributes={{ ...getSlideTextAnimationAttributes('slideButton'), ...getSlideTextMobileAnimationAttributes('slideButton') }} >
+            item.cta && <Button icon='right-arrow' textColor={`text-${textSafeColor(props?.color || 'dark-gray')}`} buttonClassName="mt-0" type={item.cta.type} href={item.cta.href} attributes={{ ...getSlideTextAnimationAttributes('slideButton'), ...getSlideTextMobileAnimationAttributes('slideButton') }} >
               {item.cta.text}
             </Button>
           }
@@ -200,7 +203,7 @@ const TextImageSlider: React.FC<TextImageSliderProps> = (props) => {
       <div className="w-full flex flex-col gap-y-sm px-(--padding-side) col-span-full md:col-span-10">
         {props?.label &&
           <TextMd
-            className={`text-${props?.color || 'dark-gray'} `}
+            className={`text-${textSafeColor(props?.color || 'dark-gray')} `}
             attributes={{ ...getAnimationAttributes('label'), ...getMobileAnimationAttributes('label') }}
           >
             {props?.label}
@@ -210,7 +213,7 @@ const TextImageSlider: React.FC<TextImageSliderProps> = (props) => {
         <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreak]}
           components={{
             p: ({ children }) => <TitleSm attributes={{ ...getAnimationAttributes('title'), ...getMobileAnimationAttributes('title') }} className="text-dark-gray text-left max-w-fit">{children}</TitleSm>,
-            strong: ({ children }) => <TitleSm as="span" className={`text-${props?.color || 'dark-gray'}`}>{children}</TitleSm>
+            strong: ({ children }) => <TitleSm as="span" className={`text-${textSafeColor(props?.color || 'dark-gray')}`}>{children}</TitleSm>
           }}
         >
           {props.title}
@@ -239,7 +242,7 @@ const TextImageSlider: React.FC<TextImageSliderProps> = (props) => {
         <div className="relative z-20 md:absolute px-sm md:px-2xl bottom-5 md:bottom-0 right-0 w-full md:w-[55.5vw] flex flex-row items-center md:items-end justify-center md:mt-0 mt-2xl pointer-events-auto flex-wrap gap-5">
           <div className="flex flex-1 flex-row gap-x-xs items-start justify-start overflow-x-auto">
             {props?.items?.length > 1 && props?.items?.map((item, index) => {
-              return <button onClick={() => bulletTrigger(index)} aria-label={`Go to slide ${index + 1}`} aria-current={index === currentIndex} key={index} className={`cursor-pointer w-[4vw] h-[1vw] md:w-[1.2vw] md:h-[.24vw] bg-dark-gray opacity-20 ${index == currentIndex ? "w-[8vw] md:w-[2.8vw] opacity-100" : "hover:opacity-50"} transition-all duration-500 ease-in-out`} ></button>;
+              return <button type="button" onClick={() => bulletTrigger(index)} aria-label={`Go to slide ${index + 1}`} aria-current={index === currentIndex ? "true" : undefined} key={index} className={`cursor-pointer w-[4vw] h-[1vw] md:w-[1.2vw] md:h-[.24vw] bg-dark-gray opacity-20 ${index == currentIndex ? "w-[8vw] md:w-[2.8vw] opacity-100" : "hover:opacity-50"} transition-all duration-500 ease-in-out`} ></button>;
             })}
           </div>
           {props?.items?.length > 1 && <div className="flex gap-x-sm mr-0 ml-auto">

@@ -1,4 +1,5 @@
 "use client";
+import { textSafeColor } from "@/parsers";
 import { Button } from "@/components/helpers/buttons";
 import { ArticleHeaderProps } from "./article-header.types";
 import { Small, Text, TitleMd, TitleSm } from "@/components/helpers/typography";
@@ -33,7 +34,7 @@ const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           </div>}
 
 
-          <TitleSm>
+          <TitleSm as="h1">
             {props?.title}
           </TitleSm>
 
@@ -42,7 +43,7 @@ const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
                 {
                   props?.cta?.map((cta: any, index: number) => {
                     return (
-                      <Button key={index} href={cta?.href} icon='right-arrow' type={cta?.type || "text"} textColor={`text-${cta?.textColor || 'dark-purple'}`} backgroundColor={`bg-${cta?.backgroundColor || 'dark-purple'}`} buttonClassName="text-base! font-modern-era-medium" iconClassName="w-sm h-sm">{cta.text}</Button>
+                      <Button key={index} href={cta?.href} icon='right-arrow' type={cta?.type || "text"} textColor={`text-${textSafeColor(cta?.textColor || 'dark-purple')}`} backgroundColor={`bg-${cta?.backgroundColor || 'dark-purple'}`} buttonClassName="text-base! font-modern-era-medium" iconClassName="w-sm h-sm">{cta.text}</Button>
                     )
                   })
                 }

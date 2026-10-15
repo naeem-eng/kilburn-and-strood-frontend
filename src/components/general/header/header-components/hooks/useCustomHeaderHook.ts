@@ -310,9 +310,9 @@ const useCustomHeaderHook = (props: CustomHeaderProps) => {
         const megaMenu = panel.closest('.isMegaMenu') as HTMLElement;
         if (megaMenu) {
             const panelScrollHeight = panel.scrollHeight;
+            // scrollHeight already includes the panel's own padding, so no extra spacing is added
             if (panelScrollHeight > megaMenu.offsetHeight) {
-                const spaceXl = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--space-xl')) || 48;
-                megaMenu.style.height = (panelScrollHeight + spaceXl) + 'px';
+                megaMenu.style.height = panelScrollHeight + 'px';
             }
         }
 
@@ -513,6 +513,65 @@ const useCustomHeaderHook = (props: CustomHeaderProps) => {
 
 
 
+
+    // Accessibility (WCAG 4.1.2 / 2.1.1 / 2.4.3): menus open and close by toggling classes,
+    // so mirror that state onto aria-expanded and make closed panels inert (out of the tab order).
+    useEffect(() => {
+        const header = headerRef.current;
+        if (!header) return;
+
+        const sync = () => {
+            dropdownMenuRef.current?.forEach((trigger) => {
+                if (!trigger) return;
+                const panel = trigger.nextElementSibling as HTMLElement | null;
+                if (!panel) return;
+                // resetAllMenus drops the parent's class when a second-level item opens but keeps
+                // the parent panel on screen, so a panel holding an active trigger is still open
+                const open = trigger.classList.contains('activateDropper') || Boolean(panel.querySelector('.activateDropper'));
+                trigger.setAttribute('aria-expanded', String(open));
+                panel.inert = !open;
+            });
+            mobileMenuRef.current?.forEach((trigger) => {
+                if (!trigger) return;
+                const panel = trigger.nextElementSibling as HTMLElement | null;
+                if (!panel) return;
+                const open = panel.classList.contains('mobilePanel');
+                trigger.setAttribute('aria-expanded', String(open));
+                panel.inert = !open;
+            });
+        };
+
+        sync();
+        const observer = new MutationObserver(sync);
+        observer.observe(header, { subtree: true, attributes: true, attributeFilter: ['class'] });
+
+        // Escape closes whatever is open and returns focus to its trigger
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key !== 'Escape') return;
+            const openDesktop = dropdownMenuRef.current?.filter((t) => t?.classList.contains('activateDropper')) || [];
+            const openMobile = mobileMenuRef.current?.filter((t) => (t?.nextElementSibling as HTMLElement | null)?.classList.contains('mobilePanel')) || [];
+            if (!openDesktop.length && !openMobile.length) return;
+
+            if (openDesktop.length) {
+                resetAllMenus(null);
+                openDesktop[0]?.focus();
+            }
+            if (openMobile.length) {
+                mobileMenuRef.current?.forEach((t) => {
+                    if (!t) return;
+                    t.classList.remove('activateDropper');
+                    (t.nextElementSibling as HTMLElement | null)?.classList.remove('mobilePanel');
+                });
+                openMobile[0]?.focus();
+            }
+        };
+        document.addEventListener('keydown', onKeyDown);
+
+        return () => {
+            observer.disconnect();
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, [pathname]);
 
     return {
         onClickMobileReset,

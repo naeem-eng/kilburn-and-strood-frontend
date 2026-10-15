@@ -1,3 +1,4 @@
+import { textSafeColor } from "@/parsers";
 import { Button } from "@/components/helpers/buttons"
 import { Text, TextXl, TitleSm } from "@/components/helpers/typography"
 import Image from "next/image"
@@ -94,7 +95,7 @@ const TextWithImage: React.FC<TextWithImageProps> = (props) => {
                       ? <TextXl attributes={{ ...getAnimationAttributes('title'), ...getMobileAnimationAttributes('title') }}>{children}</TextXl>
                       : <TitleSm attributes={{ ...getAnimationAttributes('title'), ...getMobileAnimationAttributes('title') }}>{children}</TitleSm>
                   ),
-                  strong: ({children}) => <TitleSm as="span" className={`text-${props?.color || 'bright-red'}  `} style={{ fontSize: 'inherit', lineHeight: 'inherit' }}
+                  strong: ({children}) => <TitleSm as="span" className={`text-${textSafeColor(props?.color || 'bright-red')}  `} style={{ fontSize: 'inherit', lineHeight: 'inherit' }}
 >{children}</TitleSm>
                 }}
             > 

@@ -1,8 +1,10 @@
 "use client";
+import { textSafeColor } from "@/parsers";
 
 import { Text, TextMd, TextXl, TitleLg, TitleMd, TitleSm } from "@/components/helpers/typography";
 import { TabbedContentProps } from "./tabbed-content.types";
-import { useRef, MouseEvent, useState, useEffect, useMemo, useContext } from "react";
+import { useRef, MouseEvent, useState, useEffect, useMemo, useContext, useId } from "react";
+import { handleTabKeyDown } from "@/utils/a11y";
 import { flushSync } from "react-dom";
 import Image from "next/image";
 import { Button } from "@/components/helpers/buttons";
@@ -23,6 +25,7 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
 
     
     const [selectedTab, setSelectedTab] = useState(0);
+    const tabsId = useId();
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [nextIndex, setNextIndex] = useState<number | null>(null);
     const [transitionPhase, setTransitionPhase] = useState<"start" | "animating">("start");
@@ -175,7 +178,7 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
                 {tabData.content.title && <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreak]}
                     components={{
                         p: ({ children }) => <TextXl attributes={{ ...getTabbedAnimationAttributes("title"), ...getMobileTabbedAnimationAttributes("title") }}>{children}</TextXl>,
-                        strong: ({ children }) => <TextXl as="span" className={`text-${props?.color || 'yellow'}`}>{children}</TextXl>
+                        strong: ({ children }) => <TextXl as="span" className={`text-${textSafeColor(props?.color || 'yellow')}`}>{children}</TextXl>
                     }}
                 >
                     {tabData.content.title}
@@ -195,7 +198,7 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
                         {...getMobileTabbedAnimationAttributes("button")}
                     >
 
-                        <Button isExternal={tabData.content?.cta?.isExternal} href={tabData.content?.cta?.href} icon='right-arrow' type={tabData.content?.cta?.type || "text"} textColor={`text-${props?.color || "bright-red"}`} buttonClassName="mt-0 ">{tabData.content?.cta?.text}</Button>
+                        <Button isExternal={tabData.content?.cta?.isExternal} href={tabData.content?.cta?.href} icon='right-arrow' type={tabData.content?.cta?.type || "text"} textColor={`text-${textSafeColor(props?.color || "bright-red")}`} buttonClassName="mt-0 ">{tabData.content?.cta?.text}</Button>
                     </div>
                 )}
             </div>
@@ -212,7 +215,7 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
                         data-mobile-duration="0.4"
                         unoptimized
                         src={tabData?.content?.imageSrc}
-                        alt={tabData?.content?.imageAlt || "Image 1"}
+                        alt={tabData?.content?.imageAlt || ""}
                         width={tabData?.content?.imageWidth || 731}
                         height={tabData?.content?.imageHeight || 337}
                         className="w-full"
@@ -331,17 +334,24 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
                     ref={tabsContainerRef}
                     className={`tabs-container scroll-container ${props?.isAnimation ? 'md:pt-4xl' : ''} overflow-x-auto flex flex-col justify-between items-start w-auto relative min-h-max shrink-0`}
                 >
-                    <div className="flex flex-row md:justify-start md:items-center min-w-full md:gap-x-0 gap-x-sm md:px-0 px-sm">
+                    <div role="tablist" className="flex flex-row md:justify-start md:items-center min-w-full md:gap-x-0 gap-x-sm md:px-0 px-sm">
                         {props.tabs.map((tab, index, arr) => {
                             return (
                                 <button ref={r => {
-                                    tabRef.current.push(r as any)
+                                    tabRef.current[index] = r as any
                                 }}
                                     key={index}
+                                    type="button"
+                                    role="tab"
+                                    id={`${tabsId}-tab-${index}`}
+                                    aria-selected={selectedTab == index}
+                                    aria-controls={`${tabsId}-panel`}
+                                    tabIndex={selectedTab == index ? 0 : -1}
+                                    onKeyDown={(e) => handleTabKeyDown(e, index, arr.length, changeTab)}
                                     onClick={() => changeTab(index)}
-                                    className={`text-center cursor-pointer md:border-r-[.1vw] md:border-r-[#E0E0E0] last:border-r-0 py-xs ${selectedTab == index ? ` border-b-bright-red text-${props?.color || "bright-red"}` : 'border-b-transparent'} hover:text-${props?.color || "bright-red"} transition-colors duration-300 ease-in-out md:min-w-0 w-46 md:w-fit bg-light-gray md:bg-transparent px-lg md:px-0 border-b-[.8vw] md:border-b-0 flex-1`}
+                                    className={`text-center cursor-pointer md:border-r-[.1vw] md:border-r-[#E0E0E0] last:border-r-0 py-xs ${selectedTab == index ? ` border-b-bright-red text-${textSafeColor(props?.color || "bright-red")}` : 'border-b-transparent'} hover:text-${textSafeColor(props?.color || "bright-red")} transition-colors duration-300 ease-in-out md:min-w-0 w-46 md:w-fit bg-light-gray md:bg-transparent px-lg md:px-0 border-b-[.8vw] md:border-b-0 flex-1`}
                                 >
-                                    <TextMd className="whitespace-auto">{tab.title}</TextMd>
+                                    <TextMd as="span" className="whitespace-auto">{tab.title}</TextMd>
                                 </button>
                             )
                         })}
@@ -361,7 +371,7 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
             {/* tabs */}
 
             {/* content */}
-            <div className="relative overflow-clip w-full flex-grow min-h-0">
+            <div role="tabpanel" id={`${tabsId}-panel`} aria-labelledby={`${tabsId}-tab-${selectedTab}`} className="relative overflow-clip w-full flex-grow min-h-0">
                 {!isTransitioning || viewTransitionsSupported ? (
                     renderTabContent(tab, "translate-x-0 opacity-100", false)
                 ) : nextIndex !== null ? (

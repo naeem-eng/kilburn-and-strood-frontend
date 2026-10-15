@@ -80,7 +80,7 @@ const HeroOne: HeroOneComponent = ({
   buttonText,
   buttonHref,
   image1Src,
-  image1Alt = "Hero Image 1",
+  image1Alt = "",
   image2Src,
   image2Alt = "Hero Image 2",
   onButtonClick,

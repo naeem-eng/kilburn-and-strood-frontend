@@ -44,8 +44,10 @@ const SearchPagination = ({ page, pageCount, onChange }: PaginationProps) => {
     const active = "border-dark-blue! text-dark-blue!";
 
     return (
-        <div className="flex flex-row items-center gap-x-1 md:gap-x-5 my-12">
+        <nav aria-label="Pagination" className="flex flex-row items-center gap-x-1 md:gap-x-5 my-12">
             <button
+                type="button"
+                aria-label="Previous page"
                 onClick={() => onChange(page - 1)}
                 disabled={page === 1}
                 className={`${btn} cursor-pointer bg-dark-blue!`}
@@ -56,6 +58,8 @@ const SearchPagination = ({ page, pageCount, onChange }: PaginationProps) => {
             {getPages().map((p:any, i) =>
                 typeof p === 'object' && p.ellipsis ? (
                     <button
+                        type="button"
+                        aria-label={`Jump to page ${p.target}`}
                         key={`ellipsis-${i}`}
                         onClick={() => onChange(p.target)}
                         className={`${btn} cursor-pointer text-sm`}
@@ -64,6 +68,9 @@ const SearchPagination = ({ page, pageCount, onChange }: PaginationProps) => {
                     </button>
                 ) : (
                     <button
+                        type="button"
+                        aria-label={`Page ${p}`}
+                        aria-current={page === p ? "page" : undefined}
                         key={p}
                         onClick={() => onChange(p as number)}
                         className={`${btn} cursor-pointer ${page === p ? active : ''} text-sm`}
@@ -74,13 +81,15 @@ const SearchPagination = ({ page, pageCount, onChange }: PaginationProps) => {
             )}
 
             <button
+                type="button"
+                aria-label="Next page"
                 onClick={() => onChange(page + 1)}
                 disabled={page === pageCount}
                 className={`${btn} disabled:opacity-40 cursor-pointer bg-dark-blue!`}
             >
                 <RightArrowIcon className="w-4 h-4 md:w-10 md:h-4 " fill='white'/>
             </button>
-        </div>
+        </nav>
     );
 };
 

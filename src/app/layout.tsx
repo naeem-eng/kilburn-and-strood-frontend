@@ -8,6 +8,8 @@ import globalRequest from "@/requests/global-requests";
 import { Suspense } from "react";
 import Loading from "./loading";
 import Script from "next/script";
+import MotionToggle from "@/components/general/motion-toggle/motion-toggle";
+import { MOTION_INIT_SCRIPT } from "@/utils/motion";
 
 export const revalidate = 3600;
 export const fetchCache = 'force-cache';
@@ -48,6 +50,19 @@ export default async function RootLayout({
       >
         <div className="hidden text-yellow text-bright-red text-dark-purple text-dark-blue text-dark-green text-dark-red text-white text-dark-gray text-light-gray text-medium-gray text-light-green text-light-blue text-light-purple bg-yellow bg-bright-red bg-dark-purple bg-dark-blue bg-dark-green bg-dark-red bg-dark-gray bg-light-gray bg-medium-gray bg-light-green bg-light-blue bg-light-purple" />
 
+        {/* sets data-motion on <html> before any animation code runs */}
+        <Script id="motion-preference" strategy="beforeInteractive">
+          {MOTION_INIT_SCRIPT}
+        </Script>
+
+        <a
+          href="#main-content"
+          data-page-transition="off"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-sm focus:left-sm focus:z-[100] focus:bg-white focus:text-dark-gray focus:px-md focus:py-xs font-modern-era-medium"
+        >
+          Skip to main content
+        </a>
+
         <LayoutContainer>
           <Suspense fallback={<Loading />}>
             {header && <HeaderComponent header={header} />}
@@ -55,6 +70,8 @@ export default async function RootLayout({
             {footer && <FooterComponent footer={footer} logo={header?.logo} />}
           </Suspense>
         </LayoutContainer>
+
+        {/* <MotionToggle /> */}
 
         {/* HubSpot Tracking */}
         <Script

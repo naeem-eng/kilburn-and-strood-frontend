@@ -216,7 +216,7 @@ const TestimonialSlider: React.FC<TestimonialSliderProps> = (props) => {
           {currentTestimonial.imageSrc && <Image
             key={currentIndex}
             src={currentTestimonial.imageSrc}
-            alt={currentTestimonial.imageAlt || "Image 1"}
+            alt={currentTestimonial.imageAlt || ""}
             fill
             className={`image w-full h-full object-cover`}
             data-animation-atoms
@@ -271,7 +271,7 @@ const TestimonialSlider: React.FC<TestimonialSliderProps> = (props) => {
               {props.testimonials.map((_, index) => (
                 <button
                   key={index}
-                  aria-current={index === currentIndex}
+                  aria-current={index === currentIndex ? "true" : undefined}
                   onClick={() => changeSlides(index)}
                   aria-label={`Go to slide ${index + 1}`}
                   className={`cursor-pointer transition-all duration-300 h-[3px] bg-white ${index === currentIndex
@@ -282,10 +282,10 @@ const TestimonialSlider: React.FC<TestimonialSliderProps> = (props) => {
               ))}
             </div>
             <div className="flex gap-4">
-              { <button onClick={goToPrevious} aria-label="Previous Slide" className={`cursor-pointer hover:-translate-x-1 transition-all duration-100 hover:duration-300 ${( currentIndex > 0)  ? '' : 'invisible'}`}>
+              { <button type="button" onClick={goToPrevious} aria-label="Previous Slide" className={`cursor-pointer hover:-translate-x-1 transition-all duration-100 hover:duration-300 ${( currentIndex > 0)  ? '' : 'invisible'}`}>
                 <LeftArrowIcon className="w-auto h-7" fill="white" />
               </button>}
-              { <button onClick={goToNext} aria-label="Next Slide" className={`cursor-pointer hover:translate-x-1 transition-all duration-100 hover:duration-300 ${(currentIndex < props.testimonials.length - 1) ? '' : 'invisible'}`}>
+              { <button type="button" onClick={goToNext} aria-label="Next Slide" className={`cursor-pointer hover:translate-x-1 transition-all duration-100 hover:duration-300 ${(currentIndex < props.testimonials.length - 1) ? '' : 'invisible'}`}>
                 <RightArrowIcon className="w-auto h-7" fill="white" />
               </button>}
             </div>

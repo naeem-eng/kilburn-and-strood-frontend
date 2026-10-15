@@ -102,7 +102,7 @@ const PrimaryHeaderComponent: React.FC<PrimaryHeaderComponentProps> = (props: Pr
                     {props?.leftRevealImageSrc ? (
                         <ImageReveal
                             src={props.leftMediaSrc!}
-                            alt={props?.leftMediaAlt || "Image 1"}
+                            alt={props?.leftMediaAlt || ""}
                             width={props?.leftMediaWidth || 942}
                             height={props?.leftMediaHeight || 418}
                             revealSrc={props.leftRevealImageSrc}
@@ -119,7 +119,7 @@ const PrimaryHeaderComponent: React.FC<PrimaryHeaderComponentProps> = (props: Pr
                         <>
                             {
                                 props?.leftMediaType === "image" && <Image
-                                    src={props?.leftMediaSrc} alt={props?.leftMediaAlt || "Image 1"}
+                                    src={props?.leftMediaSrc} alt={props?.leftMediaAlt || ""}
                                     width={props?.leftMediaWidth || 942} height={props?.leftMediaHeight || 418}
                                     className="aspect-video md:aspect-auto w-full md:h-full object-cover"
                                     data-animation-atoms
@@ -151,7 +151,7 @@ const PrimaryHeaderComponent: React.FC<PrimaryHeaderComponentProps> = (props: Pr
                     className={`relative col-[span_3/-1] row-start-2 aspect-[3/4] md:aspect-auto md:row-span-2 md:col-[span_3/-1] h-full block overflow-clip -mr-(--padding-side)`}>
 
                     {props?.rightMediaType === "image" && <Image
-                        src={props?.rightMediaSrc} alt={props?.rightMediaAlt || "Image 1"}
+                        src={props?.rightMediaSrc} alt={props?.rightMediaAlt || ""}
                         width={props?.rightMediaWidth || 412} height={props?.rightMediaHeight || 678}
                         className="w-full h-full max-w-none object-cover object-top md:object-contain md:object-right"
                         data-animation-atoms

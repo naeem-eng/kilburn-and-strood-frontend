@@ -81,7 +81,7 @@ const CaseStudiesTypeThree: React.FC<CaseStudiesTypeThreeProps> = (props) => {
               playsInline
               preload="auto"
               className="w-full h-full object-cover"
-            /> : <Image unoptimized src={props?.media3Src} alt={props?.media3Alt || "Image 1"}  width={props?.media3Width || 1197} height={props?.media3Height || 898} className="w-full max-w-none object-cover h-full" />
+            /> : <Image unoptimized src={props?.media3Src} alt={props?.media3Alt || ""}  width={props?.media3Width || 1197} height={props?.media3Height || 898} className="w-full max-w-none object-cover h-full" />
           }
         </div>}
 
@@ -153,7 +153,7 @@ const CaseStudiesTypeThree: React.FC<CaseStudiesTypeThreeProps> = (props) => {
               data-mobile-middle='{"y": "0%" }'
               className="w-[45vw] md:w-[30vw] overflow-hidden relative md:right-0 right-[11vw]">
               
-              {props?.media1Type == 'image' && props?.mediaSrc && <Image unoptimized src={props?.mediaSrc} alt={props?.mediaAlt || "Image 1"} width={props?.mediaWidth || 942} height={props?.mediaHeight || 418} className="w-full object-cover object-left-top max-w-none h-[30vw] md:h-[20vw]" />}
+              {props?.media1Type == 'image' && props?.mediaSrc && <Image unoptimized src={props?.mediaSrc} alt={props?.mediaAlt || ""} width={props?.mediaWidth || 942} height={props?.mediaHeight || 418} className="w-full object-cover object-left-top max-w-none h-[30vw] md:h-[20vw]" />}
               {props?.media1Type == 'video' && props?.mediaSrc && <video src={props?.mediaSrc} autoPlay loop muted playsInline preload="auto" className="w-full object-cover object-left-top max-w-none h-[30vw] md:h-[20vw]" />}
 
             </div>
@@ -171,7 +171,7 @@ const CaseStudiesTypeThree: React.FC<CaseStudiesTypeThreeProps> = (props) => {
               data-mobile-to='{"clip-path": "inset(0 0% 0 100%)"}'
               className="image-2 w-full md:w-[65vw] h-auto overflow-hidden z-1">
                 {
-                  props?.media2Type == 'image' && props?.media2Src && <Image unoptimized src={props?.media2Src} alt={props?.media2Alt || "Image 1"} width={props?.media2Width || 963} height={props?.media2Height || 449} className="w-full md:max-h-[60vh] object-cover h-auto" />
+                  props?.media2Type == 'image' && props?.media2Src && <Image unoptimized src={props?.media2Src} alt={props?.media2Alt || ""} width={props?.media2Width || 963} height={props?.media2Height || 449} className="w-full md:max-h-[60vh] object-cover h-auto" />
                 }
                 {
                   props?.media2Type == 'video' && props?.media2Src && <video src={props?.media2Src} autoPlay loop muted playsInline preload="auto" className="w-full md:max-h-[60vh] object-cover h-auto" />

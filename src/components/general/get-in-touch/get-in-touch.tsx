@@ -1,4 +1,5 @@
 "use client";
+import { textSafeColor } from "@/parsers";
 
 import { Button } from "@/components/helpers/buttons";
 import { GetInTouchProps } from "./get-in-touch.types";
@@ -33,7 +34,7 @@ const GetInTouch: React.FC<GetInTouchProps> = (props) => {
                   props?.cta && <div className="flex gap-x-sm mt-md">
                     {props?.cta?.map((cta: any, index: number) => {
                       return (
-                        <Button key={index} href={cta?.href} icon='right-arrow' type={cta?.type || "text"} textColor={`text-${cta?.textColor || 'bright-red'}`}  buttonClassName="mt-0">{cta?.text}</Button>
+                        <Button key={index} href={cta?.href} icon='right-arrow' type={cta?.type || "text"} textColor={`text-${textSafeColor(cta?.textColor || 'bright-red')}`}  buttonClassName="mt-0">{cta?.text}</Button>
                       )
                     })}
                   </div>

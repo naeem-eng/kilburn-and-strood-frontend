@@ -16,6 +16,7 @@ import {
 } from "three";
 
 import { vertexShader, fragmentShader } from "./shaders.js";
+import { isMotionReduced, onMotionChange } from "@/utils/motion";
 
 const FractalGlass = ({
   imgSrc,
@@ -191,7 +192,7 @@ const FractalGlass = ({
       targetMouseRef.current.y = 1.0 - e.clientY / window.innerHeight;
     };
 
-    if (parallax) {
+    if (parallax && !isMotionReduced()) {
       document.addEventListener("mousemove", handleMouseMove);
     } else {
       // Lock mouse to center so parallax has no effect
@@ -301,6 +302,18 @@ const FractalGlass = ({
     }
   }, [imgSrc, videoSrc, isLoaded]);
 
+  useEffect(() => onMotionChange((reduced) => {
+    const video = videoElRef.current;
+    if (video) {
+      if (reduced) video.pause();
+      else video.play().catch(() => {});
+    }
+    if (reduced) {
+      targetMouseRef.current.x = 0.5;
+      targetMouseRef.current.y = 0.5;
+    }
+  }), []);
+
   const loadTexture = () => {
     if (!materialRef.current) return;
 
@@ -318,7 +331,7 @@ const FractalGlass = ({
       video.loop = true;
       video.muted = true;
       video.playsInline = true;
-      video.autoplay = true;
+      video.autoplay = !isMotionReduced();
       videoElRef.current = video;
 
       video.addEventListener("loadeddata", () => {
@@ -328,7 +341,8 @@ const FractalGlass = ({
         materialRef.current.uniforms.uTexture.value = texture;
         materialRef.current.uniforms.uTextureSize.value.set(video.videoWidth, video.videoHeight);
         setIsLoaded(true);
-        video.play();
+        // the site motion toggle pauses this (off-DOM) video too
+        if (!isMotionReduced()) video.play();
       }, { once: true });
 
       video.load();

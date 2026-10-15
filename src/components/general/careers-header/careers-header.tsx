@@ -16,7 +16,7 @@ const CareersHeader: React.FC<CareersHeaderProps> = (props) => {
         <div className="md:min-w-[50%] md:w-[50%] flex flex-col gap-y-md justify-start items-start">
          
 
-          <TitleSm>
+          <TitleSm as="h1">
             {props?.title}
           </TitleSm>
 

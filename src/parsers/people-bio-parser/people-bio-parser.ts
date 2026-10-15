@@ -67,8 +67,8 @@ const peopleBioParser = (todo: any) => {
             href: `/services/${v?.slug}`
         })),
         sectors: todo?.displayedSectors?.length
-            ? todo?.displayedSectors?.map((v:any) => ({ text: v?.text }))
-            : todo?.sector?.map((v:any) => ({ text: v?.title })),
+            ? todo?.displayedSectors?.map((v:any) => ({ text: v?.text, href: `/sectors/${v?.slug}` }))
+            : todo?.sector?.map((v:any) => ({ text: v?.title, href: `/sectors/${v?.slug}` })),
         roleList: todo?.peopleRoles?.map((v:any)=>(v?.title?.toLocaleLowerCase())),
         biography: todo?.biography,
         bio : {

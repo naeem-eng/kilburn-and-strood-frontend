@@ -95,7 +95,7 @@ export default async function SiteMapPage() {
   //console.log({parsers})
   
   return (
-    <div className=" mt-(--padding-top) min-h-screen bg-white z-10 relative">
+    <div id="main-content" role="main" tabIndex={-1} className=" mt-(--padding-top) min-h-screen bg-white z-10 relative outline-none">
 
       <TextHeader title="Sitemap" className="mb-sm h-auto!" />
 

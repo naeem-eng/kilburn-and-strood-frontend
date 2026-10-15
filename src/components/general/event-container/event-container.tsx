@@ -180,7 +180,7 @@ const EventContainer: React.FC<EventContainerProps> = (props) => {
       if(!getUpcomingEvents?.length) return;
       return (
         <>
-            <TitleSm className="text-dark-gray mb-lg">
+            <TitleSm as="h2" className="text-dark-gray mb-lg">
               {"Upcoming Events"} 
             </TitleSm>
             <div className={`w-full flex gap-y-xl flex-col`}>
@@ -200,7 +200,7 @@ const EventContainer: React.FC<EventContainerProps> = (props) => {
      
       return (
           <>
-          <TitleSm className="text-dark-gray mb-lg">
+          <TitleSm as="h2" className="text-dark-gray mb-lg">
             Past Events
           </TitleSm>
           {

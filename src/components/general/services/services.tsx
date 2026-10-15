@@ -82,7 +82,7 @@ const Services: React.FC<ServicesProps> = (props) => {
             data-mobile-trigger=".text-container"
             data-mobile-start="top 90%"
           >
-            <TitleXl textSize="text-3xl" className={`text-white [&_span]:text-[var(--dynamic-colors)] font-weight-[400] text-left max-w-fit`}>{props?.title}</TitleXl>
+            <TitleXl as="h2" textSize="text-3xl" className={`text-white [&_span]:text-[var(--dynamic-colors)] font-weight-[400] text-left max-w-fit`}>{props?.title}</TitleXl>
             {props?.cta && <Button href={props?.cta?.href} icon='right-arrow' type={props?.cta?.type || "text"} textColor="text-white" buttonClassName="mt-md">
               {props?.cta?.text}
               </Button>}
@@ -156,7 +156,7 @@ const Services: React.FC<ServicesProps> = (props) => {
                         data-mobile-middle='{"y": "0%"}'
                         data-mobile-start="top center"
                         >
-                        <TextLg className={`services-list-item-title mb-xs font-gt-ultra text-${item.textColor}`}>{item.title}</TextLg>
+                        <TextLg as="h3" className={`services-list-item-title mb-xs font-gt-ultra text-${item.textColor}`}>{item.title}</TextLg>
                         <RightArrowIcon className={`h-md w-md group-hover:translate-x-[.4vw] duration-[500ms] transition relative`} fill={item.textColor} />
                       </Link>
                     )
@@ -188,7 +188,7 @@ const Services: React.FC<ServicesProps> = (props) => {
                   data-mobile-middle='{"y": "0%"}'
                   data-mobile-start="top center"
                   >
-                  <TextLg className={`services-list-item-title mb-xs font-gt-ultra text-${item.textColor}`}>{item.title}</TextLg>
+                  <TextLg as="h3" className={`services-list-item-title mb-xs font-gt-ultra text-${item.textColor}`}>{item.title}</TextLg>
                   <RightArrowIcon className={`h-md w-md group-hover:translate-x-[.4vw] duration-[500ms] transition relative`} fill={item.textColor} />
                 </Link>
               )

@@ -1,4 +1,5 @@
 "use client";
+import { textSafeColor, textOnFillClass } from "@/parsers";
 
 import Image from "next/image";
 import { FullCtaProps } from "./full-cta.types";
@@ -16,7 +17,7 @@ const FullCta: React.FC<FullCtaProps> = (props) => {
             {props?.title}
             {props?.subTitle && <>
               <br/>
-              <span className={`text-${props?.color || 'dark-purple'}`}>
+              <span className={`text-${textSafeColor(props?.color || 'dark-purple')}`}>
                 {props?.subTitle} 
               </span>
             </>}
@@ -26,7 +27,7 @@ const FullCta: React.FC<FullCtaProps> = (props) => {
               color={props?.color || 'dark-purple'}
               components={{
                 p: ({ children }) => <TitleMd className="">{children}</TitleMd>,
-                strong: ({children}) => <TitleMd as="span" className={`text-${props?.color || 'dark-purple'}`}>{children}</TitleMd>
+                strong: ({children}) => <TitleMd as="span" className={`text-${textSafeColor(props?.color || 'dark-purple')}`}>{children}</TitleMd>
               }}>
                 {props?.title}
             </BodyMarkdown>}
@@ -37,7 +38,7 @@ const FullCta: React.FC<FullCtaProps> = (props) => {
               props?.cta && <Button
                 icon='right-arrow'
                 type={props?.cta?.type || "text"}
-                textColor={`text-white`}
+                textColor={textOnFillClass(props?.color || 'dark-purple')}
                 buttonClassName="mt-0"
                 href={props?.cta?.href}
               >

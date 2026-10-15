@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { TitleMd, TitleSm, TitleXl } from "@/components/helpers/typography";
-import { colorParser } from "@/parsers";
+import { colorParser, textSafeColor } from "@/parsers";
 import { Button } from "@/components/helpers/buttons";
 import { CaseStudiesTypeTwoProps } from "./case-studies-type-two.types";
 import ReactMarkdown from 'react-markdown';
@@ -72,7 +72,7 @@ const CaseStudiesTypeTwo: React.FC<CaseStudiesTypeTwoProps> = (props) => {
           data-mobile-middle='{"clip-path": "inset(0 0% 0 0%)"}'
           data-mobile-to='{"clip-path": "inset(0 100% 0 0%)"}'
           className="w-[80vw] h-full relative right-0 top-0 bottom-0 self-end">
-          {props?.media1Type === "image" && props?.mediaSrc && <Image unoptimized src={props?.mediaSrc} alt={props?.mediaAlt || "Image 1"} width={props?.mediaWidth || 1197} height={props?.mediaHeight || 898} className="w-full max-w-none object-cover h-full max-h-[100vh]" />
+          {props?.media1Type === "image" && props?.mediaSrc && <Image unoptimized src={props?.mediaSrc} alt={props?.mediaAlt || ""} width={props?.mediaWidth || 1197} height={props?.mediaHeight || 898} className="w-full max-w-none object-cover h-full max-h-[100vh]" />
           }
           {props?.media1Type === "video" && props?.mediaSrc && <video src={props?.mediaSrc} autoPlay loop muted playsInline preload="auto" className="w-full max-w-none object-cover h-full max-h-[100vh]" />
           }
@@ -116,7 +116,7 @@ const CaseStudiesTypeTwo: React.FC<CaseStudiesTypeTwoProps> = (props) => {
                 <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreak]}
                   components={{
                     p: ({ children }) => <TitleMd >{children}</TitleMd>,
-                    strong: ({ children }) => <TitleMd as="span" className={`text-${props?.color || 'yellow'}`}>{children}</TitleMd>
+                    strong: ({ children }) => <TitleMd as="span" className={`text-${textSafeColor(props?.color || 'yellow')}`}>{children}</TitleMd>
                   }}
                 >
                   {props?.title}
@@ -143,7 +143,7 @@ const CaseStudiesTypeTwo: React.FC<CaseStudiesTypeTwoProps> = (props) => {
                     key={index}
                     href={cta?.href || "#"}
                     type={cta?.type || "filled"}
-                    textColor={`text-${props?.color || 'yellow'}`}
+                    textColor={`text-${textSafeColor(props?.color || 'yellow')}`}
                     icon={cta?.icon || "right-arrow"}
                     dynamicIconColor={colorParser(props?.color)}
                   >

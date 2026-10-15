@@ -123,7 +123,7 @@ const SearchPage = () => {
         return (
             <Link href={`/${slug}`} className={`border-t-light-gray border-t-2 pt-lg mb-lg flex flex-col`}>
                 <Small className="text-dark-blue capitalize mb-sm">{type}</Small>
-                <TextLg className='text-dark-gray'>{title}</TextLg>
+                <TextLg as="h2" className='text-dark-gray'>{title}</TextLg>
                 {text && <Text className='text-dark-gray mt-md line-clamp-3'>{text}</Text>}
             </Link>
         )
@@ -146,7 +146,7 @@ const SearchPage = () => {
                     </div>}
                     <div className='flex flex-col justify-start items-start ml-lg'>
                         <Small className="text-dark-blue capitalize mb-sm">{type}</Small>
-                        <TextLg className='text-dark-gray'>{title}</TextLg>
+                        <TextLg as="h2" className='text-dark-gray'>{title}</TextLg>
                         {role && <TextMd className='text-dark-gray mt-sm'>{role}</TextMd>}
                     </div>
                 </div>
@@ -161,7 +161,7 @@ const SearchPage = () => {
     
 
     return (
-        <div className="relative z-1 bg-white mt-20 px-sm md:px-xl min-h-screen">
+        <div id="main-content" role="main" tabIndex={-1} className="relative z-1 bg-white mt-20 px-sm md:px-xl min-h-screen outline-none">
             <SearchHeader q={q} />
             <div className='relative w-full min-h-screen flex flex-col justify-stretch'>
                 {loading ? <Loading className="absolute! w-full h-full" /> : <div className="w-full flex flex-col justify-stretch min-h-0 items-start relative ">

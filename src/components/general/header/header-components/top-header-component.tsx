@@ -49,7 +49,7 @@ const TopHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>((p
                     
                     return (
                         <div key={index} className="flex flex-row relative">
-                            <button ref={(e:HTMLButtonElement)=>{
+                            <button type="button" ref={(e:HTMLButtonElement)=>{
                                 //@ts-ignore
                                 if (e && dropdownMenuRef?.current && !dropdownMenuRef.current.includes(e)) {
                                     dropdownMenuRef.current.push(e)
@@ -61,7 +61,7 @@ const TopHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>((p
                             {(isSubMenu || isMegaMenu) && <div className={`dropdownPanel absolute right-0 top-full flex flex-col min-w-[clamp(380px,24.17vw,100vw)] bg-light-gray px-md py-0 h-0 overflow-hidden transition-all duration-300 ease-in-out`}>
                                 <div className="my-lg">
                                     <Link href={menu?.url || '#'} className="flex flex-row gap-x-xs justify-start items-center no-underline! mb-md mx-sm relative after:absolute after:bottom-0 after:content-[''] after:block after:w-0 after:h-[.13vw] after:bg-bright-red  hover:after:w-full after:origin-left after:transition-all after:duration-300 max-h-fit max-w-fit group" >
-                                        <TextLg className="text-bright-red ">
+                                        <TextLg as="p" className="text-bright-red ">
                                             {menu.title}
                                         </TextLg>
                                         <RightArrowIcon className="w-md h-sm  group-hover:translate-x-[.3vw] transition duration-300" fill="var(--color-bright-red)" />
@@ -77,7 +77,7 @@ const TopHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>((p
                                                     <Link href={child.url || '#'} className={`no-underline! flex flex-row p-sm hover:bg-white bg-transparent transition-colors duration-300 w-full justify-between items-center group`}>
                                                         <div className="flex flex-col flex-1">
                                                             <Text as='span' className="text-md! text-gray-900 font-modern-era-medium!">{child.title}</Text>
-                                                            {child?.menuDetails && <Small as='span' className="text-medium-gray  mt-1">{child.menuDetails}</Small>}
+                                                            {child?.menuDetails && <Small as='span' className="text-dark-gray/75  mt-1">{child.menuDetails}</Small>}
                                                         </div>
                                                         <MenuhoverIcon className="transition-opacity duration-300 w-sm h-sm opacity-0 group-hover:opacity-100" />
                                                     </Link>
@@ -89,7 +89,7 @@ const TopHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>((p
                                                 <a className={`cursor-pointer no-underline! flex flex-row p-sm hover:bg-white bg-transparent transition-colors duration-300 w-full justify-between items-center`}>
                                                     <div className="flex flex-col flex-1">
                                                         <Text as='span' className="text-md! text-gray-900 font-modern-era-medium!">{child.title}</Text>
-                                                        {child?.menuDetails && <Small as='span' className="text-medium-gray  mt-1">{child.menuDetails}</Small>}
+                                                        {child?.menuDetails && <Small as='span' className="text-dark-gray/75  mt-1">{child.menuDetails}</Small>}
                                                     </div>
                                                     <MenuhoverIcon className="transition-opacity duration-300 w-sm h-sm opacity-0 group-hover:opacity-100" />
                                                 </a>

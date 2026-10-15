@@ -16,7 +16,7 @@ const PeopleExpertise: React.FC<PeopleExpertiseProps> = (props) => {
           {/* leftBox */}
           <div className={`bg-light-gray py-xl px-sm md:px-xl ${props?.role?.includes("trade mark attorney") ? "flex-1  md:max-w-[70%]" : "flex-[70%]"} w-full max-w-full flex flex-col justify-start items-start gap-y-md`}>
 
-              <TextXl className={`mb-sm`} style={{
+              <TextXl as="h2" className={`mb-sm`} style={{
                 "color": colorParser(props?.color || 'dark-gray') 
               }}>{props?.title}</TextXl>
               
@@ -48,14 +48,19 @@ const PeopleExpertise: React.FC<PeopleExpertiseProps> = (props) => {
               {props?.sectors?.length ? <div className="min-h-[8vw] flex flex-col justify-end items-start">
                 <TextMd className={`text-white mb-md font-modern-era-medium`}>Sectors</TextMd>
                 <div className="flex flex-row flex-wrap gap-[.5vw]">
-                  {props?.sectors?.map((item, index, arr) => {
+                  {props?.sectors?.map((item, index) => {
                     return (
                       <div key={index} className="flex flex-row items-center text-left gap-x-[.5vw]">
-                        <span 
-                          className="text-white inline"
-                        >{item.text}
-                        </span>
-                        {(props?.sectors && index == props?.sectors?.length - 1) ? <></> : <div className="w-2xs h-2xs bg-white rounded-full"></div>}
+                        <Button
+                          href={item.href || "#"}
+                          type="text"
+                          textColor="text-white"
+                          buttonClassName="text-left"
+                          wrapUnderline
+                        >
+                          {item.text}
+                        </Button>
+                        {(props?.sectors && index == props?.sectors?.length - 1) ? <></> : <div className="w-2xs h-2xs bg-white rounded-full shrink-0"></div>}
                       </div>
                     )
                   })}

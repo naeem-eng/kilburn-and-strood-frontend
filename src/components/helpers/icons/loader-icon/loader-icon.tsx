@@ -5,7 +5,7 @@ const LoaderIcon = ({ className, size = 50, color = "currentColor" }: {
     size?: number;
     color?: string;
 }) => (
-  <svg
+  <svg aria-hidden="true" focusable="false"
     className={className}   
     width={size}
     height={size}

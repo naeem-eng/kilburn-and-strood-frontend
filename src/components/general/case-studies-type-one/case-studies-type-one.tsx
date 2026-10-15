@@ -111,7 +111,7 @@ const CaseStudiesTypeOne: React.FC<CaseStudiesTypeOneProps> = (props) => {
             props?.revealImage ? (
               <ImageReveal
                 src={props.mediaSrc!}
-                alt={props?.mediaAlt || "Image 1"}
+                alt={props?.mediaAlt || ""}
                 width={props?.mediaWidth || 0}
                 height={props?.mediaHeight || 0}
                 revealSrc={props?.revealImage}

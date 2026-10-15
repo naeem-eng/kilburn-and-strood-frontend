@@ -8,6 +8,7 @@ import { Observer } from "gsap/Observer";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { ScrollSmoother } from "gsap/ScrollSmoother"
+import { isMotionReduced, onMotionChange } from "@/utils/motion";
 
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, ScrollSmoother, Observer);
@@ -29,6 +30,16 @@ const PENDING_ENTER_ATTR = "data-fullpage-enter-pending";
 const ROUTE_EXIT_STAGGER = 0.03;
 const ROUTE_ENTER_STAGGER = 0.05;
 const ROUTE_ENTER_BASE_DELAY = 0.2;
+
+// WCAG 2.2.2 / 2.3.3: with reduced motion (OS setting or the site toggle) skip scroll-snapping, scroll-linked and route animations
+const prefersReducedMotion = isMotionReduced;
+
+const moveFocusTo = (el: HTMLElement) => {
+  if (!el.matches("a[href], button, input, select, textarea, [tabindex]")) {
+    el.setAttribute("tabindex", "-1");
+  }
+  el.focus({ preventScroll: true });
+};
 
 function FullPageSliderInner({ children, className, interactive }: FullPageSliderProps, ref: React.ForwardedRef<FullPageSliderRef>) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -83,6 +94,8 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
   }, []);
 
   const playPageExitTransition = React.useCallback(() => {
+    if (prefersReducedMotion()) return Promise.resolve();
+
     if (shouldUseFallbackRouteTransition() && containerRef.current) {
       const pageTarget = containerRef.current;
       const pageTravel = Math.max(96, Math.round(window.innerHeight * 0.35));
@@ -287,6 +300,8 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
   }, [getActiveAnimationComponent, getSlideWrappers, interactive, parseAnimationVars, resetRouteTransitionStyles, shouldUseFallbackRouteTransition]);
 
   const playPageEnterTransition = React.useCallback(() => {
+    if (prefersReducedMotion()) return;
+
     if (shouldUseFallbackRouteTransition() && containerRef.current) {
       const pageTarget = containerRef.current;
       const pageTravel = Math.max(96, Math.round(window.innerHeight * 0.35));
@@ -462,6 +477,10 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       ...(footerComponent ? [footerComponent] : []),
     ])).sort((a, b) => a.offsetTop - b.offsetTop);
 
+    const reduceMotion = prefersReducedMotion();
+    // fullpage snapping only when the page opts in and the user hasn't asked for reduced motion
+    const fullpage = Boolean(interactive) && !reduceMotion;
+
     let currentIndex = 0;
     let animating = false;
     let activeScrollTween: gsap.core.Tween | null = null;
@@ -526,7 +545,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
     };
 
     // Main scroll snapping
-    if (interactive) {
+    if (fullpage) {
       mm.add('(min-width: 1280px)', () => {
         createTrackedScrollTrigger({
           trigger: containerRef.current,
@@ -627,6 +646,21 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       });
     }
 
+    // WCAG 2.4.11: when keyboard focus moves into a section that isn't on screen, snap to that section
+    const onFocusIn = (e: FocusEvent) => {
+      if (!fullpage || window.innerWidth < 1280) return;
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      if (rect.top >= 0 && rect.bottom <= window.innerHeight) return;
+      const sectionIndex = components.findIndex((section) => section.contains(target));
+      if (sectionIndex === -1) return;
+      activeScrollTween?.kill();
+      animating = false;
+      gotoSection(sectionIndex, sectionIndex > currentIndex ? 1 : -1);
+    };
+    document.addEventListener("focusin", onFocusIn);
+
     // Smooth scroll to an element by id (used by data-scroll-to and #hash links)
     const scrollToTarget = (target: string | HTMLElement) => {
       const el = typeof target === "string"
@@ -634,7 +668,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
         : target;
       if (!el) return;
 
-      const isDesktopFullpage = interactive && window.innerWidth >= 1280;
+      const isDesktopFullpage = fullpage && window.innerWidth >= 1280;
 
       if (isDesktopFullpage) {
         const sectionIndex = components.findIndex(
@@ -645,6 +679,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
           activeScrollTween?.kill();
           animating = false;
           gotoSection(sectionIndex, sectionIndex > currentIndex ? 1 : -1);
+          moveFocusTo(el);
           return;
         }
       }
@@ -654,14 +689,15 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       activeScrollTween?.kill();
       activeScrollTween = gsap.to(window, {
         scrollTo: { y: el, offsetY: header?.offsetHeight ?? 0 },
-        duration: 1.2,
+        duration: reduceMotion ? 0 : 1.2,
         ease: "power3.inOut",
       });
+      moveFocusTo(el);
     };
     scrollToTargetRef.current = scrollToTarget;
 
     
-    if (interactive) {
+    if (fullpage) {
       mm.add('(min-width: 1280px)', () => {
         gsap.set(handlers, {
           autoAlpha: 1
@@ -669,10 +705,14 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       });
     }
 
+    if (reduceMotion) {
+      gsap.set(handlers, { autoAlpha: 1 });
+    }
+
     const createdTimelines: gsap.core.Timeline[] = [];
     let observer: Observer | null = null;
     mm.add('(min-width: 1280px)', () => {
-      if (interactive) {
+      if (fullpage) {
         observer = Observer.create({
           target: window,
           type: "wheel",
@@ -694,6 +734,8 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
           preventDefault: true,
         });
       }
+
+      if (reduceMotion) return;
 
       handlers.forEach((section: HTMLElement | null, index: number) => {
         if (!section) return;
@@ -794,6 +836,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
     });
     mm.add('(max-width: 1279px)', () => {
       // lower screens
+      if (reduceMotion) return;
       handlers.forEach((section: HTMLElement | null, index: number) => {
         if (!section) return;
         // if (section.hasAttribute("data-primary-header")) {
@@ -884,7 +927,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
     });
 
     if (isReinit) {
-      if (window.innerWidth < 1280 || !interactive) {
+      if (window.innerWidth < 1280 || !fullpage) {
         createdTimelines.forEach((tl) => {
           const st = tl.scrollTrigger;
           if (!st) return;
@@ -904,6 +947,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       activeScrollTween?.kill();
       observer?.kill();
       document.removeEventListener("mousemove", trackCursor, { capture: true });
+      document.removeEventListener("focusin", onFocusIn);
       createdTimelines.forEach((tl) => tl.kill());
       createdScrollTriggers.forEach((st) => st.kill());
       mm.revert();
@@ -1028,6 +1072,11 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
     const hasPendingEnter = document.documentElement.getAttribute(PENDING_ENTER_ATTR) === "true";
     cleanupRef.current = init();
 
+    if (hasPathChanged && containerRef.current) {
+      // move keyboard / screen-reader focus to the new page instead of leaving it on the clicked link
+      document.getElementById("main-content")?.focus({ preventScroll: true });
+    }
+
     if (hasPathChanged || hasPendingEnter) {
       requestAnimationFrame(() => {
         playPageEnterTransition();
@@ -1049,6 +1098,8 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       cleanupRef.current = init(true);
     }
   }, []);
+
+  useEffect(() => onMotionChange(() => reinit()), [reinit]);
 
   useImperativeHandle(ref, () => ({
     kill: () => cleanupRef.current?.(),
@@ -1079,7 +1130,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
 
 
   const content = !interactive ? (
-    <div className={`${className} overflow-hidden`} style={{ position: "relative", zIndex: 1 }}>
+    <main id="main-content" tabIndex={-1} className={`${className} overflow-hidden outline-none`} style={{ position: "relative", zIndex: 1 }}>
       <div ref={containerRef}>
         {items.map((child, i) => (
           <div key={i} data-fullpage-slide className="firstOffset [&:has(.no-section)]:xl:min-h-auto section w-full bg-white">
@@ -1087,9 +1138,9 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
           </div>
         ))}
       </div>
-    </div>
+    </main>
   ) : (
-    <div ref={scrollRef} id={'panelContainer'} className={`${className} overflow-hidden`} style={{ position: "relative", zIndex: 1 }}>
+    <main ref={scrollRef} id="main-content" tabIndex={-1} className={`${className} overflow-hidden outline-none`} style={{ position: "relative", zIndex: 1 }}>
       <div ref={containerRef}>
         {items.map((child, i) => (
           <div key={i} data-fullpage-slide className="firstOffset [&:has(.no-section)]:xl:h-auto section w-full xl:h-screen bg-white">
@@ -1097,7 +1148,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
           </div>
         ))}
       </div>
-    </div>
+    </main>
   );
 
   return (

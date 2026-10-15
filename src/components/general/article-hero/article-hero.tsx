@@ -11,7 +11,7 @@ const ArticleHero: React.FC<ArticleHeroProps> = (props) => {
 
         <div className="flex-1 w-full">
           {
-            props?.heroType === 'image' && props?.mediaSrc && <Image unoptimized src={props?.mediaSrc} alt={props?.mediaAlt || "Image 1"} width={props?.mediaWidth || 412} height={props?.mediaHeight || 678} className="w-full max-w-none object-cover h-full" />
+            props?.heroType === 'image' && props?.mediaSrc && <Image unoptimized src={props?.mediaSrc} alt={props?.mediaAlt || ""} width={props?.mediaWidth || 412} height={props?.mediaHeight || 678} className="w-full max-w-none object-cover h-full" />
           }
           {
             props?.heroType === 'video' && props?.mediaSrc && <video src={props?.mediaSrc} autoPlay loop muted playsInline preload="auto" className="w-full max-w-none object-cover h-full" />

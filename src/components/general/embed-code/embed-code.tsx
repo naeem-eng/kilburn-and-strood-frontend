@@ -46,6 +46,7 @@ const EmbedCode = ({ embedCode }: any) => {
   return (
     <iframe
       ref={iframeRef}
+      title="Embedded form"
       style={{ border: "none", width: "100%", height: "0px" }}
     />
   );

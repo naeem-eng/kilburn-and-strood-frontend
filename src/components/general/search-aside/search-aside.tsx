@@ -83,8 +83,8 @@ const SearchAside = (props: SearchAsideProps) => {
                 todos.map((todo:any) => {
                     const count = todo?.count;
                     return (
-                        <button onClick={()=>props?.setCollection(todo?.key=='all' ? undefined : todo?.key)} className={`cursor-pointer flex  my-sm px-xs  text-left w-full  hover:border-dark-blue hover:text-dark-blue text-2md items-center font-modern-era-medium ${todo?.selected ? "border-dark-blue text-dark-blue border-l-[.2vw]" : "border-l-[.1vw] text-dark-gray border-dark-gray"}`} key={todo.key}>
-                            {todo.name} <span className={`ml-2  bg-light-gray py-0.5 px-2 leading-2.5 text-xs rounded-full  font-modern-era ${todo?.selected ? "text-dark-blue" : "text-dark-gray"}`}>{count}</span>
+                        <button type="button" aria-pressed={!!todo?.selected} onClick={()=>props?.setCollection(todo?.key=='all' ? undefined : todo?.key)} className={`cursor-pointer flex  my-sm px-xs  text-left w-full  hover:border-dark-blue hover:text-dark-blue text-2md items-center font-modern-era-medium ${todo?.selected ? "border-dark-blue text-dark-blue border-l-[.2vw]" : "border-l-[.1vw] text-dark-gray border-dark-gray"}`} key={todo.key}>
+                            {todo.name} <span className={`ml-2  bg-light-gray py-0.5 px-2 leading-2.5 text-xs rounded-full  font-modern-era ${todo?.selected ? "bg-dark-blue! text-white" : "text-dark-gray"}`}>{count}</span>
                         </button>
                     )
                 })

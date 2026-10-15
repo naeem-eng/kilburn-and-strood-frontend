@@ -3,7 +3,7 @@ import { Button } from "@/components/helpers/buttons";
 import { DropdownIcon, MenuhoverIcon } from "@/components/helpers/icons";
 import RightArrowIcon from "@/components/helpers/icons/rightarrow-icon/rightarrow-icon";
 import { Text, TextLg,  } from "@/components/helpers/typography/typography";
-import { colorParser } from "@/parsers";
+import { colorParser, textSafeColor, textColorParser } from "@/parsers";
 import { MenuRequestProps } from "@/parsers/global-parser/menu/menu-parser.types";
 import Image from "next/image";
 import Link from "next/link";
@@ -51,13 +51,12 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                 
                 return (
                     <div key={index} className="flex flex-row h-full" >
-                        <button ref={(e:HTMLButtonElement)=>{
+                        <button type="button" ref={(e:HTMLButtonElement)=>{
                             // @ts-ignore
                             if (e && dropdownMenuRef?.current && !dropdownMenuRef.current.includes(e)) {
                                 dropdownMenuRef.current.push(e)
                             }
                         }} 
-                        type="button"
                         data-slide 
                         className={baseClasses}>
                             {menu.title}
@@ -67,7 +66,7 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                         {(isMegaMenu) && <div className={`isMegaMenu dropdownPanel absolute right-0 top-full flex flex-row bg-white overflow-hidden transition-height duration-300 ease-in-out justify-start items-stretch w-[70vw] max-h-[calc(100vh-4vw)] opacity-0 pointer-events-none`}>
                             <div className="flex-1 py-md px-md max-w-1/2 max-h-full overflow-hidden">
                                 <Link href={menu?.url || '#'} className="flex flex-row gap-x-xs justify-start items-center no-underline! mb-md mx-sm relative after:absolute after:bottom-0 after:content-[''] after:block after:w-0 after:h-[.13vw] after:bg-bright-red  hover:after:w-full after:origin-left after:transition-all after:duration-300 max-h-fit max-w-fit group">
-                                    <TextLg className="text-bright-red ">
+                                    <TextLg as="p" className="text-bright-red ">
                                         {menu.title}
                                     </TextLg>
                                     <RightArrowIcon className="w-md h-sm  group-hover:translate-x-[.3vw] transition duration-300" fill="var(--color-bright-red)" />
@@ -84,7 +83,7 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                                                 <Link href={child.url || '#'} className={`no-underline! flex flex-row p-sm hover:bg-light-gray bg-transparent transition-colors duration-300 w-full justify-between items-center group my-1`}>
                                                     <div className="flex flex-col flex-1 max-w-[90%]">
                                                         <Text as='span' className="text-md! text-gray-900 font-modern-era-medium! mb-2xs">{child.title}</Text>
-                                                        {child?.menuDetails && <Text as='span' className="text-medium-gray mt-1">{child.menuDetails}</Text>}
+                                                        {child?.menuDetails && <Text as='span' className="text-dark-gray/75 mt-1">{child.menuDetails}</Text>}
                                                     </div>
                                                     <MenuhoverIcon className="transition-opacity duration-300 w-sm h-sm opacity-0 group-hover:opacity-100" />
                                                 </Link>
@@ -96,7 +95,7 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                                         key={index}
                                         className="flex flex-row"
                                       >
-                                        <button
+                                        <button type="button"
                                           ref={(e: HTMLButtonElement) => {
                                             // @ts-ignore
                                             if (
@@ -122,7 +121,7 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                                             {child?.menuDetails && (
                                               <Text
                                                 as="span"
-                                                className="text-medium-gray mt-1"
+                                                className="text-dark-gray/75 mt-1"
                                               >
                                                 {child.menuDetails}
                                               </Text>
@@ -139,7 +138,7 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                                                 href={child?.url || "#"}
                                                 className="flex flex-row gap-x-xs justify-start items-center no-underline! mb-md mx-sm relative after:absolute after:bottom-0 after:content-[''] after:block after:w-0 after:h-[.13vw] after:bg-white  hover:after:w-full after:origin-left after:transition-all after:duration-300 max-h-fit max-w-fit group"
                                               >
-                                                <TextLg className="text-white ">
+                                                <TextLg as="p" className="text-white ">
                                                   {child.title}
                                                 </TextLg>
                                                 <RightArrowIcon
@@ -193,19 +192,21 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                                         {/*TODO: video component react video */}
                                     </> : 
                                     <div className="w-full">
-                                        <Image unoptimized src={ctaContainer.ctaMedia} alt="Image 1"  width={600} height={400} className="w-full max-w-none object-cover" />
+                                        <Image unoptimized src={ctaContainer.ctaMedia} alt=""  width={600} height={400} className="w-full max-w-none object-cover" />
                                     </div>
                                 )}
 
-                                {ctaContainer?.ctaTitle && <TextLg 
-                                className={`text-dark-gray mt-sm [&_span]:text-[var(--dynamic-colors)] line-clamp-3`}
+                                {ctaContainer?.ctaTitle && <TextLg as="p" 
+                                className={`text-dark-gray mt-sm [&_span]:text-[var(--dynamic-text-colors)] line-clamp-3`}
                                 style={{
                                     "--dynamic-colors": colorParser(ctaContainer?.color || 'dark-gray'),
+                                    "--dynamic-text-colors": textColorParser(ctaContainer?.color || 'dark-gray'),
                                 }}>{ctaContainer.ctaTitle}</TextLg>}
 
                                 {ctaContainer?.ctaLink && <Button style={{
                                     "--dynamic-colors": colorParser(ctaContainer?.color || 'dark-gray'),
-                                }} icon='right-arrow' type="text" textColor={`text-${ctaContainer?.color}`}  buttonClassName="mt-md text-[var(--dynamic-colors)]" href={ctaContainer.ctaLink}>{ctaContainer.ctaText || "Read More"}</Button>}
+                                    "--dynamic-text-colors": textColorParser(ctaContainer?.color || 'dark-gray'),
+                                }} icon='right-arrow' type="text" textColor={`text-${textSafeColor(ctaContainer?.color)}`}  buttonClassName="mt-md text-[var(--dynamic-text-colors)]" href={ctaContainer.ctaLink}>{ctaContainer.ctaText || "Read More"}</Button>}
                             </div>}
                         </div>}
 
@@ -223,7 +224,7 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                                                 <Link href={child.url || '#'} className={`no-underline! flex flex-row p-sm hover:bg-light-gray bg-transparent transition-colors duration-300 w-full justify-between items-center group my-1`}>
                                                     <div className="flex flex-col flex-1">
                                                         <Text as='span' className="text-md! text-gray-900 font-modern-era-medium!">{child.title}</Text>
-                                                        {child?.menuDetails && <Text as='span' className="text-medium-gray  mt-1">{child.menuDetails}</Text>}
+                                                        {child?.menuDetails && <Text as='span' className="text-dark-gray/75  mt-1">{child.menuDetails}</Text>}
                                                     </div>
                                                     <MenuhoverIcon className="transition-opacity duration-300 w-sm h-sm opacity-0 group-hover:opacity-100" />
                                                 </Link>
@@ -235,7 +236,7 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                                             <a className={`cursor-pointer no-underline! flex flex-row p-sm hover:bg-white bg-transparent transition-colors duration-300 w-full justify-between items-center my-1`}>
                                                 <div className="">
                                                     <Text as='span' className="text-md! text-gray-900 font-modern-era-medium!">{child.title}</Text>
-                                                    {child?.menuDetails && <Text as='span' className="text-medium-gray  mt-1">{child.menuDetails}</Text>}
+                                                    {child?.menuDetails && <Text as='span' className="text-dark-gray/75  mt-1">{child.menuDetails}</Text>}
                                                 </div>
                                                 <MenuhoverIcon className="transition-opacity duration-300 w-sm h-sm opacity-0 group-hover:opacity-100" />
                                             </a>

@@ -1,4 +1,5 @@
 "use client";
+import { textSafeColor } from "@/parsers";
 
 import { Small, Text, TextLg, TextMd, TextXl, TitleSm } from "@/components/helpers/typography";
 import { LocationDetailsProps } from "./location-details.types";
@@ -33,7 +34,7 @@ const LocationDetails: React.FC<LocationDetailsProps> = (props) => {
                 href={props.cta?.href}
                 icon='right-arrow'
                 type={props.cta?.type || "text"}
-                textColor={`text-${props?.color || 'yellow'}`}
+                textColor={`text-${textSafeColor(props?.color || 'yellow')}`}
                 buttonClassName="mt-0"
               >
                 {props.cta?.text}
@@ -42,7 +43,7 @@ const LocationDetails: React.FC<LocationDetailsProps> = (props) => {
           </div>}
           <div className="md:ml-2xl flex-1 flex flex-col md:flex-col md:justify-start md:items-start relative">
               {props?.imageSrc && <div className="w-full h-full">
-                <Image unoptimized src={props?.imageSrc} alt={props?.imageAlt || "Image 1"} width={props?.imageWidth || 731} height={props?.imageHeight || 337} className="w-full h-full object-cover" />
+                <Image unoptimized src={props?.imageSrc} alt={props?.imageAlt || ""} width={props?.imageWidth || 731} height={props?.imageHeight || 337} className="w-full h-full object-cover" />
               </div>}
 
               <div className={`md:absolute bottom-0 -left-xl flex fex-row justify-stretch items-stretch md:w-fit`}>

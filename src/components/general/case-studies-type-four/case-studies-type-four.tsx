@@ -45,7 +45,7 @@ const CaseStudiesTypeFour: React.FC<CaseStudiesTypeFourProps> = (props) => {
           data-middle='{"clip-path": "inset(0% 0 0%)"}'
           data-to='{"clip-path": "inset(0% 0 100%)"}'
           className="hidden md:block absolute right-0 top-0 bottom-0  h-full w-[25vw] z-2">
-          <Image src={props?.media3Src} alt={props?.media3Alt || "Image 1"} width={props?.media3Width || 389} height={props?.media3Height || 898} className=" object-cover object-left-top h-full min-w-full" />
+          <Image src={props?.media3Src} alt={props?.media3Alt || ""} width={props?.media3Width || 389} height={props?.media3Height || 898} className=" object-cover object-left-top h-full min-w-full" />
         </div>}
         {/*  */}
 
@@ -59,7 +59,7 @@ const CaseStudiesTypeFour: React.FC<CaseStudiesTypeFourProps> = (props) => {
             data-mobile-from='{"clip-path": "inset(0 100% 0 0)"}'
             data-mobile-middle='{"clip-path": "inset(0 0% 0 0)"}'
             className="w-[45vw] md:w-[20vw] overflow-hidden md:mt-[6.5vw] mt-[15vw]">
-            <Image src={props?.imageSrc} alt={props?.imageAlt || "Image 1"} width={props?.imageWidth || 302} height={props?.imageHeight || 294} className=" object-cover object-left-top w-full" />
+            <Image src={props?.imageSrc} alt={props?.imageAlt || ""} width={props?.imageWidth || 302} height={props?.imageHeight || 294} className=" object-cover object-left-top w-full" />
           </div>
           }
           {props?.image2Src && <div
@@ -70,7 +70,7 @@ const CaseStudiesTypeFour: React.FC<CaseStudiesTypeFourProps> = (props) => {
             data-mobile-from='{"clip-path": "inset(0 100% 0 0)"}'
             data-mobile-middle='{"clip-path": "inset(0 0% 0 0)"}'
             className="w-[60vw] md:w-[55vw] md:mt-[6.5vw] h-auto overflow-hidden relative">
-            <Image src={props?.image2Src} alt={props?.image2Alt || "Image 1"} width={props?.image2Width || 963} height={props?.image2Height || 449} className="min-w-full object-cover w-auto max-w-full max-h-[18rem] md:max-h-[20rem] xl:max-h-[60vh]" />
+            <Image src={props?.image2Src} alt={props?.image2Alt || ""} width={props?.image2Width || 963} height={props?.image2Height || 449} className="min-w-full object-cover w-auto max-w-full max-h-[18rem] md:max-h-[20rem] xl:max-h-[60vh]" />
           </div>
           }
 
@@ -83,7 +83,7 @@ const CaseStudiesTypeFour: React.FC<CaseStudiesTypeFourProps> = (props) => {
             >
               <Image
                 src={props?.media3Src}
-                alt={props?.media3Alt || "Image 1"}
+                alt={props?.media3Alt || ""}
                 width={props?.media3Width || 389}
                 height={props?.media3Height || 898}
                 className=" object-cover object-left-top h-full min-w-full" />

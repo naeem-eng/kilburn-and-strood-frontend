@@ -3,7 +3,7 @@
 import { useState, useEffect, useContext, useRef } from "react"
 import { PeopleHighlightProps } from "./people-highlight.types"
 import { Text, TitleLg } from "@/components/helpers/typography"
-import { colorParser } from "@/parsers";
+import { colorParser, textSafeColor, textColorParser } from "@/parsers";
 import { Button } from "@/components/helpers/buttons"
 import Image from "next/image"
 import { LeftArrowIcon, RightArrowIcon } from "@/components/helpers/icons"
@@ -320,9 +320,10 @@ const PeopleHighlight: React.FC<PeopleHighlightProps> = (props) => {
               {(item?.title && item?.role) && (
                 <TitleLg
                   attributes={{ ...getItemAnimationAttributes('title'), ...getMobileItemAnimationAttributes('title') }}
-                  className="[&_span]:text-[var(--dynamic-colors)]"
+                  className="[&_span]:text-[var(--dynamic-text-colors)]"
                   style={{
-                    "--dynamic-colors": colorParser(item?.color || 'dark-purple')
+                    "--dynamic-colors": colorParser(item?.color || 'dark-purple'),
+                                    "--dynamic-text-colors": textColorParser(item?.color || 'dark-purple')
                   }}>
                   {item?.title}<br /><span>{item?.role}</span>
                 </TitleLg>
@@ -347,7 +348,7 @@ const PeopleHighlight: React.FC<PeopleHighlightProps> = (props) => {
                   icon='right-arrow'
                   type={item?.cta?.type || "text"}
                   textColor={
-                    `text-${item?.color}`
+                    `text-${textSafeColor(item?.color)}`
                   }
                   dynamicIconColor={colorParser(item?.color)}
 
@@ -453,7 +454,7 @@ const PeopleHighlight: React.FC<PeopleHighlightProps> = (props) => {
             <div className={`flex flex-row items-center gap-x-xs transition-transform duration-500 ${paginationRailOffsetClass}`}>
               {paginationRailItems.map(({ index, variant, previewDirection, previewPosition, previewTotal }) => (
                 <button
-                  aria-current={index === paginationActiveIndex}
+                  aria-current={index === paginationActiveIndex ? "true" : undefined}
                   aria-label={`Go to slide ${index + 1}`}
                   onClick={() => bulletTrigger(index)}
                   key={index}

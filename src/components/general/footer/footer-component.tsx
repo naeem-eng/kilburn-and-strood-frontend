@@ -133,7 +133,7 @@ const FooterComponent = (props: FooterComponentProps) => {
 
                             <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreak]}
                                 components={{
-                                    p: ({ children }) => <TitleSm>{children}</TitleSm>,
+                                    p: ({ children }) => <TitleSm as="h2">{children}</TitleSm>,
                                 }}
                             >
                                 {title}
@@ -223,7 +223,7 @@ const FooterComponent = (props: FooterComponentProps) => {
                 </div>
             </footer>
             {props?.logo && <div ref={footerLogoRef} className={`relative ${fixed ? 'relative' : 'md:fixed'} w-full md:pt-[0vw] left-0 right-0 -bottom-[100%] transition-all duration-800 ease-in-out bg-[#F8F8F8]`}>
-                <Image src={props?.logo} alt="Image 1" width={1200} height={600} className="w-full max-w-full object-contain object-bottom" />
+                <Image src={props?.logo} alt="" width={1200} height={600} className="w-full max-w-full object-contain object-bottom" />
             </div>}
         </>
     )

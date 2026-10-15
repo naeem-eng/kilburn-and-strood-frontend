@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { PeopleBioProps } from "./people-bio.types";
 import { Text, TitleMd, TitleSm, Small, TitleLg, TitleXl } from "@/components/helpers/typography";
-import { colorParser } from "@/parsers";
+import { colorParser, textColorParser } from "@/parsers";
 import { Button } from "@/components/helpers/buttons";
 import EmailIcon from "@/components/helpers/icons/email-icon/email-icon";
 import Link from "next/link";
@@ -121,8 +121,9 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                         props?.label && <Text className="mb-0">{props?.label}</Text>
                       }
                       {
-                        props?.title && <TitleXl className="[&_span]:text-[var(--dynamic-colors)]" style={{
-                          "--dynamic-colors": colorParser(props?.color || 'dark-purple')
+                        props?.title && <TitleXl className="[&_span]:text-[var(--dynamic-text-colors)]" style={{
+                          "--dynamic-colors": colorParser(props?.color || 'dark-purple'),
+                                    "--dynamic-text-colors": textColorParser(props?.color || 'dark-purple')
                         }}>{props?.title}<br/><span>{props?.role}</span></TitleXl>
                       } 
                     </div>
@@ -136,9 +137,10 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                         if(social.type === 'email'){
                           return (
                             <Link target="_blank" href={`mailto:${social.text}`} key={index} className={
-                              `flex flex-1/2 gap-x-xs justify-start items-center hover:text-[var(--dynamic-colors)]  hover:fill-[var(--dynamic-colors)] cursor-pointer`}
+                              `flex flex-1/2 gap-x-xs justify-start items-center hover:text-[var(--dynamic-text-colors)]  hover:fill-[var(--dynamic-colors)] cursor-pointer`}
                               style={{
-                                "--dynamic-colors": colorParser(props.color || 'dark-purple')
+                                "--dynamic-colors": colorParser(props.color || 'dark-purple'),
+                                    "--dynamic-text-colors": textColorParser(props.color || 'dark-purple')
                               } as any} >
                                 {social?.icon && listOfIcons?.[social.icon]}
                                 <Text className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{social.text}</Text>
@@ -150,9 +152,10 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                         if(social.type === 'download' && social.text){
                           return (
                             <Link target="_blank" download rel="noopener noreferrer" href={social?.href || "#"} key={index} className={
-                              `flex flex-1/2 gap-x-xs justify-start items-baseline hover:text-[var(--dynamic-colors)]  hover:fill-[var(--dynamic-colors)] cursor-pointer`}
+                              `flex flex-1/2 gap-x-xs justify-start items-baseline hover:text-[var(--dynamic-text-colors)]  hover:fill-[var(--dynamic-colors)] cursor-pointer`}
                               style={{
-                                "--dynamic-colors": colorParser(props.color || 'dark-purple')
+                                "--dynamic-colors": colorParser(props.color || 'dark-purple'),
+                                    "--dynamic-text-colors": textColorParser(props.color || 'dark-purple')
                               } as any}> 
                                 {social?.icon && listOfIcons?.[social.icon]}
                                 <Text className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{social.text}</Text>
@@ -164,9 +167,10 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                         if(social.type === 'phone'){
                           return (
                             <Link target="_blank" href={`tel:${social.text}`} key={index} className={
-                              `flex flex-1/2 gap-x-xs justify-start items-center hover:text-[var(--dynamic-colors)]  hover:fill-[var(--dynamic-colors)] cursor-pointer`}
+                              `flex flex-1/2 gap-x-xs justify-start items-center hover:text-[var(--dynamic-text-colors)]  hover:fill-[var(--dynamic-colors)] cursor-pointer`}
                               style={{
-                                "--dynamic-colors": colorParser(props.color || 'dark-purple')
+                                "--dynamic-colors": colorParser(props.color || 'dark-purple'),
+                                    "--dynamic-text-colors": textColorParser(props.color || 'dark-purple')
                               } as any}> 
                                   {social?.icon && listOfIcons?.[social.icon]} 
                                 <Text className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{social.text}</Text>
@@ -178,9 +182,10 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                         if(social.type === 'linkedin'){
                           return (
                             <Link target="_blank" href={`${social.text}`} key={index} className={
-                              `flex flex-1/2 gap-x-xs justify-start items-baseline hover:text-[var(--dynamic-colors)]  hover:fill-[var(--dynamic-colors)] cursor-pointer`}
+                              `flex flex-1/2 gap-x-xs justify-start items-baseline hover:text-[var(--dynamic-text-colors)]  hover:fill-[var(--dynamic-colors)] cursor-pointer`}
                               style={{
-                                "--dynamic-colors": colorParser(props.color || 'dark-purple')
+                                "--dynamic-colors": colorParser(props.color || 'dark-purple'),
+                                    "--dynamic-text-colors": textColorParser(props.color || 'dark-purple')
                               } as any}>
                                 {social?.icon && listOfIcons?.[social.icon]} 
                                 <Text className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{"Linkedin"}</Text>

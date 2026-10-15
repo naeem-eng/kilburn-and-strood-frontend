@@ -13,7 +13,7 @@ const ArticleCard: React.FC<ArticleCardProps> = (props) => {
           </div>
           <div className="mt-sm">
               <Text className="text-medium-gray mb-2xs">{props?.tag}</Text>
-              <TextLg className="text-dark-gray font-modern-era-medium animated-underline">{props?.title}</TextLg>
+              <TextLg as="h3" className="text-dark-gray font-modern-era-medium animated-underline">{props?.title}</TextLg>
               <Text className="text-medium-gray mt-md">{props?.date}</Text>
           </div>
       </Link>

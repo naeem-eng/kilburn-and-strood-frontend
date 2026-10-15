@@ -3,10 +3,11 @@ export type PeopleExpertiseProps = {
     color?: 'dark-purple' | 'dark-yellow' | 'bright-red' | 'dark-blue' | 'dark-green' | 'dark-red';
     services?: Array<{
         text: string;
-        href: string;
+        href?: string;
     }>;
     role?: Array<string>;
     sectors?: Array<{
         text: string;
+        href?: string;
     }>
 }

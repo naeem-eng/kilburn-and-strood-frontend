@@ -4,6 +4,8 @@
 /* globals.css */
 @source inline("text-yellow text-bright-red text-dark-purple text-dark-blue text-dark-green text-dark-red text-white text-dark-gray text-light-gray text-medium-gray text-light-green text-light-blue text-light-purple text-dark-yellow");
 
+@source inline("hover:text-{dark-red,dark-yellow,dark-blue,dark-purple,dark-green,dark-gray}");
+
 @source inline("bg-yellow bg-bright-red bg-dark-purple bg-dark-blue bg-dark-green bg-dark-red bg-white bg-dark-gray bg-light-gray bg-medium-gray bg-light-green bg-light-blue bg-light-purple bg-dark-yellow");
 
 @source inline("border-yellow border-bright-red border-dark-purple border-dark-blue border-dark-green border-dark-red border-white border-dark-gray border-light-gray border-medium-gray border-light-green border-light-blue border-light-purple border-dark-yellow");
@@ -601,4 +603,34 @@ html body .iubenda-uspr-btn[data-tp-float][data-tp-float=bottom-right],
 html body .iubenda-uspr-btn[data-tp-float][data-tp-float=top-right] {
   transform: scale(.6) !important;
   margin: 0px !important;
+}
+
+/* ---------- Accessibility (WCAG 2.2 AA) ---------- */
+
+/* 2.4.7 / 2.4.13: clear keyboard focus indicator on every interactive element */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-dark-gray);
+  outline-offset: 2px;
+}
+
+/* 2.2.2 / 2.3.3: reduced motion (OS setting or the on-page toggle, see src/utils/motion.ts) */
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0ms !important;
+  scroll-behavior: auto !important;
+}
+html[data-motion="reduced"]::view-transition-group(*),
+html[data-motion="reduced"]::view-transition-old(*),
+html[data-motion="reduced"]::view-transition-new(*) {
+  animation: none !important;
 }

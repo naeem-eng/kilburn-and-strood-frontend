@@ -38,6 +38,7 @@ const CustomHeaderComponent: React.FC<CustomHeaderProps> = (props: CustomHeaderP
     return (
         <>
             <div
+                onFocusCapture={() => setScrolledDown(false)}
                 className={`logo-container will-change-transform transition-all duration-700 fixed left-sm md:left-xl z-100 bg-transparent isolate text-left max-w-[50%] md:top-xl xl:top-xl top-[18px] md:opacity-100`}
                 style={{
                     willChange: 'transform',
@@ -48,7 +49,7 @@ const CustomHeaderComponent: React.FC<CustomHeaderProps> = (props: CustomHeaderP
                 }}
             >
                 <Link href={'/'} className={`logo`}>
-                    <Image suppressHydrationWarning src={props?.logo} alt="logo" width={300} height={60}
+                    <Image suppressHydrationWarning src={props?.logo} alt="Kilburn & Strode – home" width={300} height={60}
                         className={`md:max-w-none object-cover max-w-full sm:w-auto md:w-[20vw] transition-transform transform duration-700 origin-top-left`}
                     />
                 </Link>
@@ -58,6 +59,7 @@ const CustomHeaderComponent: React.FC<CustomHeaderProps> = (props: CustomHeaderP
              className="w-full h-[.5vw] hidden sm:block  bg-transparent fixed top-0 left-0 right-0 z-50"></div>
             <header
                 ref={headerRef}
+                onFocusCapture={() => setScrolledDown(false)}
                 id={"header"}
                 className={`fixed top-0 w-full z-50 flex  will-change-transform flex-col justify-between items-center isolate px-sm md:px-xl h-[50px] md:h-auto transition-all duration-700 pb-0 bg-white`}
                 style={{

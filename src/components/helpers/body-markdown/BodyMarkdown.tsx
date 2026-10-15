@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import { Text, TextLg, TextMd, TextXl, TitleLg, TitleMd, TitleSm } from "@/components/helpers/typography";
 import { Button } from "../buttons";
-import { colorParser } from "@/parsers";
+import { colorParser, textSafeColor } from "@/parsers";
 import rehypeRaw from "rehype-raw";
 
 
@@ -54,10 +54,10 @@ const BodyMarkdown: React.FC<BodyMarkdownProps> = ({
           br: () => <br />,
           h1: ({ children }) => <TitleLg as={"h1"} className="mb-lg">{children}</TitleLg>,
           h2: ({ children }) => <TitleMd className="mb-lg">{children}</TitleMd>,
-          h3: ({ children }) => <TitleSm className="mb-lg">{children}</TitleSm>,
-          h4: ({ children }) => <TextXl className="mb-lg">{children}</TextXl>,
-          h5: ({ children }) => <TextLg className="mb-lg">{children}</TextLg>,
-          h6: ({ children }) => <TextMd className="font-modern-era-bold">{children}</TextMd>,
+          h3: ({ children }) => <TitleSm as="h3" className="mb-lg">{children}</TitleSm>,
+          h4: ({ children }) => <TextXl as="h4" className="mb-lg">{children}</TextXl>,
+          h5: ({ children }) => <TextLg as="h5" className="mb-lg">{children}</TextLg>,
+          h6: ({ children }) => <TextMd as="h6" className="font-modern-era-bold">{children}</TextMd>,
           blockquote: ({ children }) => (
             <blockquote
               style={{ "--dynamic-colors": colorParser(color || "dark-purple") } as any}
@@ -77,7 +77,7 @@ const BodyMarkdown: React.FC<BodyMarkdownProps> = ({
           ),
           // i: ({ children }) => <Text as={"i"} className="italic">{children}</Text>,
           a: ({ children, href }) => (
-            <Button href={href} type="text" textColor={`text-${color || 'bright-red'} inline text-md!`}>
+            <Button href={href} type="text" textColor={`text-${textSafeColor(color || 'bright-red')} inline text-md! underline underline-offset-2`}>
               {children}
             </Button>
           ),
@@ -85,7 +85,7 @@ const BodyMarkdown: React.FC<BodyMarkdownProps> = ({
           u: ({ children }) => <Text as={"u"} className="underline inherit-all">{children}</Text>,
           img: ({ src, alt }) => {
             if (!src) return <></>;
-            return <img src={src} alt={alt} className="max-w-full my-sm" />;
+            return <img src={src} alt={alt ?? ""} className="max-w-full my-sm" />;
           },
           table: ({ children }) => <table className="w-full border border-gray-300 text-sm mb-10">{children}</table>,
           th: ({ children }) => <th className="border border-gray-300 px-4 py-3 text-left">{children}</th>,

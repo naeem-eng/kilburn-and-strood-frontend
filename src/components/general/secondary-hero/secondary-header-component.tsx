@@ -1,3 +1,4 @@
+import { textSafeColor } from "@/parsers";
 import { Button } from "@/components/helpers/buttons";
 import { Text, TitleMd } from "@/components/helpers/typography/typography";
 import Image from "next/image";
@@ -79,7 +80,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                             </Button>}
                         {(props?.title || props?.text) && <div className="mb-auto">
                             {props?.title &&
-                                <TitleMd className="" attributes={{ ...getAnimationAttributes('title'), ...getTabletAnimationAttributes('title'), ...getMobileAnimationAttributes('title') }}>
+                                <TitleMd as="h1" className="" attributes={{ ...getAnimationAttributes('title'), ...getTabletAnimationAttributes('title'), ...getMobileAnimationAttributes('title') }}>
                                     {props?.title}
                                 </TitleMd>
                             }
@@ -102,7 +103,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                                         href={cta?.href}
                                         icon={cta?.toContactForm ? 'down-arrow' : 'right-arrow'}
                                         type={cta?.type || "text"}
-                                        textColor={`text-${props?.color || 'yellow'}`}
+                                        textColor={`text-${textSafeColor(props?.color || 'yellow')}`}
                                         buttonClassName="mt-0"
                                         attributes={{
                                             ...getAnimationAttributes('button'),
@@ -125,7 +126,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                         data-middle='{"y": "0%" }'
                         data-to='{"y": "-60%"}'
                         className="hidden md:flex h-1/2 flex-1 mt-xl md:w-auto justify-end items-end">
-                        <Image unoptimized src={props?.leftImageSrc} alt={props?.leftImageAlt || "Image 1"} width={props?.leftImageWidth || 600} height={props?.leftImageHeight || 400} className="w-full max-w-none object-cover h-full" />
+                        <Image unoptimized src={props?.leftImageSrc} alt={props?.leftImageAlt || ""} width={props?.leftImageWidth || 600} height={props?.leftImageHeight || 400} className="w-full max-w-none object-cover h-full" />
                     </div>}
                 </div>
 
@@ -139,7 +140,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                     >
                         {/* TODO: this needs to be dynamic */}
                         {props?.media3?.url && <> {
-                            props?.media3?.type === "image" ? (<Image unoptimized src={props?.media3?.url} alt={props?.media3?.alt || "Image 1"} width={props?.media3?.width || 731} height={props?.media3?.height || 337} className="w-full h-full object-cover" />)
+                            props?.media3?.type === "image" ? (<Image unoptimized src={props?.media3?.url} alt={props?.media3?.alt || ""} width={props?.media3?.width || 731} height={props?.media3?.height || 337} className="w-full h-full object-cover" />)
                                 :
                                 <video
                                     src={props?.media3?.url}
@@ -172,7 +173,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                         data-middle='{"clip-path": "inset(0% 0% 0%)"}'
                         data-to='{"clip-path": "inset(0% 0% 100%)"}'
                         className="h-full relative top-0 mr-[16%] md:mr-2xl left-0 bottom-0 flex justify-end items-end z-3 bg-white mt-3xl md:mt-0">
-                        <Image unoptimized src={props?.rightImageSrc} alt={props?.rightImageAlt || "Image 1"} width={props?.rightImageWidth || 600} height={props?.rightImageHeight || 400} className="w-full md:max-w-full object-cover aspect-[7/9] h-auto md:aspect-auto md:h-full" />
+                        <Image unoptimized src={props?.rightImageSrc} alt={props?.rightImageAlt || ""} width={props?.rightImageWidth || 600} height={props?.rightImageHeight || 400} className="w-full md:max-w-full object-cover aspect-[7/9] h-auto md:aspect-auto md:h-full" />
                     </div>}
                 </div>
             </div>

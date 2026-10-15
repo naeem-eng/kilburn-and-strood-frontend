@@ -1,9 +1,10 @@
 "use client";
+import { handleTabKeyDown } from "@/utils/a11y";
 
 import { TabbedBodyContentProps } from "./tabbed-body-content.types";
 import { useRef, MouseEvent, useState, useEffect, useMemo, memo } from "react";
 import { Text, TextLg, TextMd, TitleLg, TitleMd } from "@/components/helpers/typography";
-import { colorParser } from "@/parsers";
+import { colorParser, textSafeColor, textColorParser } from "@/parsers";
 import BodyMarkdown from "@/components/helpers/body-markdown/BodyMarkdown";
 import Body from "../body";
 import LocationDetails from "../location-details";
@@ -57,15 +58,20 @@ const TabbedBodyContent: React.FC<TabbedBodyContentProps> = (props) => {
                 <div className={`flex flex-col md:flex-row ${props?.title ? "mt-xl" : "mt-0"}`}>   
                     {/* tabs */}
                     {props?.tabs.length > 0 && <div className={`${props?.tabsClassName  || ''} scroll-container overflow-x-auto flex flex-row md:flex-col justify-start items-start md:min-w-[30%] md:w-[30%] md:max-w-[30%] relative`}>
-                        <div className={` flex flex-row md:flex-col justify-start items-start w-full md:mb-0 mb-lg`}>
+                        <div role="tablist" className={` flex flex-row md:flex-col justify-start items-start w-full md:mb-0 mb-lg`}>
                             {props.tabs.map((tab, index, arr) => {
                             return (
                                 <button ref={r=>{
-                                    tabRef.current.push(r as any)
+                                    tabRef.current[index] = r as any
                                 }} 
                                 key={index}
                                 onMouseEnter={e=>onMouseOver(e as any,index)} 
                                 onMouseLeave={(e)=>onMouseOut(e as any, index)} 
+                                type="button"
+                                role="tab"
+                                aria-selected={selectedTab == index}
+                                tabIndex={selectedTab == index ? 0 : -1}
+                                onKeyDown={(e) => handleTabKeyDown(e, index, arr.length, setSelectedTab)}
                                 onClick={()=>setSelectedTab(index)} 
                                 className={`
                                     text-center
@@ -84,8 +90,8 @@ const TabbedBodyContent: React.FC<TabbedBodyContentProps> = (props) => {
                                     border-r-dark-gray
                                     last:border-r-0
                                     ${selectedTab == index ? `md:border-l-[var(--dynamic-colors)]
-                                    text-[var(--dynamic-colors)]` : ''} 
-                                    hover:text-[var(--dynamic-colors)]
+                                    text-[var(--dynamic-text-colors)]` : ''} 
+                                    hover:text-[var(--dynamic-text-colors)]
                                     transition-colors 
                                     duration-300 
                                     ease-in-out 
@@ -94,9 +100,10 @@ const TabbedBodyContent: React.FC<TabbedBodyContentProps> = (props) => {
                                     md:bg-transparent`} 
                                     style={{
                                         "--dynamic-colors": colorParser(props?.color || 'bright-red'),
+                                    "--dynamic-text-colors": textColorParser(props?.color || 'bright-red'),
                                     } as React.CSSProperties}
                                 >
-                                    {props?.TabsTitleComponent ? props.TabsTitleComponent(tab.title) : <TextLg className={selectedTab == index ? "font-modern-era-medium! text-left" : "font-modern-era  text-left"}>{tab.title}</TextLg>}
+                                    {props?.TabsTitleComponent ? props.TabsTitleComponent(tab.title) : <TextLg as="span" className={selectedTab == index ? "font-modern-era-medium! text-left" : "font-modern-era  text-left"}>{tab.title}</TextLg>}
                                     {
                                         selectedTab == index ? <div className={`md:hidden bg-[var(--dynamic-colors)] h-[.4vw] w-full relative top-xs`}></div> : <div className={`md:hidden bg-transparent h-[.4vw] w-full relative top-xs`}></div>
                                     }
@@ -130,17 +137,22 @@ const TabbedBodyContent: React.FC<TabbedBodyContentProps> = (props) => {
 
                 {/* tabs */}
                 {props?.mapTabs?.length > 0 && <div className={`${props?.tabsClassName  || ''} scroll-container overflow-x-auto flex flex-col justify-between items-start w-auto relative md:mx-0 ${props?.title ? "pt-0" : "pt-xl"} pb-2xs md:pb-sm ml-0 mb-lg`}>
-                    <div className={` flex flex-row md:justify-start md:items-center w-full md:gap-x-0 gap-x-sm ${props?.tabsContainerClassName || ''}`}>
+                    <div role="tablist" className={` flex flex-row md:justify-start md:items-center w-full md:gap-x-0 gap-x-sm ${props?.tabsContainerClassName || ''}`}>
                         {props.mapTabs.map((tab, index, arr) => {
                         return (
                             <button ref={r=>{
-                                tabRef.current.push(r as any)
+                                tabRef.current[index] = r as any
                             }} 
                             key={index}
                             onMouseEnter={e=>onMouseOver(e as any,index)} 
                             onMouseLeave={(e)=>onMouseOut(e as any, index)} 
-                            onClick={()=>setSelectedTab(index)} 
-                            className={`flex-1 text-center cursor-pointer md:border-r-[.15vw] md:border-r-[#E0E0E0] last:border-r-0 py-2xs hover:text-${props?.color || "bright-red"} transition-colors duration-300 ease-in-out md:min-w-0 min-w-fit bg-light-gray md:bg-transparent px-lg first:md:pl-0 last:md:pr-0  md:border-b-0 ${props?.tabClass || ''} ${selectedTab == index ? `text-${props?.color || "bright-red"}` : ""}`} 
+                            type="button"
+                                role="tab"
+                                aria-selected={selectedTab == index}
+                                tabIndex={selectedTab == index ? 0 : -1}
+                                onKeyDown={(e) => handleTabKeyDown(e, index, arr.length, setSelectedTab)}
+                                onClick={()=>setSelectedTab(index)} 
+                            className={`flex-1 text-center cursor-pointer md:border-r-[.15vw] md:border-r-[#E0E0E0] last:border-r-0 py-2xs hover:text-${textSafeColor(props?.color || "bright-red")} transition-colors duration-300 ease-in-out md:min-w-0 min-w-fit bg-light-gray md:bg-transparent px-lg first:md:pl-0 last:md:pr-0  md:border-b-0 ${props?.tabClass || ''} ${selectedTab == index ? `text-${textSafeColor(props?.color || "bright-red")}` : ""}`} 
                             style={{
                                 //   width: props?.contentFit ? 'fit-content' : 100 / arr.length + '%',
                             }}>
@@ -181,17 +193,22 @@ const TabbedBodyContent: React.FC<TabbedBodyContentProps> = (props) => {
 
                 {/* tabs */}
                 {props.tabs.length > 0 && <div className={`${props?.tabsClassName  || ''} scroll-container overflow-x-auto flex flex-col justify-between items-start w-auto relative md:mx-0 ${props?.title ? "pt-0" : "pt-xl"} pb-2xs md:pb-sm ml-0 mb-xl`}>
-                    <div className={` flex flex-row md:justify-start md:items-center ${props?.contentFit ? 'w-fit-content' : 'w-full'} md:gap-x-0 gap-x-sm ${props?.tabsContainerClassName || ''}`}>
+                    <div role="tablist" className={` flex flex-row md:justify-start md:items-center ${props?.contentFit ? 'w-fit-content' : 'w-full'} md:gap-x-0 gap-x-sm ${props?.tabsContainerClassName || ''}`}>
                         {props.tabs.map((tab, index, arr) => {
                         return (
                             <button ref={r=>{
-                                tabRef.current.push(r as any)
+                                tabRef.current[index] = r as any
                             }} 
                             key={index}
                             onMouseEnter={e=>onMouseOver(e as any,index)} 
                             onMouseLeave={(e)=>onMouseOut(e as any, index)} 
-                            onClick={()=>setSelectedTab(index)} 
-                            className={`text-center cursor-pointer md:border-r-[.15vw] md:border-r-[#E0E0E0] last:border-r-0 py-2xs hover:text-${props?.color || "bright-red"} transition-colors duration-300 ease-in-out md:min-w-0 min-w-fit ${props?.contentLayout == 'compact' ? '':'flex-1'} bg-light-gray md:bg-transparent px-lg first:md:pl-0 last:md:pr-0  md:border-b-0 ${props?.tabClass || ''} ${selectedTab == index ? `text-${props?.color || "bright-red"}` : ""}`} 
+                            type="button"
+                                role="tab"
+                                aria-selected={selectedTab == index}
+                                tabIndex={selectedTab == index ? 0 : -1}
+                                onKeyDown={(e) => handleTabKeyDown(e, index, arr.length, setSelectedTab)}
+                                onClick={()=>setSelectedTab(index)} 
+                            className={`text-center cursor-pointer md:border-r-[.15vw] md:border-r-[#E0E0E0] last:border-r-0 py-2xs hover:text-${textSafeColor(props?.color || "bright-red")} transition-colors duration-300 ease-in-out md:min-w-0 min-w-fit ${props?.contentLayout == 'compact' ? '':'flex-1'} bg-light-gray md:bg-transparent px-lg first:md:pl-0 last:md:pr-0  md:border-b-0 ${props?.tabClass || ''} ${selectedTab == index ? `text-${textSafeColor(props?.color || "bright-red")}` : ""}`} 
                             style={{
                                 //   width: props?.contentFit ? 'fit-content' : 100 / arr.length + '%',
                             }}>

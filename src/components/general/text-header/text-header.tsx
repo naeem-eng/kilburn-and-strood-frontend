@@ -11,7 +11,7 @@ const TextHeader: React.FC<TextHeaderProps> = (props) => {
         {(props?.title || props.LeftComponent) && <div className="sm:min-w-[40%] sm:w-[40%] md:min-w-[60%] md:w-[60%] sm:flex-1 w-full">
           {props?.title && <BodyMarkdown 
           components={{
-              p: ({ children }) => <TitleLg className="text-dark-gray mt-0">{children}</TitleLg>,
+              p: ({ children }) => <TitleLg as="h1" className="text-dark-gray mt-0">{children}</TitleLg>,
           }}>{props?.title}</BodyMarkdown>}
           {props.LeftComponent || <></>}
         </div>}

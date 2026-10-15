@@ -82,10 +82,20 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
     const onWindowClick = () => {
       setFilters(prev => prev.map(filter => ({ ...filter, selected: false })));
     }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      const openIndex = filters.findIndex(filter => filter.selected);
+      if (openIndex !== -1) {
+        setFilters(prev => prev.map(filter => ({ ...filter, selected: false })));
+        buttonRefs.current[openIndex]?.focus();
+      }
+    };
     window.addEventListener('click', onWindowClick);
+    window.addEventListener('keydown', onKeyDown);
 
     return () => {
       window.removeEventListener('click', onWindowClick);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, [filters]);
 
@@ -164,12 +174,18 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
 
 
 
+  const mobileTriggerRef = useRef<HTMLButtonElement>(null);
+  const mobileCloseRef = useRef<HTMLButtonElement>(null);
+
   const onTriggerMobileFilter = () => {
     setMounted(true);
+    // move focus into the drawer once it is no longer inert
+    requestAnimationFrame(() => mobileCloseRef.current?.focus());
   }
 
   const onClose = () => {
     setMounted(false);
+    mobileTriggerRef.current?.focus();
   }
 
 
@@ -182,13 +198,13 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
             return (
               <div className="" key={index}>
                 <button ref={r => {
-                  buttonRefs.current.push(r);
-                }} onClick={() => onTrigger(index)} className={`ml-md pl-2 py-sm cursor-pointer flex flex-row justify-start items-center relative after:absolute after:bottom-0 after:content-[''] after:block after:w-0 after:left-0 after:h-[.23vw] after:bg-bright-red  hover:after:w-full after:origin-left after:transition-all after:duration-300 ${filter?.selected ? 'after:w-full' : ''}`}>
+                  buttonRefs.current[index] = r;
+                }} type="button" aria-expanded={!!filter?.selected} aria-controls={`filter-panel-${index}`} onClick={() => onTrigger(index)} className={`ml-md pl-2 py-sm cursor-pointer flex flex-row justify-start items-center relative after:absolute after:bottom-0 after:content-[''] after:block after:w-0 after:left-0 after:h-[.23vw] after:bg-bright-red  hover:after:w-full after:origin-left after:transition-all after:duration-300 ${filter?.selected ? 'after:w-full' : ''}`}>
                   <Text className={`transition-colors font-modern-era-medium! relative ${'text-dark-gray'}`}>{filter.title}</Text>
                   <DropdownIcon fill={"var(--color-dark-gray)"} className={`w-md h-md relative  transition duration-300 rotate-0 ${filter?.selected ? 'rotate-180' : 'rotate-0'} `} />
                 </button>
 
-                {<div className={`${filter?.selected ? 'opacity-100 h-auto transition-opacity' : 'opacity-0 h-0 transition-all'}  overflow-hidden  duration-300  bg-dark-gray  absolute top-full ${cols.length >= 3 ? 'left-0 right-0' : ''}`} key={index}>
+                {<div id={`filter-panel-${index}`} inert={!filter?.selected} className={`${filter?.selected ? 'opacity-100 h-auto transition-opacity' : 'opacity-0 h-0 transition-all'}  overflow-hidden  duration-300  bg-dark-gray  absolute top-full ${cols.length >= 3 ? 'left-0 right-0' : ''}`} key={index}>
                   <div className="py-lg flex flex-row">
                     {cols.map((col: any, i: number) => {
                       return (
@@ -196,11 +212,11 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
                           {col.map((item: any, i: number) => {
                             if (item?.title?.trim() === "") return;
                             return (
-                              <label key={i} htmlFor={item.title} className={`cursor-pointer flex flex-row gap-x-xs select-none items-center`}>
-                                <input onChange={() => onItemsTrigger(index, item.title)} id={item.title} type="checkbox" className={`hidden`} />
+                              <label key={i} htmlFor={`filter-${index}-${item.title}-desktop`} className={`cursor-pointer flex flex-row gap-x-xs select-none items-center`}>
+                                <input onChange={() => onItemsTrigger(index, item.title)} checked={!!item?.selected} id={`filter-${index}-${item.title}-desktop`} type="checkbox" className={`sr-only peer`} />
 
-                                <div className={`min-w-sm w-sm h-sm border border-light-gray ${item?.selected ? 'bg-white' : ''} flex justify-center items-center`}>
-                                  <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
+                                <div className={`min-w-sm w-sm h-sm border border-light-gray ${item?.selected ? 'bg-white' : ''} flex justify-center items-center peer-focus-visible:outline-2 peer-focus-visible:outline-white peer-focus-visible:outline-offset-2`}>
+                                  <svg aria-hidden="true" width="11" height="8" viewBox="0 0 11 8" fill="none">
                                     <path d="M0.652344 3.67578L4.15234 6.67578L9.65234 0.675781" stroke="#333333" strokeWidth="2" />
                                   </svg>
                                 </div>
@@ -220,8 +236,8 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
           })}
         </div>}
         {filters?.length && <div className={`relative flex md:hidden bg-light-gray`}>
-          <button onClick={onTriggerMobileFilter} className="flex flex-row justify-center items-center  p-md cursor-pointer">
-            <TextMd className={`transition-colors font-modern-era-medium! relative text-medium-gray`}>Filters</TextMd>
+          <button ref={mobileTriggerRef} type="button" aria-haspopup="dialog" aria-expanded={mounted} onClick={onTriggerMobileFilter} className="flex flex-row justify-center items-center  p-md cursor-pointer">
+            <TextMd className={`transition-colors font-modern-era-medium! relative text-dark-gray/75`}>Filters</TextMd>
             <FilterIcon className={`w-md h-md relative transition ml-sm`} />
           </button>
 
@@ -232,17 +248,18 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
     focus-within:after:scale-x-100 group">
           <input onFocus={resetUrl} defaultValue={props?.searchText} ref={inputRef} onChange={(e) => {
             props?.onSearch?.(e.target.value)
-          }} type="text" placeholder={props?.placeholder || "Search by name"} className="flex-1 w-full min-w-full max-w-auto h-full pl-md py-sm ring-0 bg-transparent focus:outline-0 focus:ring-0 text-md font-modern-era-medium text-medium-gray pr-xl" />
+          }} type="search" aria-label={props?.placeholder || "Search by name"} placeholder={props?.placeholder || "Search by name"} className="flex-1 w-full min-w-full max-w-auto h-full pl-md py-sm ring-0 bg-transparent focus:ring-0 text-md font-modern-era-medium text-dark-gray/75 pr-xl" />
 
           {
             props?.searchText ? (props?.searchText?.length > 0 &&
-              <CloseIcon
-                onClick={() => handleClear()}
-                fill="var(--color-dark-gray)"
-                className="absolute right-sm w-sm h-sm cursor-pointer
-                    transition-all duration-200
-                    opacity-100 scale-100
-                    "/>) : <>
+              <button type="button" aria-label="Clear search" onClick={() => handleClear()} className="absolute right-sm cursor-pointer">
+                <CloseIcon
+                  fill="var(--color-dark-gray)"
+                  className="w-sm h-sm
+                      transition-all duration-200
+                      opacity-100 scale-100
+                      "/>
+              </button>) : <>
               <SearchIcon className="absolute right-sm w-sm h-sm
                         transition-all duration-200
                         opacity-100 scale-100
@@ -254,7 +271,7 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
                 onClick={() => handleClear()}
                 fill="var(--color-dark-gray)"
                 className="
-                            absolute right-sm w-sm h-sm
+                            absolute right-sm w-sm h-sm pointer-events-none group-focus-within:pointer-events-auto
                             transition-all duration-200
                             opacity-0 scale-75
                             group-focus-within:opacity-100
@@ -270,11 +287,11 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
       </div>
 
       {(portalEl) && createPortal(
-        <div onClick={(e) => e.stopPropagation()} className={`${mounted ? 'opacity-100 top-0 transition-opacity bg-[#33333380]' : 'top-full opacity-0 transition-all bg-transparent'} duration-500 fixed bottom-0 left-0 right-0  z-100`}>
+        <div onClick={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} role="dialog" aria-modal="true" aria-labelledby="filters-dialog-title" inert={!mounted} className={`${mounted ? 'opacity-100 top-0 transition-opacity bg-[#33333380]' : 'top-full opacity-0 transition-all bg-transparent'} duration-500 fixed bottom-0 left-0 right-0  z-100`}>
           <div className={`${mounted ? 'translate-y-0' : 'translate-y-full'} transition-transform delay-150 duration-500 bg-dark-gray absolute top-[14vw] left-0 right-0 bottom-0 flex flex-col justify-start items-start pt-sm`}>
             <div className=" flex flex-row justify-between items-center p-sm py-lg mb-md w-full">
-              <TitleSm className="text-white font-gt-ultra">Filters</TitleSm>
-              <button onClick={onClose} className="">
+              <TitleSm attributes={{ id: "filters-dialog-title" }} className="text-white font-gt-ultra">Filters</TitleSm>
+              <button ref={mobileCloseRef} type="button" aria-label="Close filters" onClick={onClose} className="">
                 <CloseIcon className="w-md h-md" />
               </button>
             </div>
@@ -283,19 +300,19 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
                 filters?.length && filters?.map((filter: any, index: number) => {
                   return (
                     <div className="border-t border-t-[#595959] w-full py-sm" key={index}>
-                      <button onClick={() => onTrigger(index)} className="flex w-full flex-row justify-between items-center">
+                      <button type="button" aria-expanded={!!filter?.selected} onClick={() => onTrigger(index)} className="flex w-full flex-row justify-between items-center">
                         <TextLg className="text-white font-modern-era-medium!">{filter.title}</TextLg>
                         {<DropdownIcon fill="var(--color-white)" className={`w-lg h-lg transition duration-300 rotate-0 ${filter?.selected ? 'rotate-180' : 'rotate-0'}`} />}
                       </button>
                       {filter?.selected && <div className={`p-sm flex flex-col gap-y-sm`}>
                         {filter.items.map((item: any, i: number) => {
                           return (
-                            <label key={i} htmlFor={item.title} className={
+                            <label key={i} htmlFor={`filter-${index}-${item.title}-mobile`} className={
                               `cursor-pointer flex flex-row items-center justify-start select-none`
                             }>
-                              <input onChange={() => onItemsTrigger(index, item.title)} id={item.title} type="checkbox" className="hidden" />
-                              <div className={`min-w-sm w-sm h-sm border border-light-gray ${item?.selected ? 'bg-white' : ''} flex justify-center items-center mr-sm`}>
-                                <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
+                              <input onChange={() => onItemsTrigger(index, item.title)} checked={!!item?.selected} id={`filter-${index}-${item.title}-mobile`} type="checkbox" className="sr-only peer" />
+                              <div className={`min-w-sm w-sm h-sm border border-light-gray ${item?.selected ? 'bg-white' : ''} flex justify-center items-center mr-sm peer-focus-visible:outline-2 peer-focus-visible:outline-white peer-focus-visible:outline-offset-2`}>
+                                <svg aria-hidden="true" width="11" height="8" viewBox="0 0 11 8" fill="none">
                                   <path d="M0.652344 3.67578L4.15234 6.67578L9.65234 0.675781" stroke="#333333" strokeWidth="2" />
                                 </svg>
                               </div>

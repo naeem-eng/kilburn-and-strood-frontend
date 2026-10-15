@@ -37,3 +37,33 @@ export function colorParser(color: string | null | undefined) {
 }
 
 
+
+// WCAG 1.4.3: these brand colours are below 4.5:1 as text on white / light-gray,
+// so text on light backgrounds uses the darker partner from the same palette.
+// bright-red is the primary brand colour and is kept as-is by design.
+const textSafeMap: Record<string, ColorName> = {
+  "yellow": "dark-yellow",
+  "light-blue": "dark-blue",
+  "light-purple": "dark-purple",
+  "bright-green": "dark-green",
+  "light-green": "dark-green",
+  "light-gray": "dark-gray",
+};
+
+/** Colour name that is safe to use as text on a white / light-gray background. */
+export function textSafeColor(color: string | null | undefined): string {
+  if (!color) return "dark-gray";
+  return textSafeMap[color] || color;
+}
+
+/** Like colorParser, but returns the text-safe variant (for --dynamic-text-colors). */
+export function textColorParser(color: string | null | undefined) {
+  return colorParser(textSafeColor(color));
+}
+
+/** Text colour class for content placed on a brand-colour fill (white fails on the bright fills). */
+export function textOnFillClass(color: string | null | undefined): string {
+  if (color === "bright-red") return "text-black";
+  if (color && /^(yellow|light-|bright-green)/.test(color)) return "text-dark-gray";
+  return "text-white";
+}
