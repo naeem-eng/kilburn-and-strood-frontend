@@ -8,6 +8,7 @@ import homepageHeaderParser from "./homepage-header-parser";
 import inlineImageAndVideoParser from "./inline-image-and-video-parser";
 import latestContentParser from "./latest-content-parser";
 import locationParser from "./location-parser";
+import newsletterParser from "./newsletter-parser";
 import peopleHighlightParser from "./people-highlight-parser";
 import secondaryHeaderParser from "./secondary-header-parser";
 import { SectionParserType } from "./section-parser.types";
@@ -40,6 +41,7 @@ const components = [
         "components.article-header": articleHeaderparser,
         "components.article-hero": articleHeroParser,
         "components.inline-image-and-video": inlineImageAndVideoParser,
+        "components.newsletter": newsletterParser,
     }
 ]
 
@@ -48,8 +50,11 @@ const sectionParser = (sections: any): SectionParserType => {
     const parsedComponentData = [] as SectionParserType;
 
     sections.map((section: any) => {
+        console.log({section})
+
         if(!section) return;
         if(!section?.component) return section;
+
         if(components.some((comp: any) => comp[section?.component])) {
             const todo = components.find((comp: any) => comp[section?.component]);
             // @ts-ignore

@@ -17,6 +17,8 @@ import { FullPageSlider } from '@/components/interactive/fullpage';
 import { exploringParser } from '@/parsers/exploring-parser/exploring-parser';
 import Link from 'next/link';
 import RightArrowIcon from '@/components/helpers/icons/rightarrow-icon/rightarrow-icon';
+import { getInTouchParser } from '@/parsers/get-in-touch-parser/get-in-touch-parser';
+import GetInTouch from '@/components/general/get-in-touch/get-in-touch';
 
 
 export const revalidate = 3600;
@@ -90,6 +92,9 @@ const Article = async ({
       },
       "guest_speakers": {
         populate: "*"
+      },
+      "contact":{
+        populate: "*"
       }
     },
     isPreview: isEnabled,
@@ -98,14 +103,15 @@ const Article = async ({
   if (!page) notFound();
 
   const data = page;
-  // console.log(data);
+  // console.log({data});
 
   const speakers = speakerParser(data?.authour);
   const guestSpeakers = guestSpeakerParser(data?.guestSpeakers);
   const getFullCtaParser = fullCtaParser(data?.fullCta);
+  const contactParser    = getInTouchParser(data?.contact);
   const getExploringParser = exploringParser(data?.services, data?.sectors);
 
-  console.log({getExploringParser})
+  // console.log({getExploringParser})
 
   return (
 
@@ -188,6 +194,7 @@ const Article = async ({
           </div>}
 
         {data?.fullCta && <FullCta {...getFullCtaParser?.props} />}
+        {contactParser && <GetInTouch {...contactParser.props} />}
       </FullPageSlider>
       </div>
   );

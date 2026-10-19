@@ -167,7 +167,9 @@ export const getComponentsPopulateObj = ():{[key:string]:{
     "components.article-header",
     "components.get-in-touch",
     "components.article-header",
-    "components.article-hero"
+    "components.article-hero",
+    "components.inline-image-and-video",
+    "components.newsletter",
   ];
 
   let todo:{[key:string]:{
@@ -203,6 +205,22 @@ export const getComponentsPopulateObj = ():{[key:string]:{
           media_2: {
             populate: "*"
           },
+        }
+      };
+      return;
+    }
+    if(component === "components.newsletter") {
+      todo[component] = {
+        populate: {
+          media_1: {
+            populate: "*"
+          },
+          media_2: {
+            populate: "*"
+          },
+          cta: {
+            populate: "*"
+          }
         }
       };
       return;

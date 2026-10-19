@@ -78,6 +78,7 @@ const Pages = async ({
               profile_photo: { populate: '*' }
             },
         },
+      contact: { populate: '*' }
     },
     specificPopulate: {
       '/api/offices': {
@@ -87,7 +88,7 @@ const Pages = async ({
             profile_photo: { populate: '*' }
           },
         },
-        contact: { populate: '*' }
+        
       }
     },
     isPreview: isPreview, // ← no draftMode
@@ -96,6 +97,8 @@ const Pages = async ({
 
 
   if (!page) notFound();
+
+  // console.log({page})
 
   const data = page;
   const isServicePage = data?._pageType === 'services';
@@ -123,9 +126,10 @@ const Pages = async ({
           isAnimation={isAnimation}
         />
         {keyContactsParser && <KeyContacts {...keyContactsParser} />}
-        {contactParser && <GetInTouch {...contactParser.props} />}
         {parsedRelatedContent && parsedRelatedContent.items.length > 0 && <RelatedContentCarousel {...parsedRelatedContent} isAnimation={isAnimation} />}
         {peopleParser && <KeyContacts {...peopleParser} />}
+        {contactParser && <GetInTouch {...contactParser.props} />}
+
         {getFullCtaParser && <FullCta isAnimation={isAnimation} {...getFullCtaParser.props} />}
       </FullPageSlider>
     </div>

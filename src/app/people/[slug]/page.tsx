@@ -17,6 +17,8 @@ import FullCta from '@/components/general/full-cta';
 import { draftMode } from 'next/headers';
 import FullPageSlider from '@/components/interactive/fullpage/full-pageslider';
 import { getSeoObject } from '@/utils/utils';
+import GetInTouch from '@/components/general/get-in-touch/get-in-touch';
+import { getInTouchParser } from '@/parsers/get-in-touch-parser/get-in-touch-parser';
 
  export const revalidate = 3600;
 
@@ -97,6 +99,10 @@ const People = async ({
       "pattern_image": {
         populate: "*"
       },
+
+      "contact": {
+        populate: "*"
+      }
     },
     isPreview: isEnabled,
   }); 
@@ -108,6 +114,7 @@ const People = async ({
 
   const getFullCtaParser = fullCtaParser(data?.fullCta);
   const getPeopleBioParser = peopleBioParser(data);
+  const contactParser = getInTouchParser(data?.contact);
 
 
 
@@ -161,6 +168,7 @@ const People = async ({
             {getPeopleBioParser?.testimonialsContainer && <TestimonialSlider {...getPeopleBioParser?.testimonialsContainer} isAnimation={false} />}
 
             {getFullCtaParser && <FullCta {...getFullCtaParser.props} />}
+            {contactParser && <GetInTouch {...contactParser.props} />}
         </FullPageSlider>
     </div>
   );
