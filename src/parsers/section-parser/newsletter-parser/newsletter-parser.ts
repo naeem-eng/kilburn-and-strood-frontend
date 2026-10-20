@@ -6,18 +6,18 @@ import { NewsletterParserType } from "./newsletter-parser.types";
 const newsletterParser = (section: any) => {
     if(!section) return
 
-    console.log({section})
+    // console.log({section})
 
     return  {
         component: 'components.newsletter',
         props: {
-            color: section?.color?.name || 'light-blue',
+            color: section?.color?.name || 'dark-blue',
             title: section?.title || undefined,
             text: section?.text || undefined,
             cta: {
                 text: section?.cta?.text || undefined,
                 link: section?.cta?.link || undefined,
-                color: section?.cta?.color?.name || 'light-blue',
+                color: section?.cta?.color?.name || 'dark-blue',
                 isExternal: section?.cta?.isExternal || false,
                 icon: section?.cta?.icon || undefined,
             },

@@ -74,7 +74,7 @@ const TabbedBodyContent: React.FC<TabbedBodyContentProps> = (props) => {
                                 onKeyDown={(e) => handleTabKeyDown(e, index, arr.length, setSelectedTab)}
                                 onClick={()=>setSelectedTab(index)} 
                                 className={`
-                                    text-center
+                                    text-start
                                     cursor-pointer
                                     md:border-r-[0]
                                     md:border-l-[.2vw]

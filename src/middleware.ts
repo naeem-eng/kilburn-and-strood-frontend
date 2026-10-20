@@ -4,8 +4,9 @@ import type { NextRequest } from "next/server";
 function isProductionDomain(req: NextRequest): boolean {
   const prodDomain = process.env.PROD_DOMAIN;
   if (!prodDomain) return false;
-  const host = req.headers.get("host") ?? "";
-  return host === prodDomain || host.endsWith(`.${prodDomain}`);
+  return true
+  // const host = req.headers.get("host") ?? "";
+  // return host === prodDomain || host.endsWith(`.${prodDomain}`);
 }
 
 export function middleware(req: NextRequest) {

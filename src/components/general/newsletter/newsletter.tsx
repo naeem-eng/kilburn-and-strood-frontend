@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Text, TitleMd, TitleSm, TitleXl } from "@/components/helpers/typography";
-import { colorParser } from "@/parsers";
+import { Text, TitleLg, TitleMd, TitleSm, TitleXl } from "@/components/helpers/typography";
+import { colorParser, textColorParser, textSafeColor } from "@/parsers";
 import { Button } from "@/components/helpers/buttons";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -26,10 +26,9 @@ const Newsletter: React.FC<NewsletterProps> = (props) => {
       data-animation={isAnimation}
       data-light-animation={isLightAnimation}
       data-animation-component
-      className={`${isAnimation || isLightAnimation ? 'invisible' : ''} h-full xl:min-h-screen xl:h-screen w-full relative flex flex-row py-[40px] sm:py-[20vh] justify-center items-start bg-white overflow-hidden`} style={{
+      className={`${isAnimation || isLightAnimation ? 'invisible' : ''} h-full md:min-h-screen md:h-screen w-full relative flex flex-col md:flex-row py-[40px] sm:py-[10vh] justify-center items-start bg-white overflow-hidden`} style={{
         zIndex: props.index
       }}>
-      {/* <div className={`relative flex md:flex-col gap-x-xl w-full justify-stretch h-full items-start  flex-col bg-red-500`}> */}
 
 
 
@@ -39,106 +38,82 @@ const Newsletter: React.FC<NewsletterProps> = (props) => {
           data-from='{"clip-path": "inset(100% 0 0%)"}'
           data-middle='{"clip-path": "inset(0% 0 0%)"}'
           data-to='{"clip-path": "inset(0% 0 100%)"}'
-          className="w-1/2 h-full">
+          className="w-full md:w-1/2 h-full">
           <Image src={props?.mediaSrc} alt={props?.mediaAlt || ""} width={props?.mediaWidth || 389} height={props?.mediaHeight || 898} className=" object-cover object-left-top h-full min-w-full" />
         </div>}
 
-        <div className="flex-1 relative w-auto p-4 bg-red-500">
-          
+        <div className="flex-1 min-h-0 relative w-auto h-full flex flex-col">
+          {props?.mediaSrc2 && <div
+            data-animation-atoms
+            data-from='{"clip-path": "inset(100% 0 0%)"}'
+            data-middle='{"clip-path": "inset(0% 0 0%)"}'
+            data-to='{"clip-path": "inset(0% 0 100%)"}'
+            className="w-full md:w-1/2 h-[58px] md:h-[10vw]">
+            <Image src={props?.mediaSrc2} alt={props?.mediaAlt2 || ""} width={props?.mediaWidth2 || 389} height={props?.mediaHeight2 || 898} className=" object-cover object-left-top h-full min-w-full" />
+          </div>}
+
+          <div className=" w-full min-h-0 flex-1 flex flex-row justify-start items-start">
+            <div className="p-[24px] md:p-[2.5vw] flex-1  max-w-[90%] min-h-0">
+              <div className="text-content flex flex-col gap-y-4">
+                  
+                    <Text
+                      textSize="text-base"
+                      className="text-[var(--dynamic-text-colors)]"
+                      style={{
+                        "--dynamic-colors": colorParser(props?.color || 'dark-blue'),
+                                        "--dynamic-text-colors": textColorParser(props?.color || 'dark-blue')
+                      }}
+                    >
+                      Newsletter
+                    </Text>
+                  {(props?.title ) && (
+                    <TitleLg
+                      className="[&_span]:text-[var(--dynamic-text-colors)]"
+                      style={{
+                        "--dynamic-colors": colorParser(props?.color || 'dark-blue'),
+                                        "--dynamic-text-colors": textColorParser(props?.color || 'dark-blue')
+                      }}>
+                      {props?.title} 
+                    </TitleLg>
+                  )}
+                  {props.text &&
+                    <BodyMarkdown
+                      color={props?.color || "bright-red"}
+                      components={{
+                        p: ({ children }) => <Text
+                          as={"p"}
+                          textSize="text-base"
+                        >{children}</Text>,
+                      }}
+                    >{props?.text}</BodyMarkdown>
+                  }
+    
+                </div>
+                {props?.cta && (
+                  <div className="w-full link mt-5" >
+                    <Button
+                      href={props?.cta?.link}
+                      icon='right-arrow'
+                      type={"text"}
+                      textColor={
+                        `text-${textSafeColor(props?.color)}`
+                      }
+                      dynamicIconColor={colorParser(props?.color)}
+    
+                    >
+                      {props?.cta?.text}
+                              </Button>
+                            </div>
+                          )}
+              
+            </div>
+            <div className={`w-[10%] h-full`} style={{
+              backgroundColor: colorParser(props?.color)
+            } as any }/>
+          </div>
         </div>
         {/*  */}
 
-        {/* <div className="relative z-1 flex justify-start items-start flex-col-reverse md:flex-row h-auto w-full md:w-full md:h-[80%] overflow-hidden">
-
-          {props?.imageSrc && <div
-            data-animation-atoms
-            data-from='{"y": "30%", "delay": "1.5"}'
-            data-middle='{"y": "0%", "x": "0%" }'
-            data-to='{"y": "-50%"}'
-            data-mobile-from='{"clip-path": "inset(0 100% 0 0)"}'
-            data-mobile-middle='{"clip-path": "inset(0 0% 0 0)"}'
-            className="w-[45vw] md:w-[20vw] overflow-hidden md:mt-[6.5vw] mt-[15vw]">
-            <Image src={props?.imageSrc} alt={props?.imageAlt || ""} width={props?.imageWidth || 302} height={props?.imageHeight || 294} className=" object-cover object-left-top w-full" />
-          </div>
-          }
-          {props?.image2Src && <div
-            data-animation-atoms
-            data-from='{"y": "30%", "duration": "1.5"}'
-            data-middle='{"y": "0%"}'
-            data-to='{"y": "20%"}'
-            data-mobile-from='{"clip-path": "inset(0 100% 0 0)"}'
-            data-mobile-middle='{"clip-path": "inset(0 0% 0 0)"}'
-            className="w-[60vw] md:w-[55vw] md:mt-[6.5vw] h-auto overflow-hidden relative">
-            <Image src={props?.image2Src} alt={props?.image2Alt || ""} width={props?.image2Width || 963} height={props?.image2Height || 449} className="min-w-full object-cover w-auto max-w-full max-h-[18rem] md:max-h-[20rem] xl:max-h-[60vh]" />
-          </div>
-          }
-
-          {props?.media3Src &&
-            <div
-              className="md:hidden block absolute right-0 top-0 bottom-0  h-full w-[40vw] z-1"
-              data-animation-atoms
-              data-mobile-from='{"clip-path": "inset(0 0 100% 0)"}'
-              data-mobile-middle='{"clip-path": "inset(0 0 0% 0)"}'
-            >
-              <Image
-                src={props?.media3Src}
-                alt={props?.media3Alt || ""}
-                width={props?.media3Width || 389}
-                height={props?.media3Height || 898}
-                className=" object-cover object-left-top h-full min-w-full" />
-            </div>
-          }
-
-        </div> */}
-
-        {/* <div className={`w-[85%] ${dynamicWidth} relative z-1 mt-8 md:mt-xl md:pl-2xl`}>
-          <div
-            data-animation-atoms
-            data-from='{"x": "70%", "duration": "2.5"}'
-            data-middle='{"x": "0%" }'
-            data-to='{"x": "-70%"}'
-            className="px-sm md:px-xl flex-1 justify-center w-full mb-2xl md:mb-lg flex flex-col gap-y-sm relative ">
-            {props?.title &&
-              <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreak]}
-                components={{
-                  p: ({ children }) => <TitleMd>{children}</TitleMd>,
-                  strong: ({ children }) => <TitleMd as="span" className={`text-${props?.color || 'yellow'}`}>{children}</TitleMd>
-                }}
-              >
-                {props?.title}
-              </ReactMarkdown>
-            }
-
-            {props?.text &&
-              <BodyMarkdown
-              className="xl:max-w-[80%]"
-                color={props?.color}
-              >
-                {props?.text}
-              </BodyMarkdown>
-            }
-            {
-              props?.cta?.map((button, index) => {
-                return (
-                  <div className="flex gap-x-xs mt-sm" key={index}>
-                    <Button
-                      key={index}
-                      href={button.href}
-                      type={button.type || "filled"}
-                      backgroundColor={`bg-${props?.color || 'dark-gray'}`}
-                      textColor={button.type == "text" ? `text-${props?.color || 'yellow'}` : "text-white"}
-                      dynamicIconColor={colorParser(props?.color)}
-                    >
-                      {button.text}
-                    </Button>
-                  </div>
-                )
-              })
-            }
-          </div>
-        </div> */}
-
-      {/* </div> */}
     </div>
   );
 };
