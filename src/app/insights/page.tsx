@@ -1,6 +1,7 @@
 import React from 'react';
 import TextImageSlider from '@/components/general/text-image-slider';
 import ArticleContainer from '@/components/general/article-container';
+import { queryArticles } from '@/requests/listing-requests/listing-queries';
 import FullCta from '@/components/general/full-cta';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -59,13 +60,15 @@ export default async function ArticleList() {
   if (!page) notFound();
   const data = page
   const getFullCtaParser = fullCtaParser(data?.fullCta);
+  // first page rendered on the server so the listing is in the HTML (filters / load more stay client-side)
+  const initialArticles = await queryArticles();
 
   return (
     <div className="relative z-10 bg-white ">
         {data?.heroSections &&
             <FullPageSlider interactive={data?.type === "interactive"}>
                 {data?.heroSections && <Sections sections={data?.heroSections || []} isAnimation={false} />}
-                  <ArticleContainer />
+                  <ArticleContainer initialData={initialArticles} />
                   {
                     data?.fullCta && <FullCta {...getFullCtaParser?.props} />
                   }

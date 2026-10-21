@@ -1,6 +1,9 @@
 import { EventFullCardsProps } from "../event-full-cards/event-full-cards.types";
 
+import type { EventListing } from "@/requests/listing-requests/listing-queries";
+
 export type EventContainerProps = {
+    initialData?: EventListing; // first page, rendered on the server
     color?: 'dark-purple' | 'dark-yellow' | 'bright-red' | 'dark-blue' | 'dark-green' | 'dark-red' | 'white' | 'dark-gray';
     className?: string;
     events?: {

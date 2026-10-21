@@ -122,7 +122,7 @@ const FooterComponent = (props: FooterComponentProps) => {
                 data-animation={true}
                 data-animation-component
                 id="footer"
-                className={`md:min-h-screen [body.tablet_&]:min-h-[70vh] [body.tablet_&]:h-[70vh] w-full md:pb-0 pb-xl bg-[#F8F8F8] opacity-0`}
+                className={`md:min-h-screen [body.tablet_&]:min-h-[70vh] [body.tablet_&]:h-[70vh] w-full md:pb-0 pb-xl bg-[#ffffff] opacity-0`}
                 style={{
                     zIndex: 0
                 }}>
@@ -155,18 +155,18 @@ const FooterComponent = (props: FooterComponentProps) => {
                         </div>
 
                         <div className="flex flex-col gap-y-xl md:flex-1 max-w-full md:max-w-1/2">
-                            <div className="flex-1 flex flex-row justify-start items-start flex-wrap md:gap-x-xl gap-y-lg">
+                            <div className="flex-1 flex flex-row justify-start items-start flex-wrap md:gap-x-md gap-y-lg">
                                 {/* column */}
                                 {
                                     cols?.map((col, index) => {
                                         return (
-                                            <div key={index} className="w-1/2 md:w-auto flex flex-col gap-y-sm md:gap-y-md md:max-w-[30%] pr-4 md:pr-0">
+                                            <div key={index} className="sm:w-1/3 md:w-auto flex flex-col gap-y-sm md:gap-y-md md:max-w-[30%] pr-4 sm:pr-0">
                                                 {
                                                     col?.map((item, index) => {
                                                         return (
                                                             <Button key={index} href={item.link || '#'} type="text" dynamicIconColor={`var(--color-dark-purple)`}
                                                                 outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
-                                                                buttonClassName="mb-0 text-md! font-modern-era-medium text-dark-gray! "
+                                                                buttonClassName="mb-0 text-md! font-modern-era-medium max-w-fit text-dark-gray! "
                                                             >
                                                                 {item.text}
                                                             </Button>
@@ -180,12 +180,12 @@ const FooterComponent = (props: FooterComponentProps) => {
 
 
                                 {/* column */}
-                                {socialCta?.length && <div className="w-1/2 md:w-auto flex flex-col gap-y-md md:max-w-[30%] -mt-2 md:mt-0">
+                                {socialCta?.length && <div className="w-1/2 md:w-auto flex flex-col gap-y-md  sm:max-w-[30%]  md:mt-0">
                                     {
                                         socialCta?.map((item, index) => {
                                             return (
                                                 <Button isExternal={item?.isExternal} href={item?.link || "#"} key={index} icon={item.icon} type="text" dynamicIconColor={`var(--color-dark-purple)`} outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
-                                                    buttonClassName="sm:mt-0 mb-xs !text-left text-md! font-modern-era-medium text-dark-gray! " iconClassName="h-lg! w-lg! md:h-md! md:w-md! xl:h-md! xl:w-md! shrink-0" >{item.text}</Button>
+                                                    buttonClassName="sm:mt-0 !text-left text-md! font-modern-era-medium text-dark-gray! " iconClassName="h-lg! w-lg! md:h-md! md:w-md! xl:h-md! xl:w-md! shrink-0" >{item.text}</Button>
                                             )
                                         })
                                     }
@@ -222,7 +222,7 @@ const FooterComponent = (props: FooterComponentProps) => {
                     
                 </div>
             </footer>
-            {props?.logo && <div ref={footerLogoRef} className={`relative ${fixed ? 'relative' : 'md:fixed'} w-full md:pt-[0vw] left-0 right-0 -bottom-[100%] transition-all duration-800 ease-in-out bg-[#F8F8F8]`}>
+            {props?.logo && <div ref={footerLogoRef} className={`relative ${fixed ? 'relative' : 'md:fixed'} w-full md:pt-[0vw] left-0 right-0 -bottom-[100%] transition-all duration-800 ease-in-out bg-[#ffffff] px-sm md:px-xl pb-sm md:pb-[2vw]`}>
                 <Image src={props?.logo} alt="" width={1200} height={600} className="w-full max-w-full object-contain object-bottom" />
             </div>}
         </>

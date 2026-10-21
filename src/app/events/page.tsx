@@ -1,6 +1,7 @@
 
 import TextHeader from '@/components/general/text-header';
 import EventContainer from '@/components/general/event-container';
+import { queryEvents } from '@/requests/listing-requests/listing-queries';
 import fetchEventsSetting from '@/requests/events-setting-requests';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -57,8 +58,9 @@ export default async function Events() {
   if (!page) notFound();
   const data = page
   const getFullCtaParser = fullCtaParser(data?.fullCta);
-  
-  // // //console.log({data})
+  // first page rendered on the server so the listing is in the HTML (filters / load more stay client-side)
+  // page size matches EventContainer's pager so "Load more" continues from page 2
+  const initialEvents = await queryEvents(new URLSearchParams({ page: '1', pageSize: '5' }));
 
   return (
     <div className="relative z-10 min-h-screen bg-white">
@@ -67,7 +69,8 @@ export default async function Events() {
           <FullPageSlider interactive={data?.type === "interactive"}>
               {data?.heroSections && <Sections sections={data?.heroSections || []} isAnimation={false} />}
                <EventContainer color='bright-red'
-                  className='mt-md' />
+                  className='mt-md'
+                  initialData={initialEvents} />
                   {
                     getFullCtaParser && <FullCta {...getFullCtaParser?.props} />
                   }

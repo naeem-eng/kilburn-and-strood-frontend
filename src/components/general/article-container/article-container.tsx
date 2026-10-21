@@ -14,25 +14,27 @@ import { ArticleCardProps } from "../article-card/article-card.types";
 import { TextLg } from "@/components/helpers/typography";
 import Loading from "@/app/loading";
 import { keyMapperReverse } from "@/parsers/filters-parser/filters-parser";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useUrlSearchParams } from "@/utils/use-url-search-params";
 
 const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
 
     const router = useRouter();
-    const searchParams = useSearchParams();
+    const searchParams = useUrlSearchParams();
     const search = searchParams.get("search");
 
     const [selectedFilters, setSelectedFilters] = useState<any>({});
-    const [filters, setFilters] = useState<any>(() => {
-      const initialFilters: any = { search: search || undefined };
-      searchParams.forEach((value, key) => {
+    const readFiltersFromUrl = (params: URLSearchParams) => {
+      const initialFilters: any = { search: params.get("search") || undefined };
+      params.forEach((value, key) => {
         const apiKey = keyMapperReverse[key];
         if (apiKey === "article_types") {
           initialFilters[apiKey] = value.split(',').map((item) => item.trim());
         }
       });
       return initialFilters;
-    });
+    };
+    const [filters, setFilters] = useState<any>(() => readFiltersFromUrl(searchParams));
   
     const [list, setList] = useState<any>({});
     const [pager, setPager] = useState<any>({
@@ -40,15 +42,17 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
       pageSize: 20
     });
 
-    const [pagination, setPagination] = useState<any>(null);
+    const [pagination, setPagination] = useState<any>(props?.initialData ? props.initialData.pagination : null);
     const [isFilters, setIsFilters] = useState<boolean>(false);
     
     const abortControllerRef = useRef<AbortController | null>(null);
-    const [articles, setArticles] = useState<any>([]);
-    const [loader, setLoader] = useState<Boolean>(true);
+    const isFirstFetchRef = useRef(true);
+    // first page comes from the server (props.initialData) so it is in the static HTML
+    const [articles, setArticles] = useState<any>(() => props?.initialData ? articleListingParser(props.initialData.data) : []);
+    const [loader, setLoader] = useState<Boolean>(!props?.initialData);
     const [articleLoader, setArticleLoader] = useState<Boolean>(false);
     const [buttonLoader, setButtonLoader] = useState<Boolean>(false);
-    const [filterLoader, setFilterLoader] = useState<Boolean>(false);
+    const [filterLoader, setFilterLoader] = useState<Boolean>(true);
 
 
     const getArticles = useCallback(async () => {
@@ -61,6 +65,10 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
         abortControllerRef.current = new AbortController();
         try {
 
+          // read before awaiting: the effect clears isFirstFetchRef right after this call starts
+
+          const replaceList = isFilters || isFirstFetchRef.current;
+
           const resp = await fetchArticles({
             filters,
             pager,
@@ -72,7 +80,8 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
           const articles = articleListingParser(resp?.data);
 
           // // //console.log({isFilters, articles})
-          if (isFilters) {
+          // the server-rendered first page is replaced, not merged, when URL filters are applied on load
+          if (replaceList) {
             setArticles(articles);
           } else {
             setArticles((prev: any) => uniqueObjects(prev, articles));
@@ -99,6 +108,17 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
       // //console.log("load more", isFilters)
     };
     
+    // shared links (e.g. ?Role=Partner): apply the URL filters once the real query string is known
+    useEffect(() => {
+      if (!searchParams.toString()) return;
+      const fromUrl = readFiltersFromUrl(searchParams);
+      const hasFilters = Object.values(fromUrl).some((value: any) => Array.isArray(value) ? value.length : Boolean(value));
+      if (!hasFilters) return;
+      setArticleLoader(true);
+      setIsFilters(true);
+      setFilters(fromUrl);
+    }, [searchParams]);
+
     const getFilters = async () => {
         setFilterLoader(true)
         const resp = await fetchArticleFilters(null);
@@ -108,7 +128,12 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
     }
 
     useEffect(() => {
+        if (isFirstFetchRef.current && props?.initialData) {
+          const hasUrlFilters = Object.values(filters).some((value: any) => Array.isArray(value) ? value.length : Boolean(value));
+          if (!hasUrlFilters) { isFirstFetchRef.current = false; return; }
+        }
         getArticles();
+        isFirstFetchRef.current = false;
       }, [pager, filters, isFilters]);
     
     useEffect(() => {
@@ -118,7 +143,7 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
     const onSearch = (search: string|undefined) => {
         setArticleLoader(true)
         setIsFilters(true)
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(window.location.search);
         if (search) {
           params.set('search', search);
         } else {
@@ -138,7 +163,7 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
       const onSelectFilters = (filtersTodos: any) => {
         const createFilter = {} as any;
         const params = new URLSearchParams();
-        const currentSearch = searchParams.get('search');
+        const currentSearch = new URLSearchParams(window.location.search).get('search');
         if (currentSearch) params.set('search', currentSearch);
 
         Object.keys(filtersTodos).map((key: string) => {
@@ -151,7 +176,7 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
         })
 
         const newUrl = '?' + params.toString();
-        const currentUrl = '?' + searchParams.toString();
+        const currentUrl = window.location.search || '?';
         if (newUrl !== currentUrl) {
           router.replace(newUrl, { scroll: false });
         }
@@ -189,7 +214,7 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
                       setButtonLoader(true);
                       handleLoadMore();
                   }} loader={Boolean(buttonLoader)} buttonClassName="gap-x-2xs!" type="filled" backgroundColor="bg-bright-red">
-                    Load More<span className="text-md min-h-0 leading-sm mt-1">+</span>
+                    Load More<span className="text-md min-h-0 leading-sm">+</span>
                   </Button>
                 </div>}
             </>
@@ -200,7 +225,8 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
       <div className={`${props.className || ''} w-full flex flex-col justify-start items-start overflow-x-hidden`}>
         {
           loader ? <div className="relative w-full min-h-[50vh]"><Loading className="absolute!" /></div> : <>
-            {filterLoader ?<div className="relative w-full min-h-[50vh]"><Loading className="absolute!" /></div> : <GeneralFilters placeholder="Search insights" onSelectFilters={onSelectFilters} onSearch={onSearch} searchText={search || ''} isSearch isFilter className='mb-xl' filters={list} />}
+            {/* the list doesn't wait for the filter options, so server-rendered cards show straight away */}
+            {filterLoader ? null : <GeneralFilters placeholder="Search insights" onSelectFilters={onSelectFilters} onSearch={onSearch} searchText={search || ''} isSearch isFilter className='mb-xl' filters={list} />}
   
           {articleLoader ? <div className="relative w-full min-h-[50vh]"><Loading className="absolute!" /></div> : <>
             {Articles}

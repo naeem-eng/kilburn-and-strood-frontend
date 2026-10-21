@@ -403,3 +403,34 @@ export const getSeoObject = (seo: any , page: any) => {
     } : {}) 
   }
 };
+
+type StrapiBlockNode = { type?: string; text?: string; bold?: boolean; italic?: boolean; children?: StrapiBlockNode[] };
+
+/**
+ * Strapi fields can be plain text/markdown or "Rich text (Blocks)" arrays. Rendering a blocks
+ * array directly throws "Objects are not valid as a React child" and fails the static build,
+ * so blocks are flattened to markdown (paragraphs, bold/italic) and strings pass through.
+ */
+export const richTextToMarkdown = (value: unknown): string | undefined => {
+  if (value === null || value === undefined) return undefined;
+  if (typeof value === "string") return value;
+  if (!Array.isArray(value)) return undefined;
+
+  const inline = (nodes: StrapiBlockNode[] = []): string =>
+    nodes.map((node) => {
+      if (node.type === "text" || typeof node.text === "string") {
+        let text = node.text || "";
+        if (node.bold && text.trim()) text = `**${text}**`;
+        if (node.italic && text.trim()) text = `*${text}*`;
+        return text;
+      }
+      return inline(node.children);
+    }).join("");
+
+  const markdown = (value as StrapiBlockNode[])
+    .map((block) => inline(block.children))
+    .filter((line) => line.trim())
+    .join("\n\n");
+
+  return markdown || undefined;
+};

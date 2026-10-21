@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 
 import PeopleCardsContainer from '@/components/general/people-cards-container';
+import { queryPeoples } from '@/requests/listing-requests/listing-queries';
 import { notFound } from 'next/navigation';
 import { draftMode } from 'next/headers';
 import { getComponentsPopulateObj, getSeoObject } from '@/utils/utils';
@@ -50,6 +51,8 @@ const PeopleList = async () => {
 
     if (!page) notFound();
     const data = page
+    // first page rendered on the server so the listing is in the HTML (filters / load more stay client-side)
+    const initialPeoples = await queryPeoples();
     // if(!data?.heroSections && data.peoples) {
     //     if(data?.heroComponent === "secondary header") {
     //         data.heroSections = data?.peoples?.map((person: any) => ({
@@ -68,6 +71,7 @@ const PeopleList = async () => {
                     isFilters={true}
                     isTabbed={true}
                     isLoadMore={true}
+                    initialData={initialPeoples}
                 />                
             </FullPageSlider>}
         </div>

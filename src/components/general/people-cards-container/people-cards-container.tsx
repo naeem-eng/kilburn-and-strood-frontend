@@ -15,39 +15,42 @@ import filtersParser from "@/parsers/filters-parser";
 import peopleListingParser from "@/parsers/people-listing-parser";
 import { keyMapperReverse } from "@/parsers/filters-parser/filters-parser";
 import { uniqueObjects } from "@/utils/utils";
-import { useSearchParams } from "next/navigation";
+import { useUrlSearchParams } from "@/utils/use-url-search-params";
 
 const PEOPLE_FILTER_KEYS = new Set(["roles", "expertises", "sectors", "services", "offices"]);
 
 const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
-  const searchParams = useSearchParams();
+  const searchParams = useUrlSearchParams();
   const search = searchParams.get("search");
-  const [filters, setFilters] = useState<any>(() => {
-    const initialFilters: any = { search: search || undefined };
-    searchParams.forEach((value, key) => {
+  const readFiltersFromUrl = (params: URLSearchParams) => {
+    const initialFilters: any = { search: params.get("search") || undefined };
+    params.forEach((value, key) => {
       if (key === "search") return;
       const apiKey = keyMapperReverse[key];
       if (!apiKey || !PEOPLE_FILTER_KEYS.has(apiKey)) return;
       initialFilters[apiKey] = value.split(',').map((item) => item.trim());
     });
     return initialFilters;
-  });
+  };
+  const [filters, setFilters] = useState<any>(() => readFiltersFromUrl(searchParams));
 
   const [list, setList] = useState<any>({});
   const [pager, setPager] = useState<any>({
     page: 1,
     pageSize: 20
   });
-  const [pagination, setPagination] = useState<any>(null);
+  const [pagination, setPagination] = useState<any>(props?.initialData ? props.initialData.pagination : null);
   const [isFilters, setIsFilters] = useState<boolean>(false);
 
   const abortControllerRef = useRef<AbortController | null>(null);
+    const isFirstFetchRef = useRef(true);
 
-  const [peoples, setPeoples] = useState<any>([]);
-  const [loader, setLoader] = useState<Boolean>(true);
+  // first page comes from the server (props.initialData) so it is in the static HTML
+    const [peoples, setPeoples] = useState<any>(() => props?.initialData ? peopleListingParser(props.initialData.data) : []);
+  const [loader, setLoader] = useState<Boolean>(!props?.initialData);
   const [peopleLoader, setPeopleLoader] = useState<Boolean>(false);
   const [buttonLoader, setButtonLoader] = useState<Boolean>(false);
-  const [filterLoader, setFilterLoader] = useState<Boolean>(false);
+  const [filterLoader, setFilterLoader] = useState<Boolean>(true);
 
 
   const getPeoples = useCallback(async () => {
@@ -56,6 +59,10 @@ const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
     }
     abortControllerRef.current = new AbortController();
     try {
+
+      // read before awaiting: the effect clears isFirstFetchRef right after this call starts
+
+      const replaceList = isFilters || isFirstFetchRef.current;
 
       const resp = await fetchPeoples({
         filters,
@@ -66,7 +73,8 @@ const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
       const peoples = peopleListingParser(resp?.data);
 
       // // //console.log({isFilters})
-      if (isFilters) {
+      // the server-rendered first page is replaced, not merged, when URL filters are applied on load
+      if (replaceList) {
         setPeoples(peoples);
       } else {
         setPeoples((prev: any) => uniqueObjects(prev, peoples));
@@ -94,6 +102,17 @@ const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
   };
 
 
+  // shared links (e.g. ?Role=Partner): apply the URL filters once the real query string is known
+  useEffect(() => {
+    if (!searchParams.toString()) return;
+    const fromUrl = readFiltersFromUrl(searchParams);
+    const hasFilters = Object.values(fromUrl).some((value: any) => Array.isArray(value) ? value.length : Boolean(value));
+    if (!hasFilters) return;
+    setPeopleLoader(true);
+    setIsFilters(true);
+    setFilters(fromUrl);
+  }, [searchParams]);
+
   const getFilters = async () => {
     setFilterLoader(true)
     const resp = await fetchPeopleFilters(null);
@@ -103,7 +122,12 @@ const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
   }
 
   useEffect(() => {
+    if (isFirstFetchRef.current && props?.initialData) {
+      const hasUrlFilters = Object.values(filters).some((value: any) => Array.isArray(value) ? value.length : Boolean(value));
+      if (!hasUrlFilters) { isFirstFetchRef.current = false; return; }
+    }
     getPeoples();
+    isFirstFetchRef.current = false;
   }, [pager, filters, isFilters]);
 
   useEffect(() => {
@@ -114,7 +138,7 @@ const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
   const onSearch = (search: string|undefined) => {
     setPeopleLoader(true)
     setIsFilters(true)
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     if (search) {
       params.set('search', search);
     } else {
@@ -134,7 +158,7 @@ const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
   const onSelectFilters = (filtersTodos: any) => {
     const createFilter = {} as any;
     const params = new URLSearchParams();
-    const currentSearch = searchParams.get('search');
+    const currentSearch = new URLSearchParams(window.location.search).get('search');
     if (currentSearch) params.set('search', currentSearch);
 
     Object.keys(filtersTodos).map((key: string) => {
@@ -147,7 +171,7 @@ const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
     })
 
     const newUrl = '?' + params.toString();
-    const currentUrl = '?' + searchParams.toString();
+    const currentUrl = window.location.search || '?';
     if (newUrl !== currentUrl) {
       window.history.replaceState(window.history.state, '', newUrl);
     }
@@ -187,7 +211,7 @@ const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
               setButtonLoader(true);
               handleLoadMore();
           }} loader={Boolean(buttonLoader)} buttonClassName="gap-x-2xs!" type="filled" backgroundColor="bg-bright-red">
-            Load More<span className="text-md min-h-0 leading-sm mt-1">+</span>
+            Load More<span className="text-md min-h-0 leading-sm">+</span>
           </Button>
         </div>}
       </>
@@ -200,8 +224,9 @@ const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
   return (
     <div className={`${props.className || ''} bg-white w-full flex flex-col justify-start items-start overflow-x-hidden min-h-screen relative`}>
       {
-        (loader || filterLoader) ? <div className="relative w-full min-h-[50vh]"><Loading className="absolute!" /></div> : <>
-          {props?.isFilters && <GeneralFilters placeholder={"Search by name"} searchText={search || ''} onSelectFilters={onSelectFilters} onSearch={onSearch} isSearch isFilter className='mb-xl' filters={list} />}
+        loader ? <div className="relative w-full min-h-[50vh]"><Loading className="absolute!" /></div> : <>
+          {/* the list doesn't wait for the filter options, so server-rendered cards show straight away */}
+          {props?.isFilters && !filterLoader && <GeneralFilters placeholder={"Search by name"} searchText={search || ''} onSelectFilters={onSelectFilters} onSearch={onSearch} isSearch isFilter className='mb-xl' filters={list} />}
 
         {peopleLoader ? <div className="relative w-full min-h-[50vh]"><Loading className="absolute!" /></div> : <>
           {Partners}

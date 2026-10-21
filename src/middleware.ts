@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 function isProductionDomain(req: NextRequest): boolean {
-  const prodDomain = process.env.PROD_DOMAIN;
-  if (!prodDomain) return false;
+  // const prodDomain = process.env.PROD_DOMAIN;
+  // if (!prodDomain) return false;
   return true
   // const host = req.headers.get("host") ?? "";
   // return host === prodDomain || host.endsWith(`.${prodDomain}`);

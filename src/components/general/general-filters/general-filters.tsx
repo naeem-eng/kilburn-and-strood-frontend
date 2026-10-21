@@ -6,13 +6,14 @@ import { CloseIcon, DropdownIcon, FilterIcon, SearchIcon } from "@/components/he
 import { memo, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/helpers/buttons";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useUrlSearchParams } from "@/utils/use-url-search-params";
 
 
 
 const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useUrlSearchParams();
   const [filters, setFilters] = useState<any[]>(() => {
     const raw = props.filters;
     if (!raw?.length) return raw || [];
@@ -74,7 +75,7 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
         };
       })
     );
-  }, [props.filters]);
+  }, [props.filters, searchParams]);
 
 
 
@@ -127,26 +128,18 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
       Math.ceil(items.length / maxPerCol)
     );
 
-    const cols: any[][] = Array.from({ length: totalCols }, () => []);
+    // Grow the columns past maxPerCol when the list doesn't fit, so no item is dropped
+    const perCol = Math.max(maxPerCol, Math.ceil(items.length / totalCols));
 
-    let colIndex = 0;
-
-    items.forEach((item, index) => {
-      cols[colIndex]?.push(item);
-
-      // Move to next column after maxPerCol items
-      if (cols[colIndex]?.length === maxPerCol) {
-        colIndex++;
-      }
-    });
-
-    return cols;
+    return Array.from({ length: totalCols }, (_, i) =>
+      items.slice(i * perCol, (i + 1) * perCol)
+    );
   };
 
   const resetUrl = () => {
     if (!props?.searchText) return;
     handleClear();
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     params.delete("search");
     router.replace('?' + params.toString());
   }

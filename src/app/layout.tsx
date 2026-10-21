@@ -48,6 +48,17 @@ export default async function RootLayout({
         suppressHydrationWarning={true}
         className={`font-modern-era antialiased`}
       >
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-N5QN3MS"
+            height="0"
+            width="0"
+            title="Google Tag Manager"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+
         <div className="hidden text-yellow text-bright-red text-dark-purple text-dark-blue text-dark-green text-dark-red text-white text-dark-gray text-light-gray text-medium-gray text-light-green text-light-blue text-light-purple bg-yellow bg-bright-red bg-dark-purple bg-dark-blue bg-dark-green bg-dark-red bg-dark-gray bg-light-gray bg-medium-gray bg-light-green bg-light-blue bg-light-purple" />
 
         {/* sets data-motion on <html> before any animation code runs */}
@@ -79,16 +90,15 @@ export default async function RootLayout({
           src="//js-eu1.hs-scripts.com/144529621.js"
           strategy="afterInteractive"
         />
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=G-D2XBQE20QF`}
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
+        {/* Google Tag Manager: GA4 (G-D2XBQE20QF) is loaded by the container's Google tag,
+            so there is no separate gtag.js snippet (it would double-count page views) */}
+        <Script id="gtm-init" strategy="afterInteractive">
           {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-D2XBQE20QF');
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-N5QN3MS');
           `}
         </Script>
 

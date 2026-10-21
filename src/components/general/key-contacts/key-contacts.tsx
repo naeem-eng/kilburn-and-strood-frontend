@@ -37,7 +37,7 @@ const KeyContacts: React.FC<GetKeyContactsParserType> = (props: GetKeyContactsPa
             type="filled"
             backgroundColor="bg-bright-red"
           >
-            Load More<span className="text-md min-h-0 leading-sm mt-1">+</span>
+            Load More<span className="text-md min-h-0 leading-sm">+</span>
           </Button>
         </div>
       )}

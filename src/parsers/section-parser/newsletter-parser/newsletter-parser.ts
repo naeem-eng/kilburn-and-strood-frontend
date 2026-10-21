@@ -1,4 +1,4 @@
-import { getImgOrVideoType, getStrapiMedia } from "@/utils/utils"; 
+import { getImgOrVideoType, getStrapiMedia, richTextToMarkdown } from "@/utils/utils"; 
 import { NewsletterParserType } from "./newsletter-parser.types";
 
 
@@ -12,8 +12,8 @@ const newsletterParser = (section: any) => {
         component: 'components.newsletter',
         props: {
             color: section?.color?.name || 'dark-blue',
-            title: section?.title || undefined,
-            text: section?.text || undefined,
+            title: richTextToMarkdown(section?.title),
+            text: richTextToMarkdown(section?.text),
             cta: {
                 text: section?.cta?.text || undefined,
                 link: section?.cta?.link || undefined,

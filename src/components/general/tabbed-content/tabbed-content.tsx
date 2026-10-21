@@ -307,7 +307,7 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
             }
             {/* tabs */}
             {props.tabs.length > 0 &&
-            <div className="w-full relative mb-sm">
+            <div className="w-full relative">
               <div className="tabs-overflow-controls md:hidden absolute inset-0 z-50 pointer-events-none">
                   {showTabsOverflowHint.left && (
                       <button

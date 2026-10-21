@@ -4,8 +4,25 @@
     {
       "name": "next-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
+    },
+    {
+      "name": "next-prod-local",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "next",
+        "start",
+        "-p",
+        "3005"
+      ],
+      "port": 3005,
+      "env": {
+        "PROD_DOMAIN": "localhost:3005"
+      }
     }
   ]
 }
