@@ -92,6 +92,9 @@ const Article = async ({
       "guest_speakers": {
         populate: "*"
       },
+      "people": {
+        populate: "*"
+      },
       "contact":{
         populate: "*"
       }
@@ -106,7 +109,7 @@ const Article = async ({
   const data = page;
   console.log({data});
 
-  // const speakers = speakerParser(data?.author);
+  const speakers = speakerParser(data?.people);
   const guestSpeakers = guestSpeakerParser(data?.guestSpeakers);
   const getFullCtaParser = fullCtaParser(data?.fullCta);
   const contactParser    = getInTouchParser(data?.contact);

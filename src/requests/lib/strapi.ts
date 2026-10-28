@@ -47,7 +47,10 @@ const TOKEN = process.env.STRAPI_API_TOKEN;
     },
   });
 
-  if (!res.ok) return undefined;
+  if (!res.ok) {
+    console.warn(`strapiFetch ${res.status} ${res.statusText}: ${path}`);
+    return undefined;
+  }
 
   const data = await res.json();
   return toCamelCaseDeep(data);

@@ -36,7 +36,6 @@ export async function GET(request: NextRequest) {
     COLLECTIONS.map(({ key, endpoint }) =>
       strapiFetch(endpoint, {
         ...(search ? { filters: buildFilters(search) } : {}),
-        populate: true,           // only need IDs for counting
         pagination: { page: 1, pageSize: 1 },
       }).then(res => ({ key, total: res?.meta?.pagination?.total ?? 0 }))
     )

@@ -155,7 +155,7 @@ export const menuParser = (data: any): MenuRequestProps[] | any => {
         
     }
 
-    // // //console.log({navSettings})
+    // //console.log({navSettings})
 
     for(let i = 0; i < sortNavSettings(navSettings).length; i++) {
         rootMenu(sortNavSettings(navSettings)[i], i);

@@ -90,7 +90,7 @@ const globalRequest = async (): Promise<{
             populate: "*",
         }, undefined, false);
 
-    console.log({globalTodo, footerTodo, headerTodo}, headerTodo?.data?.navSettings?.find(x=>x.text=='Sectors'))
+   
 
 
     

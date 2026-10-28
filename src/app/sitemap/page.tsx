@@ -71,7 +71,7 @@ export default async function SiteMapPage() {
                                               second_level_nav_settings: {
                                                   populate: { 
                                                       second_level_nav_items: {
-                                                          populate: true
+                                                          populate: "*"
                                                       },
                                                       services_second_level_items: {
                                                           populate: "*"
