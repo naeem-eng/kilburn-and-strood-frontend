@@ -38,6 +38,8 @@ export async function generateMetadata({
     isPreview: isEnabled,
   });
 
+  
+
   if (!page) notFound();
 
   const data = page;
@@ -66,9 +68,6 @@ const Article = async ({
         },
       },
       "article_types": {
-        populate: "*"
-      },
-      "authour": {
         populate: "*"
       },
       "services": {
@@ -100,12 +99,14 @@ const Article = async ({
     isPreview: isEnabled,
   });
 
+  console.log(resolvedParams.slug, !page, {page});
+
   if (!page) notFound();
 
   const data = page;
-  // console.log({data});
+  console.log({data});
 
-  const speakers = speakerParser(data?.authour);
+  // const speakers = speakerParser(data?.author);
   const guestSpeakers = guestSpeakerParser(data?.guestSpeakers);
   const getFullCtaParser = fullCtaParser(data?.fullCta);
   const contactParser    = getInTouchParser(data?.contact);

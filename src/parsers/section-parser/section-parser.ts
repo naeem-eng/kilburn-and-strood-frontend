@@ -50,7 +50,7 @@ const sectionParser = (sections: any): SectionParserType => {
     const parsedComponentData = [] as SectionParserType;
 
     sections.map((section: any) => {
-        console.log({section})
+        // console.log({section})
 
         if(!section) return;
         if(!section?.component) return section;

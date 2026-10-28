@@ -11,6 +11,7 @@ const globalRequest = async (): Promise<{
         logo: string;
     },
     footer: any;
+    ga4MeasurementId?: string;
 } | any> => {
     const headerTodo = await strapiFetch(
         "/api/header",
@@ -45,7 +46,7 @@ const globalRequest = async (): Promise<{
                                                 second_level_nav_settings: {
                                                     populate: { 
                                                         second_level_nav_items: {
-                                                            populate: true
+                                                            populate: "*"
                                                         },
                                                         services_second_level_items: {
                                                             populate: "*"
@@ -88,8 +89,13 @@ const globalRequest = async (): Promise<{
         {
             populate: "*",
         }, undefined, false);
+
+    console.log({globalTodo, footerTodo, headerTodo}, headerTodo?.data?.navSettings?.find(x=>x.text=='Sectors'))
+
+
     
     if(!headerTodo?.data || !footerTodo?.data || !globalTodo?.data) return;
+
 
     const header = {
         menu: menuParser(headerTodo?.data),
@@ -97,9 +103,13 @@ const globalRequest = async (): Promise<{
         favicon: getStrapiMedia(globalTodo?.data?.smallLogo, 'medium')
     }
 
+    
+    const ga4MeasurementId = typeof globalTodo?.data?.ga4MeasurementId === "string" ? globalTodo.data.ga4MeasurementId.trim().toUpperCase() : undefined;
+
     return {
         header,
-        footer: footerTodo?.data
+        footer: footerTodo?.data,
+        ga4MeasurementId: ga4MeasurementId && /^G-[A-Z0-9]+$/.test(ga4MeasurementId) ? ga4MeasurementId : undefined
     }
 }
 

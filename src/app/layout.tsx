@@ -39,8 +39,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const global = await globalRequest();
+
   const header = global?.header;
   const footer = global?.footer;
+  const ga4MeasurementId = global?.ga4MeasurementId !== "G-D2XBQE20QF" ? global?.ga4MeasurementId : undefined;
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -101,6 +103,25 @@ export default async function RootLayout({
             })(window,document,'script','dataLayer','GTM-N5QN3MS');
           `}
         </Script>
+
+        {/* GA4 from Strapi global-setting → ga4_measurement_id */}
+        {ga4MeasurementId && (
+          <>
+            <Script
+              id="ga4-loader"
+              src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${ga4MeasurementId}');
+              `}
+            </Script>
+          </>
+        )}
 
         {/* iubenda Cookie Banner */}
         <Script id="iubenda-config" strategy="beforeInteractive">
