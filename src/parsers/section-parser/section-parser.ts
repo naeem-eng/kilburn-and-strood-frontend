@@ -12,6 +12,7 @@ import newsletterParser from "./newsletter-parser";
 import peopleHighlightParser from "./people-highlight-parser";
 import secondaryHeaderParser from "./secondary-header-parser";
 import { SectionParserType } from "./section-parser.types";
+import statsBlockParser from "./stats-block-parser";
 import statsParser from "./stats-parser";
 import tabbedCotnentParser from "./tabbed-content-parser";
 import testimonialSliderParser from "./testimonial-slider-parser";
@@ -42,6 +43,7 @@ const components = [
         "components.article-hero": articleHeroParser,
         "components.inline-image-and-video": inlineImageAndVideoParser,
         "components.newsletter": newsletterParser,
+        "components.stats-block": statsBlockParser
     }
 ]
 
@@ -50,7 +52,7 @@ const sectionParser = (sections: any): SectionParserType => {
     const parsedComponentData = [] as SectionParserType;
 
     sections.map((section: any) => {
-        // console.log({section})
+
 
         if(!section) return;
         if(!section?.component) return section;

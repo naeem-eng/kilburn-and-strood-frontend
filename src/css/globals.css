@@ -473,7 +473,7 @@ body.blur-background::after {
 
       &:before {
         content: "";
-        @apply bg-[#A8A8A8] min-w-xs w-xs min-h-xs h-xs rounded-full mr-sm mt-0;
+        @apply bg-[#A8A8A8] min-w-[2vw] w-[2vw] min-h-[2vw] h-[2vw] md:min-w-[.5vw] md:w-[.5vw] md:min-h-[.5vw] md:h-[.5vw] rounded-full mr-sm mt-0;
       }
     }
   }

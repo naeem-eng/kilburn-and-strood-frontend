@@ -24,6 +24,7 @@ import ArticleHeader from "../general/article-header";
 import ArticleHero from "../general/article-hero";
 import InlineImageAndVideo from "../general/inline-image-and-video";
 import Newsletter from "../general/newsletter/newsletter";
+import StatsBlock from "../general/stats-block";
 type RenderCtx = {
     i: number;
     isAnimation?: boolean;
@@ -101,14 +102,18 @@ const SECTION_REGISTRY: Record<string, (section: any, ctx: RenderCtx) => React.R
     'components.stats': (s, { i }) =>
         <Stats className="no-section w-full xl:max-w-[70%] px-sm md:px-xl mx-auto mt-3xl mb-xl" {...s.props} index={i} />,
 
+    'components.stats-block': (s, { i, isAnimation, isLightAnimation }) =>
+        <StatsBlock {...s.props} isAnimation={isAnimation} isLightAnimation={isLightAnimation} index={i} />,
+
     'components.newsletter': (s, { i, isAnimation, isLightAnimation }) =>
         <Newsletter {...s.props} isAnimation={isAnimation} isLightAnimation={isLightAnimation} index={i} />,
 
 };
 
 const Sections: React.FC<SectionsType> = ({ sections, isAnimation, isLightAnimation, color }) => {
+
     const parsed = sectionParser(sections);
-    
+
     return (
         <>
             {parsed.map((section, i) => {

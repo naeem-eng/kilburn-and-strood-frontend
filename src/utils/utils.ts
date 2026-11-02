@@ -170,13 +170,18 @@ export const getComponentsPopulateObj = ():{[key:string]:{
     "components.article-hero",
     "components.inline-image-and-video",
     "components.newsletter",
+    "components.stats-block"
   ];
 
   let todo:{[key:string]:{
     populate: string | object;
-  }} = {};
+  }} = {};  
+
+
+
 
   components.map((component) => {
+
     if(component === "components.get-in-touch" || component === "components.article-header") {
       todo[component] = {
         populate: {

@@ -59,10 +59,8 @@ const Home = async () => {
     isPreview: isPreview
   });
 
-  // // //console.log({page})
 
 
-  // // //console.log(page, searchParams);
 
   if (!page) notFound();
   const data = page

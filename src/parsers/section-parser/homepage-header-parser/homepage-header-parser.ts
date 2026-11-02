@@ -4,7 +4,7 @@ import { HomepageHeaderParserType } from "./homepage-header-parser.types";
 
 const homepageHeaderParser = (section: any) => {
     if(!section) return
-    // // //console.log("homepageHeaderParser", {section}, section.color)
+    console.log("homepageHeaderParser", {section}, section.color)
     return  {
         component: 'components.homepage-header',
         props: {
