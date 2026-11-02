@@ -32,9 +32,6 @@ export async function GET() {
                               },
                               mega_menu_settings : { 
                                   populate: {
-                                      offices_sub_items: {
-                                          populate: "*"
-                                      },
                                       pages_sub_items: {
                                           populate: "*"
                                       },
