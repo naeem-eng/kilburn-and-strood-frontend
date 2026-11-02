@@ -29,9 +29,7 @@ const globalRequest = async (): Promise<{
                                 },
                                 mega_menu_settings : { 
                                     populate: {
-                                        offices_sub_items: {
-                                            populate: "*"
-                                        },
+                                        
                                         pages_sub_items: {
                                             populate: "*"
                                         },
@@ -64,6 +62,9 @@ const globalRequest = async (): Promise<{
             }
 ,
         }, undefined, false);
+
+
+        // console.log("headerTodo", headerTodo);
     const footerTodo = await strapiFetch(
         "/api/footer",
         {
@@ -92,7 +93,7 @@ const globalRequest = async (): Promise<{
 
    
 
-
+    
     
     if(!headerTodo?.data || !footerTodo?.data || !globalTodo?.data) return;
 
