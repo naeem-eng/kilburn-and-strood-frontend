@@ -25,6 +25,7 @@ import ArticleHero from "../general/article-hero";
 import InlineImageAndVideo from "../general/inline-image-and-video";
 import Newsletter from "../general/newsletter/newsletter";
 import StatsBlock from "../general/stats-block";
+import Video from "../general/video";
 type RenderCtx = {
     i: number;
     isAnimation?: boolean;
@@ -107,6 +108,9 @@ const SECTION_REGISTRY: Record<string, (section: any, ctx: RenderCtx) => React.R
 
     'components.newsletter': (s, { i, isAnimation, isLightAnimation }) =>
         <Newsletter {...s.props} isAnimation={isAnimation} isLightAnimation={isLightAnimation} index={i} />,
+
+    'components.video': (s, { i }) =>
+        <Video {...s.props} index={i} />,
 
 };
 

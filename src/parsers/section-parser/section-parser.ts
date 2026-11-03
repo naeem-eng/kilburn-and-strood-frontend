@@ -13,6 +13,7 @@ import peopleHighlightParser from "./people-highlight-parser";
 import secondaryHeaderParser from "./secondary-header-parser";
 import { SectionParserType } from "./section-parser.types";
 import statsBlockParser from "./stats-block-parser";
+import videoParser from "./video-parser";
 import statsParser from "./stats-parser";
 import tabbedCotnentParser from "./tabbed-content-parser";
 import testimonialSliderParser from "./testimonial-slider-parser";
@@ -43,7 +44,8 @@ const components = [
         "components.article-hero": articleHeroParser,
         "components.inline-image-and-video": inlineImageAndVideoParser,
         "components.newsletter": newsletterParser,
-        "components.stats-block": statsBlockParser
+        "components.stats-block": statsBlockParser,
+        "components.video": videoParser
     }
 ]
 

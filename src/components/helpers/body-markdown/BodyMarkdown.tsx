@@ -91,6 +91,7 @@ const BodyMarkdown: React.FC<BodyMarkdownProps> = ({
           th: ({ children }) => <th className="border border-gray-300 px-4 py-3 text-left">{children}</th>,
           ...components,
           td: ({ children }) => <td className="border border-gray-300 px-4 py-4 align-top">{children}</td>,
+          hr: () => <hr className="mb-md border-gray-300" />,
         }}
       >
         {normalizedContent}

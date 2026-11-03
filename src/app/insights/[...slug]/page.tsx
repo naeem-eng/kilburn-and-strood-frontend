@@ -9,6 +9,7 @@ import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { getComponentsPopulateObj, getSeoObject, getStrapiMedia } from '@/utils/utils';
 import Sections from '@/components/sections';
+import { withVideoTranscripts } from '@/requests/youtube-requests/with-video-transcripts';
 import { fullCtaParser } from '@/parsers/fullcta-parser/fullcta-parser';
 import FullCta from '@/components/general/full-cta';
 import { guestSpeakerParser, speakerParser } from '@/parsers/speaker-parser/speaker-parser';
@@ -73,7 +74,10 @@ const Article = async ({
       "services": {
         populate: "*"
       },
-      "sectors": {  
+      "sector": {  
+        populate: "*"
+      },
+      "sub_sectors": {  
         populate: "*"
       },
       "full_cta": {
@@ -95,6 +99,9 @@ const Article = async ({
       "people": {
         populate: "*"
       },
+      "author":{
+        populate: "*"
+      },
       "contact":{
         populate: "*"
       }
@@ -107,13 +114,14 @@ const Article = async ({
   if (!page) notFound();
 
   const data = page;
+  const sections = await withVideoTranscripts(data?.sections);
   console.log({data});
 
-  const speakers = speakerParser(data?.people);
+  const speakers = speakerParser(data?.author?.length ? data?.author : data?.people);
   const guestSpeakers = guestSpeakerParser(data?.guestSpeakers);
   const getFullCtaParser = fullCtaParser(data?.fullCta);
   const contactParser    = getInTouchParser(data?.contact);
-  const getExploringParser = exploringParser(data?.services, data?.sectors);
+  const getExploringParser = exploringParser(data?.services, data?.sector);
 
   // console.log({getExploringParser})
 
@@ -140,15 +148,15 @@ const Article = async ({
         />
 
 
-        {data?.sections && <Sections color={data?.color?.name} sections={data?.sections || []} isAnimation={false} />}
+        {sections.length > 0 && <Sections color={data?.color?.name} sections={sections} isAnimation={false} />}
         
 
-        <div className="flex flex-col md:flex-row mt-4xl gap-y-[5vw] md:gap-x-[5vw] px-sm md:px-xl">
+        <div className={`flex flex-col md:flex-row mt-4xl gap-y-[5vw] md:gap-x-[5vw] px-sm md:px-xl ${(guestSpeakers?.props || data?.fullCta) ? 'mb-xl' : ''}`}>
           {speakers?.props && <div className='w-full md:max-w-1/2'>
                 <TextXl>
                     Written by
                 </TextXl>
-                <div className={`mt-md flex flex-row flex-wrap gap-y-md bg-white justify-start items-start pb-lg content-start min-w-full ${(guestSpeakers?.props || data?.fullCta) ? 'mb-xl' : ''}`}>
+                <div className={`mt-md flex flex-row flex-wrap gap-y-md bg-white justify-start items-start pb-lg content-start min-w-full `}>
                     {speakers?.props.map((person: any) => (
                         <PeopleCard type="list" {...person} key={person?.slug} />
                     ))}

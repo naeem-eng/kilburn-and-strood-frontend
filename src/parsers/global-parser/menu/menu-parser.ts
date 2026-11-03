@@ -42,7 +42,7 @@ const parseChildren = (data: any = {}) => {
 
 export const menuParser = (data: any): MenuRequestProps[] | any => {
     
-    const {navSettings} = data;
+    const {navSettings} = data ?? {};
     if(!navSettings) return null;
    
     const menu: MenuRequestProps[] = [];
