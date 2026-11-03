@@ -7,6 +7,7 @@ type YTPlayer = {
     getCurrentTime: () => number;
     seekTo: (seconds: number, allowSeekAhead: boolean) => void;
     playVideo: () => void;
+    pauseVideo: () => void;
     getPlayerState: () => number;
     unloadModule: (name: string) => void;
 };
@@ -132,5 +133,7 @@ export const useYoutubePlayer = (containerRef: RefObject<HTMLElement | null>, en
         setCurrentTime(seconds);
     }, []);
 
-    return { isReady, currentTime, seekTo };
+    const pause = useCallback(() => playerRef.current?.pauseVideo(), []);
+
+    return { isReady, currentTime, seekTo, pause };
 };

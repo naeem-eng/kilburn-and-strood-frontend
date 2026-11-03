@@ -1,5 +1,5 @@
 import { richTextToMarkdown } from "@/utils/utils";
-import { TranscriptSegment } from "@/components/general/video/video.types";
+import { TranscriptSegment, VideoItem } from "@/components/general/video/video.types";
 import { VideoParserType } from "./video-parser.types";
 
 // Handles youtu.be/ID, youtube.com/watch?v=ID, /embed/ID, /shorts/ID, /live/ID
@@ -34,37 +34,36 @@ export const toParagraphs = (segments: TranscriptSegment[], min = 50, max = 90):
     return paragraphs;
 };
 
-// Transcript slider: 3 pages for videos under 10 minutes, 4 for longer ones
-export const getTranscriptPageCount = (durationSeconds: number) => (durationSeconds < 600 ? 3 : 4);
+// Repeatable list of Single-video items. Falls back to the old single-video shape (fields on the section itself).
+export const getVideoItems = (section: any): any[] => {
+    const items = section?.videos ?? section?.video;
+    if (Array.isArray(items)) return items.filter(Boolean);
+    return section?.url ? [section] : [];
+};
 
-// Split caption lines into equal slices of video time, then into paragraphs within each slice
-export const toTimedPages = (segments: TranscriptSegment[]): TranscriptSegment[][][] => {
-    const duration = segments[segments.length - 1]?.end || 0;
-    const count = getTranscriptPageCount(duration);
-    const slice = duration / count || 1;
+const videoItemParser = (item: any): VideoItem => {
+    const transcript = item?.allowTranscript ? richTextToMarkdown(item?.transcript)?.trim() || undefined : undefined;
+    const segments: TranscriptSegment[] | undefined = item?.transcriptSegments;
 
-    const pages: TranscriptSegment[][] = Array.from({ length: count }, () => []);
-    segments.forEach((segment) => pages[Math.min(count - 1, Math.floor(segment.start / slice))].push(segment));
-
-    return pages.filter((page) => page.length).map((page) => toParagraphs(page));
+    return {
+        name: item?.name,
+        videoId: getYoutubeId(item?.url),
+        allowTranscript: !!item?.allowTranscript,
+        caption: item?.caption || undefined,
+        transcript,
+        // Only used when there's no Strapi transcript (with-video-transcripts adds these from YouTube)
+        transcriptParagraphs: item?.allowTranscript && !transcript && segments?.length ? toParagraphs(segments) : undefined,
+    };
 };
 
 const videoParser = (section: any) => {
     if(!section) return
 
-    const transcript = section?.allowTranscript ? richTextToMarkdown(section?.transcript)?.trim() || undefined : undefined;
-    const segments: TranscriptSegment[] | undefined = section?.transcriptSegments;
-
     return {
         component: 'components.video',
         props: {
             name: section?.name,
-            videoId: getYoutubeId(section?.url),
-            allowTranscript: !!section?.allowTranscript,
-            caption: section?.caption || undefined,
-            transcript,
-            // Only used when there's no Strapi transcript (with-video-transcripts adds these from YouTube)
-            transcriptPages: section?.allowTranscript && !transcript && segments?.length ? toTimedPages(segments) : undefined,
+            videos: getVideoItems(section).map(videoItemParser).filter((video) => video.videoId),
         } as VideoParserType["props"]
     } as VideoParserType
 }
