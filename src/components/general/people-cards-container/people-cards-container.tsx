@@ -17,7 +17,7 @@ import { keyMapperReverse } from "@/parsers/filters-parser/filters-parser";
 import { uniqueObjects } from "@/utils/utils";
 import { useUrlSearchParams } from "@/utils/use-url-search-params";
 
-const PEOPLE_FILTER_KEYS = new Set(["roles", "expertises", "sectors", "services", "offices"]);
+const PEOPLE_FILTER_KEYS = new Set(["roles", "expertises", "sub_sectors", "services"]);
 
 const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
   const searchParams = useUrlSearchParams();

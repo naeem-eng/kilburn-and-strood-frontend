@@ -1,4 +1,5 @@
 import FullCta from '@/components/general/full-cta';
+import PageCarousal from '@/components/general/page-carousal';
 import PreviewListener from '@/components/general/preview_listner/preview_listner';
 import PrimaryHeaderComponent from '@/components/general/primary-hero/primary-header-component';
 import { FullPageSlider } from '@/components/interactive/fullpage';
@@ -12,6 +13,7 @@ import { getComponentsPopulateObj, getSeoObject } from '@/utils/utils';
 import { draftMode } from 'next/headers';
 // import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
+import { hasGridSection } from '@/parsers/section-parser/grid-parser';
 import React, { memo, useMemo } from 'react';
 
 export const dynamic = 'force-static';
@@ -64,7 +66,8 @@ const Home = async () => {
 
   if (!page) notFound();
   const data = page
-  const isAnimation = data?.type === "interactive";
+  // a grid or the allow_carousal carousel needs normal scrolling, so no fullpage scroll hijack on those pages
+  const isAnimation = data?.type === "interactive" && !hasGridSection(data?.sections) && !data?.allowCarousal;
   const isLightAnimation = !isAnimation;
 
   const getFullCtaParser = fullCtaParser(data?.fullCta);
@@ -78,6 +81,7 @@ const Home = async () => {
       <FullPageSlider interactive={isAnimation}>
         <Sections sections={data?.sections || []} isAnimation={isAnimation} isLightAnimation={isLightAnimation} />
         {/* full cta */}
+        <PageCarousal collection="pages" documentId={data?.documentId} slug={data?.slug} isPreview={isPreview} />
         {getFullCtaParser && <FullCta {...getFullCtaParser.props} />}
       </FullPageSlider>
       

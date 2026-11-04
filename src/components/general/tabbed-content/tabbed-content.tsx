@@ -332,7 +332,7 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
               </div>
               <div
                     ref={tabsContainerRef}
-                    className={`tabs-container scroll-container ${props?.isAnimation ? 'md:pt-4xl' : ''} overflow-x-auto flex flex-col justify-between items-start w-auto relative min-h-max shrink-0`}
+                    className={`tabs-container scroll-container ${props?.isAnimation ? '' : ''} overflow-x-auto flex flex-col justify-between items-start w-auto relative min-h-max shrink-0`}
                 >
                     <div role="tablist" className="flex flex-row md:justify-start md:items-center min-w-full md:gap-x-0 gap-x-sm md:px-0 px-sm">
                         {props.tabs.map((tab, index, arr) => {

@@ -26,6 +26,7 @@ import InlineImageAndVideo from "../general/inline-image-and-video";
 import Newsletter from "../general/newsletter/newsletter";
 import StatsBlock from "../general/stats-block";
 import Video from "../general/video";
+import Grid from "../general/grid";
 type RenderCtx = {
     i: number;
     isAnimation?: boolean;
@@ -111,6 +112,9 @@ const SECTION_REGISTRY: Record<string, (section: any, ctx: RenderCtx) => React.R
 
     'components.video': (s, { i }) =>
         <Video {...s.props} index={i} />,
+
+    'components.grid': (s, { i }) =>
+        <Grid {...s.props} index={i} />,
 
 };
 

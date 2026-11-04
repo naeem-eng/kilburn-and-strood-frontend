@@ -1,4 +1,5 @@
 import FullCta from '@/components/general/full-cta';
+import PageCarousal from '@/components/general/page-carousal';
 import GetInTouch from '@/components/general/get-in-touch';
 import KeyContacts from '@/components/general/key-contacts';
 import RelatedContentCarousel from '@/components/general/related-content-carousel';
@@ -12,6 +13,7 @@ import fetchAllPages from '@/requests/allpage-requests';
 import fetchRelatedContent from '@/requests/related-content-requests';
 import { strapiFetch } from '@/requests/lib/strapi';
 import { getComponentsPopulateObj, getSeoObject } from '@/utils/utils';
+import { hasGridSection } from '@/parsers/section-parser/grid-parser';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 
@@ -102,15 +104,14 @@ const Pages = async ({
 
   const data = page;
   const isServicePage = data?._pageType === 'services';
-  const isAnimation      = data?.type === 'interactive';
+  // a grid or the allow_carousal carousel needs normal scrolling, so no fullpage scroll hijack on those pages
+  const isAnimation      = data?.type === 'interactive' && !hasGridSection(data?.sections) && !data?.allowCarousal;
   const isLightAnimation = !isAnimation;
   const getFullCtaParser = fullCtaParser(data?.fullCta);
   const contactParser    = getInTouchParser(data?.contact);
   const keyContactsParser = getKeyContactsParser(data?.keyContacts);
   const peopleParser = getKeyContactsParser(data?.people, data?.peopleTitle);
 
-
-  // console.log({peopleParser, data}, data?.people)
 
   const relatedContentRaw = isServicePage && data?.name
     ? await fetchRelatedContent({ serviceName: data.name })
@@ -130,6 +131,7 @@ const Pages = async ({
         {peopleParser && <KeyContacts {...peopleParser} />}
         {contactParser && <GetInTouch {...contactParser.props} />}
 
+        <PageCarousal collection={data?._pageType} documentId={data?.documentId} slug={data?.slug} isPreview={isPreview} />
         {getFullCtaParser && <FullCta isAnimation={isAnimation} {...getFullCtaParser.props} />}
       </FullPageSlider>
     </div>

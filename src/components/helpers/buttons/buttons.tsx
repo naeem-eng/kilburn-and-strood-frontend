@@ -36,7 +36,7 @@ interface ButtonProps {
 }
 
 const getFilledTextColor = (backgroundColor?: string) => {
-    if (backgroundColor?.includes("bright-red")) return { className: "text-black" };
+    if (backgroundColor?.includes("bright-red")) return { className: "text-white" };
     if (/(yellow|light-|bright-green)/.test(backgroundColor || '') && !backgroundColor?.includes('dark-yellow')) {
         return { className: "text-dark-gray" };
     }
@@ -47,7 +47,7 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
     
 
     if(props?.type === 'filled'){
-        // WCAG 1.4.3: white text is under 4.5:1 on the bright brand fills, so those get dark text
+        // WCAG 1.4.3: white text is under 4.5:1 on the bright brand fills, so those get dark text (bright red stays white, per design)
         const fillTextColor = getFilledTextColor(props?.backgroundColor);
         const baseClasses = `cursor-pointer group text-base px-md py-xs ${fillTextColor.className} cursor-pointer font-modern-era-medium before:absolute before:bottom-0  before:top-0  before:content-[""] before:bg-dark-gray before:transition-all before:duration-300  before:z-0 relative hover:text-white hover:border-dark-gray transition-left group ${props?.icon === 'down=arrow' ? 'items-baseline': `${props?.icon === 'left-arrow' ? 'items-baseline before:left-full before:right-0 hover:before:left-0' : 'items-center before:right-full before:left-0 hover:before:right-0'}` } `;
 

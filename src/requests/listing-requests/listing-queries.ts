@@ -21,7 +21,7 @@ const getPager = (params: Params) => ({
 });
 
 
-const buildPeopleFilters = (sectors: string[], roles: string[], services: string[], offices: string[], expertise: string[], search: string | null) => {
+const buildPeopleFilters = (subSectors: string[], roles: string[], services: string[], offices: string[], expertise: string[], search: string | null) => {
   const filters: any = {};
   const andConditions: any[] = [];
 
@@ -37,8 +37,9 @@ const buildPeopleFilters = (sectors: string[], roles: string[], services: string
     andConditions.push({ expertise: { title: { $in: expertise } } });
   }
 
-  if (sectors.length > 0) {
-    andConditions.push({ sector: { title: { $in: sectors } } });
+  // a person's `sector` is a sub sector (the sectors collection)
+  if (subSectors.length > 0) {
+    andConditions.push({ sector: { title: { $in: subSectors } } });
   }
 
   if (services.length > 0) {
@@ -68,7 +69,7 @@ const buildPeopleFilters = (sectors: string[], roles: string[], services: string
 
 export const queryPeoples = async (params: Params = new URLSearchParams()) => {
   const filters: any = buildPeopleFilters(
-    getList(params, "sectors"),
+    getList(params, "sub_sectors"),
     getList(params, "roles"),
     getList(params, "services"),
     getList(params, "offices"),
@@ -91,7 +92,7 @@ export const queryPeoples = async (params: Params = new URLSearchParams()) => {
 
 
 // Articles and events share the same "any of" filter shape
-const buildTypedFilters = (typeKey: "article_types" | "event_types", sectors: string[], types: string[], services: string[], search: string | null) => {
+const buildTypedFilters = (typeKey: "article_types" | "event_types", sectors: string[], subSectors: string[], types: string[], services: string[], search: string | null) => {
   const filters: any = {};
   const orConditions: any[] = [];
 
@@ -103,8 +104,13 @@ const buildTypedFilters = (typeKey: "article_types" | "event_types", sectors: st
     orConditions.push({ [typeKey]: { title: { $in: types } } });
   }
 
+  // sectors are sector pages (by name): `sector` on articles, `sectors` on events
   if (sectors.length > 0) {
-    orConditions.push({ sectors: { title: { $in: sectors } } });
+    orConditions.push({ [typeKey === "article_types" ? "sector" : "sectors"]: { name: { $in: sectors } } });
+  }
+
+  if (subSectors.length > 0) {
+    orConditions.push({ sub_sectors: { title: { $in: subSectors } } });
   }
 
   if (services.length > 0) {
@@ -123,6 +129,7 @@ export const queryArticles = async (params: Params = new URLSearchParams()) => {
   const filters: any = buildTypedFilters(
     "article_types",
     getList(params, "sectors"),
+    getList(params, "sub_sectors"),
     getList(params, "article_types"),
     getList(params, "services"),
     params.get("search"),
@@ -145,6 +152,7 @@ export const queryEvents = async (params: Params = new URLSearchParams()) => {
   const filters: any = buildTypedFilters(
     "event_types",
     getList(params, "sectors"),
+    getList(params, "sub_sectors"),
     getList(params, "event_types"),
     getList(params, "services"),
     params.get("search"),

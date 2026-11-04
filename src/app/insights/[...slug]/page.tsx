@@ -1,4 +1,5 @@
 import PeopleBio from '@/components/general/people-bio';
+import PageCarousal from '@/components/general/page-carousal';
 import { Text, TextLg, TextMd, TextXl, TitleMd, TitleSm } from '@/components/helpers/typography';
 import ArticleHeader from '@/components/general/article-header';
 import ArticleHero from '@/components/general/article-hero';
@@ -205,6 +206,7 @@ const Article = async ({
               </div>
           </div>}
 
+        <PageCarousal collection="articles" documentId={data?.documentId} slug={data?.slug} isPreview={isEnabled} />
         {data?.fullCta && <FullCta {...getFullCtaParser?.props} />}
         {contactParser && <GetInTouch {...contactParser.props} />}
       </FullPageSlider>

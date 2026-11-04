@@ -6,10 +6,12 @@ import { NextRequest, NextResponse } from "next/server";
 // plus "strapi-all" and revalidated by the Strapi webhook.
 const collections: Record<string, { url: string; fields: string[] }> = {
     expertises: { url: "/api/expertises", fields: ["title"] },
-    sectors: { url: "/api/sectors", fields: ["title"] },
+    // Sectors are the sector pages (keyed by name); the "sectors" collection holds the sub sectors
+    sectors: { url: "/api/sector-pages", fields: ["name"] },
+    sub_sectors: { url: "/api/sectors", fields: ["title"] },
     roles: { url: "/api/people-roles", fields: ["title"] },
     services: { url: "/api/services", fields: ["title", "name"] },
-    offices: { url: "/api/offices", fields: ["title", "name"] },
+    // offices: { url: "/api/offices", fields: ["title", "name"] },
     article_types: { url: "/api/article-types", fields: ["title"] },
     event_types: { url: "/api/event-types", fields: ["title"] },
 };
@@ -20,6 +22,7 @@ type FilterResponse = { data?: FilterItem[] };
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const keys = searchParams.get("keys");
+
 
   if(!keys) {
     return NextResponse.json({ error: "No keys provided" }, { status: 400 });
@@ -32,12 +35,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: `Invalid keys: ${invalid.join(", ")}` }, { status: 400 });
   }
 
+
   const results = await Promise.all(
     requested.map((key) =>
       strapiFetch<FilterResponse>(collections[key].url, {
         fields: collections[key].fields,
         // Strapi deep-populates every relation when populate is omitted
-        populate: false,
+        populate: "*",
         pagination: { pageSize: 500 },
       })
     )

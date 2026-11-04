@@ -290,7 +290,7 @@ const GeneralFilters: React.FC<GeneralFiltersProps> = (props) => {
             </div>
             <div className="flex-1 w-full px-sm overflow-y-auto flex flex-col justify-start items-start pb-3xl">
               {
-                filters?.length && filters?.map((filter: any, index: number) => {
+                Boolean(filters?.length) && filters?.map((filter: any, index: number) => {
                   return (
                     <div className="border-t border-t-[#595959] w-full py-sm" key={index}>
                       <button type="button" aria-expanded={!!filter?.selected} onClick={() => onTrigger(index)} className="flex w-full flex-row justify-between items-center">

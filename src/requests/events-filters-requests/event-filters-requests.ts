@@ -1,7 +1,7 @@
 import { strapiFetch } from "../lib/strapi";
 
 const keys = [
-    "services", "sectors", "event_types"
+    "services", "sectors", "sub_sectors", "event_types"
     ] as string[];
 
 

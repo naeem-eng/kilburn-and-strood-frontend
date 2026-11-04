@@ -618,6 +618,10 @@ textarea:focus-visible {
   outline: 2px solid var(--color-dark-gray);
   outline-offset: 2px;
 }
+/* search fields show focus with their own underline / bar, so no extra box outline */
+input[type="search"]:focus-visible {
+  outline: none;
+}
 
 /* 2.2.2 / 2.3.3: reduced motion (OS setting or the on-page toggle, see src/utils/motion.ts) */
 html[data-motion="reduced"] *,

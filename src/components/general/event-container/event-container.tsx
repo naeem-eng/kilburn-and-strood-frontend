@@ -29,7 +29,7 @@ const EventContainer: React.FC<EventContainerProps> = (props) => {
       const initialFilters: any = { search: params.get("search") || undefined };
       params.forEach((value, key) => {
         const apiKey = keyMapperReverse[key];
-        if (["services", "sectors", "event_types"].includes(apiKey)) {
+        if (["services", "sectors", "sub_sectors", "event_types"].includes(apiKey)) {
           initialFilters[apiKey] = value.split(',').map((item) => item.trim());
         }
       });

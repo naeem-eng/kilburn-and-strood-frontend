@@ -1,9 +1,9 @@
 import { strapiFetch } from "../lib/strapi";
 
 const keys = [
-    "expertises", "sectors", "roles",
+    "expertises", "sub_sectors", "roles",
       "services",
-        "offices"
+        // "offices" — the offices collection was removed from Strapi (404), and an unknown key fails the whole request
     ] as string[];
 
 

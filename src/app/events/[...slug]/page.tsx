@@ -1,5 +1,6 @@
 import EventFullCards from '@/components/general/event-full-cards';
 import FullCta from '@/components/general/full-cta';
+import PageCarousal from '@/components/general/page-carousal';
 import GetInTouch from '@/components/general/get-in-touch/get-in-touch';
 import PeopleCard from '@/components/general/people-card';
 import { Button } from '@/components/helpers/buttons';
@@ -148,6 +149,7 @@ const Event = async ({
                 </div>
             </div>}
 
+            <PageCarousal collection="events" documentId={data?.documentId} slug={data?.slug} isPreview={isEnabled} />
             {getFullCtaParser && <FullCta {...getFullCtaParser?.props} />}
             {contactParser && <GetInTouch {...contactParser.props} />}
         </div>

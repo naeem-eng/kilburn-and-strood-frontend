@@ -171,7 +171,8 @@ export const getComponentsPopulateObj = ():{[key:string]:{
     "components.inline-image-and-video",
     "components.newsletter",
     "components.stats-block",
-    "components.video"
+    "components.video",
+    "components.grid"
   ];
 
   let todo:{[key:string]:{
