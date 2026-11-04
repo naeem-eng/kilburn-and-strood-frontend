@@ -32,7 +32,21 @@ const relatedContentParser = (data: RelatedContentRaw, title = "Related Insights
     mediaHeight: v.featuredImage?.height,
   }));
 
-  const items = [...articles, ...events].sort((a, b) => (b.sortDate > a.sortDate ? 1 : -1)) as ContentCarousalProps['items'];
+  const casestudies = (data.casestudies ?? []).map((v) => ({
+    title: v.title || v.name,
+    slug: v.slug,
+    url: `/casestudies/${v.slug}`,
+    sortDate: new Date(v.date!),
+    itemType: "Case studies" as const,
+    date: v.date ? format(new Date(v.date), "do MMMM yyyy") : "",
+    mediaType: getImgOrVideoType(v.featuredImage?.ext ?? ""),
+    mediaSrc: getStrapiMedia(v.featuredImage, "large"),
+    mediaAlt: v.featuredImage?.alternativeText,
+    mediaWidth: v.featuredImage?.width,
+    mediaHeight: v.featuredImage?.height,
+  }));
+
+  const items = [...articles, ...events, ...casestudies].sort((a, b) => (b.sortDate > a.sortDate ? 1 : -1)) as ContentCarousalProps['items'];
 
   return { title, items };
 };

@@ -24,7 +24,16 @@ export type RelatedContentRawEvent = {
   featuredImage?: RelatedContentRawImage;
 };
 
+export type RelatedContentRawCasestudy = {
+  title?: string;
+  name?: string;
+  slug: string;
+  date?: string;
+  featuredImage?: RelatedContentRawImage;
+};
+
 export type RelatedContentRaw = {
   articles: RelatedContentRawArticle[];
   events: RelatedContentRawEvent[];
+  casestudies?: RelatedContentRawCasestudy[];
 };

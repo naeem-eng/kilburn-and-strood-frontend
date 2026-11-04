@@ -2,7 +2,7 @@ import React from 'react';
 import PeopleBio from '@/components/general/people-bio';
 import { Text, TextLg, TextMd } from '@/components/helpers/typography';
 import PeopleExpertise from '@/components/standard-components/expertise';
-import ContentCarousal from '@/components/general/content-carousal';
+import PageCarousal from '@/components/general/page-carousal';
 import PeopleCard from '@/components/general/people-card';
 import PeopleCardsContainer from '@/components/general/people-cards-container';
 import TabbedBodyContent from '@/components/general/tabbed-body-content';
@@ -147,10 +147,15 @@ const People = async ({
           {getPeopleBioParser?.biography && <Body className={`md:mt-xl ${getPeopleBioParser?.qualifications.length === 0 ? 'mb-2xl' : ''}`} title={"Biography"} content={getPeopleBioParser?.biography}/>}
 
 
-           {Boolean(getPeopleBioParser?.contentCarousal?.items?.length) && <ContentCarousal 
-              title={getPeopleBioParser?.contentCarousal?.title}
-              items={getPeopleBioParser?.contentCarousal?.items || []}
-            />  }
+           {/* allow_carousal on: the chosen types from this person's own items (else the latest); off: as before */}
+           <PageCarousal
+              collection="peoples"
+              documentId={data?.documentId}
+              isPreview={isEnabled}
+              related={getPeopleBioParser?.contentCarousal?.items}
+              relatedTitle={data?.name ? `${data.name}'s` : undefined}
+              fallback={getPeopleBioParser?.contentCarousal}
+            />
 
             {(getPeopleBioParser?.qualifications.length > 0) && <TabbedBodyContent
               className={`px-sm md:px-xl ${getPeopleBioParser?.testimonialsContainer?.testimonials?.length === 0 ? 'pb-3xl' : 'pb-0!'}`}

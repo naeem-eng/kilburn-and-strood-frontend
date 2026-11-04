@@ -9,7 +9,7 @@ const peopleBioParser = (todo: any) => {
     return {
         contentCarousal: {
             title: `${todo?.name}'s insights and events`,
-            items: [...todo?.articles?.map((v:any)=>({
+            items: [...(todo?.articles || []).map((v:any)=>({
                 title: v?.title,
                 slug: v?.slug,
                 url: `/insights/${v?.slug}`,
@@ -21,13 +21,25 @@ const peopleBioParser = (todo: any) => {
                 mediaAlt: v?.featuredImage?.alternativeText,
                 mediaWidth: v?.featuredImage?.width,
                 mediaHeight: v?.featuredImage?.height
-            })), ...todo?.events?.map((v:any)=>({
+            })), ...(todo?.events || []).map((v:any)=>({
                 title: v?.title,
                 slug: v?.slug,
                 url: `/events/${v?.slug}`,
                 itemType: "Events",
                 sortDate: new Date(v?.eventDate),
                 date: format(new Date(v.eventDate), "do MMMM yyyy"),
+                mediaType: getImgOrVideoType(v?.featuredImage?.ext),
+                mediaSrc: getStrapiMedia(v?.featuredImage, 'large'),
+                mediaAlt: v?.featuredImage?.alternativeText,
+                mediaWidth: v?.featuredImage?.width,
+                mediaHeight: v?.featuredImage?.height
+            })), ...(todo?.casestudies || []).map((v:any)=>({
+                title: v?.title || v?.name,
+                slug: v?.slug,
+                url: `/casestudies/${v?.slug}`,
+                itemType: "Case studies",
+                sortDate: new Date(v?.date),
+                date: v?.date ? format(new Date(v.date), "do MMMM yyyy") : "",
                 mediaType: getImgOrVideoType(v?.featuredImage?.ext),
                 mediaSrc: getStrapiMedia(v?.featuredImage, 'large'),
                 mediaAlt: v?.featuredImage?.alternativeText,

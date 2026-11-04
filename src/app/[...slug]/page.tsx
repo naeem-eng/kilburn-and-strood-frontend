@@ -2,7 +2,6 @@ import FullCta from '@/components/general/full-cta';
 import PageCarousal from '@/components/general/page-carousal';
 import GetInTouch from '@/components/general/get-in-touch';
 import KeyContacts from '@/components/general/key-contacts';
-import RelatedContentCarousel from '@/components/general/related-content-carousel';
 import { FullPageSlider } from '@/components/interactive/fullpage';
 import Sections from '@/components/sections';
 import { fullCtaParser } from '@/parsers/fullcta-parser/fullcta-parser';
@@ -126,12 +125,21 @@ const Pages = async ({
           sections={data?.sections || []}
           isAnimation={isAnimation}
         />
+        {/* allow_carousal carousel: the page's related items per chosen type (incl. a service's related content), else the latest;
+            with allow_carousal off, a service page still shows its related content here */}
+        <PageCarousal
+          collection={data?._pageType}
+          documentId={data?.documentId}
+          slug={data?.slug}
+          isPreview={isPreview}
+          related={parsedRelatedContent?.items}
+          fallback={parsedRelatedContent}
+          isAnimation={isAnimation}
+        />
         {keyContactsParser && <KeyContacts {...keyContactsParser} />}
-        {parsedRelatedContent && parsedRelatedContent.items.length > 0 && <RelatedContentCarousel {...parsedRelatedContent} isAnimation={isAnimation} />}
         {peopleParser && <KeyContacts {...peopleParser} />}
         {contactParser && <GetInTouch {...contactParser.props} />}
 
-        <PageCarousal collection={data?._pageType} documentId={data?.documentId} slug={data?.slug} isPreview={isPreview} />
         {getFullCtaParser && <FullCta isAnimation={isAnimation} {...getFullCtaParser.props} />}
       </FullPageSlider>
     </div>
