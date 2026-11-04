@@ -1,10 +1,8 @@
 import { strapiFetch } from "../lib/strapi";
 
 const keys = [
-    "article_types"
+    "sectors", "sub_sectors", "services", "article_types"
     ] as string[];
-
-    // "services", "sectors", 
 
 
 // api/people/route.ts

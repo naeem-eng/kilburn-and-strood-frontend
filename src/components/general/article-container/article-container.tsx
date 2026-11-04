@@ -28,7 +28,7 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
       const initialFilters: any = { search: params.get("search") || undefined };
       params.forEach((value, key) => {
         const apiKey = keyMapperReverse[key];
-        if (apiKey === "article_types") {
+        if (["sectors", "sub_sectors", "services", "article_types"].includes(apiKey)) {
           initialFilters[apiKey] = value.split(',').map((item) => item.trim());
         }
       });

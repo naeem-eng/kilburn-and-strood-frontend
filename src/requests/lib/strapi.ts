@@ -32,6 +32,10 @@ const TOKEN = process.env.STRAPI_API_TOKEN;
   };
 
   const tag = path.replace("/api/", "");
+  // single-entry paths (e.g. "services/abc123") also get their collection tag ("services"),
+  // so the webhook's revalidateTag("services") clears them too — otherwise they're cached forever
+  const collectionTag = tag.split(/[/?]/)[0];
+  const tags = [...new Set([tag, collectionTag, 'strapi-all'])];
 
 //   console.log("📡 Requesting:", tag, url);
 
@@ -43,7 +47,7 @@ const TOKEN = process.env.STRAPI_API_TOKEN;
     cache: (isPreview || isDev) ? 'no-store' : 'force-cache',
     next: isDev ? undefined : {
       revalidate: false,
-      tags: [tag, 'strapi-all']
+      tags
     },
   });
 
