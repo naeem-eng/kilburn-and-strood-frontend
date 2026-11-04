@@ -54,8 +54,7 @@ const TextWithImage: React.FC<TextWithImageProps> = (props) => {
       <div
         className={`${props.textOnLeft ? 'md:mr-0 md:col-[1/span_7]': 'md:ml-0 md:col-[span_7/-1]'}  col-span-full md:row-1 h-full -mx-(--padding-side) overflow-clip`}
       >
-        {props.imageSrc && <Image
-          unoptimized
+        {props.imageSrc && <Image sizes="(min-width: 768px) 58vw, 100vw" loading={(props?.index ?? 0) === 0 ? "eager" : "lazy"} fetchPriority={(props?.index ?? 0) === 0 ? "high" : "auto"}
           src={props.imageSrc}
           alt={props.imageAlt ?? "Text with Image"}
           width={1100}

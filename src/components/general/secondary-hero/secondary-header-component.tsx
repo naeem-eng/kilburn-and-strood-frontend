@@ -126,7 +126,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                         data-middle='{"y": "0%" }'
                         data-to='{"y": "-60%"}'
                         className="hidden md:flex h-1/2 flex-1 mt-xl md:w-auto justify-end items-end">
-                        <Image unoptimized src={props?.leftImageSrc} alt={props?.leftImageAlt || ""} width={props?.leftImageWidth || 600} height={props?.leftImageHeight || 400} className="w-full max-w-none object-cover h-full" />
+                        <Image sizes="(min-width: 768px) 50vw, 100vw" loading={(props?.index ?? 0) === 0 ? "eager" : "lazy"} fetchPriority={(props?.index ?? 0) === 0 ? "high" : "auto"} src={props?.leftImageSrc} alt={props?.leftImageAlt || ""} width={props?.leftImageWidth || 600} height={props?.leftImageHeight || 400} className="w-full max-w-none object-cover h-full" />
                     </div>}
                 </div>
 
@@ -140,7 +140,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                     >
                         {/* TODO: this needs to be dynamic */}
                         {props?.media3?.url && <> {
-                            props?.media3?.type === "image" ? (<Image unoptimized src={props?.media3?.url} alt={props?.media3?.alt || ""} width={props?.media3?.width || 731} height={props?.media3?.height || 337} className="w-full h-full object-cover" />)
+                            props?.media3?.type === "image" ? (<Image sizes="(min-width: 768px) 50vw, 100vw" src={props?.media3?.url} alt={props?.media3?.alt || ""} width={props?.media3?.width || 731} height={props?.media3?.height || 337} className="w-full h-full object-cover" />)
                                 :
                                 <video
                                     src={props?.media3?.url}
@@ -173,7 +173,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                         data-middle='{"clip-path": "inset(0% 0% 0%)"}'
                         data-to='{"clip-path": "inset(0% 0% 100%)"}'
                         className="h-full relative top-0 mr-[16%] md:mr-2xl left-0 bottom-0 flex justify-end items-end z-3 bg-white mt-3xl md:mt-0">
-                        <Image unoptimized src={props?.rightImageSrc} alt={props?.rightImageAlt || ""} width={props?.rightImageWidth || 600} height={props?.rightImageHeight || 400} className="w-full md:max-w-full object-cover aspect-[7/9] h-auto md:aspect-auto md:h-full" />
+                        <Image sizes="(min-width: 768px) 50vw, 100vw" loading={(props?.index ?? 0) === 0 ? "eager" : "lazy"} fetchPriority={(props?.index ?? 0) === 0 ? "high" : "auto"} src={props?.rightImageSrc} alt={props?.rightImageAlt || ""} width={props?.rightImageWidth || 600} height={props?.rightImageHeight || 400} className="w-full md:max-w-full object-cover aspect-[7/9] h-auto md:aspect-auto md:h-full" />
                     </div>}
                 </div>
             </div>

@@ -49,8 +49,7 @@ const FullCta: React.FC<FullCtaProps> = (props) => {
         </div>
 
         {props?.media?.url && <div className="flex-1 ">
-          <Image
-            unoptimized
+          <Image sizes="100vw"
             src={props?.media?.url}
             alt={props?.media?.alt || ''}
             width={props?.media?.width || 0}

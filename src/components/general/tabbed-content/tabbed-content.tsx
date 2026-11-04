@@ -204,7 +204,7 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
             </div>
             {tabData?.content?.type === "image" && tabData?.content?.imageSrc && (
                 <div className="content-right z-1 col-span-full md:col-[span_6/-1] md:row-1 -ml-4 self-start min-h-0 h-full">
-                    <Image
+                    <Image sizes="(min-width: 768px) 50vw, 100vw"
                         data-animation-atoms
                         data-from='{"clip-path": "inset(100% 0 0%)"}'
                         data-middle='{"clip-path": "inset(0% 0 0%)"}'
@@ -213,7 +213,6 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
                         data-mobile-middle='{"clip-path": "inset(0 0% 0 0)"}'
                         data-mobile-trigger=".content-right"
                         data-mobile-duration="0.4"
-                        unoptimized
                         src={tabData?.content?.imageSrc}
                         alt={tabData?.content?.imageAlt || ""}
                         width={tabData?.content?.imageWidth || 731}
@@ -332,7 +331,7 @@ const TabbedContent: React.FC<TabbedContentProps> = (props) => {
               </div>
               <div
                     ref={tabsContainerRef}
-                    className={`tabs-container scroll-container ${props?.isAnimation ? '' : ''} overflow-x-auto flex flex-col justify-between items-start w-auto relative min-h-max shrink-0`}
+                    className={`tabs-container scroll-container ${props?.isAnimation ? 'md:pt-4xl' : ''} overflow-x-auto flex flex-col justify-between items-start w-auto relative min-h-max shrink-0`}
                 >
                     <div role="tablist" className="flex flex-row md:justify-start md:items-center min-w-full md:gap-x-0 gap-x-sm md:px-0 px-sm">
                         {props.tabs.map((tab, index, arr) => {

@@ -58,8 +58,7 @@ const PeopleCard: React.FC<PeopleCardProps> = (props) => {
       >
         {props?.imageSrc && (
           <div className="relative w-[31%] max-w-[195px] aspect-[195/169] shrink-0 overflow-hidden">
-            <Image
-              unoptimized
+            <Image sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
               src={props.imageSrc}
               alt={props?.imageAlt || ""}
               width={props?.imageWidth || 301}
@@ -91,7 +90,7 @@ const PeopleCard: React.FC<PeopleCardProps> = (props) => {
     <Link href={href} target={target} rel={rel} id="peopleHovered" type="button" className={`w-1/2 min-w-1/2 max-w-1/2 sm:w-1/3 sm:min-w-1/3 sm:max-w-1/3 md:w-1/4 md:min-w-1/4 md:max-w-1/4  cursor-pointer text-left px-xs min-h-0 flex-1 self-stretch group`}>
       <div className="relative h-full overflow-hidden">
         <div className="inner-people-card relative h-full group-hover:scale-120 transition-all duration-400 ease-in-out">
-          {props?.imageSrc && <Image unoptimized src={props?.imageSrc} alt={props?.imageAlt || ''} width={props?.imageWidth || 301} height={props?.imageHeight || 401} className="w-full h-full object-cover" style={{
+          {props?.imageSrc && <Image sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw" src={props?.imageSrc} alt={props?.imageAlt || ''} width={props?.imageWidth || 301} height={props?.imageHeight || 401} className="w-full h-full object-cover" style={{
             width: "clamp(200px, 25vw, 25vw)",
             height: "clamp(260px, 33vw, 33vw)",
           }}

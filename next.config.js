@@ -27,6 +27,9 @@ const nextConfig = {
   },
 
   images: {
+    formats: ['image/avif', 'image/webp'],
+    // Strapi media URLs are content-hashed (a new upload gets a new URL), so optimised copies can be kept for a year
+    minimumCacheTTL: 31536000,
     remotePatterns: [
       {
         protocol: "http",

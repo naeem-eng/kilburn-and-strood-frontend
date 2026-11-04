@@ -43,7 +43,7 @@ const LocationDetails: React.FC<LocationDetailsProps> = (props) => {
           </div>}
           <div className="md:ml-2xl flex-1 flex flex-col md:flex-col md:justify-start md:items-start relative">
               {props?.imageSrc && <div className="w-full h-full">
-                <Image unoptimized src={props?.imageSrc} alt={props?.imageAlt || ""} width={props?.imageWidth || 731} height={props?.imageHeight || 337} className="w-full h-full object-cover" />
+                <Image sizes="(min-width: 768px) 50vw, 100vw" src={props?.imageSrc} alt={props?.imageAlt || ""} width={props?.imageWidth || 731} height={props?.imageHeight || 337} className="w-full h-full object-cover" />
               </div>}
 
               <div className={`md:absolute bottom-0 -left-xl flex fex-row justify-stretch items-stretch md:w-fit`}>

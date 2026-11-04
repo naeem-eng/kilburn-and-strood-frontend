@@ -11,6 +11,7 @@ import { createIncrementalAnimationAttributes } from "@/components/helpers/anima
 import BodyMarkdown from "@/components/helpers/body-markdown/BodyMarkdown";
 import { colorParser, textSafeColor, textOnFillClass } from "@/parsers";
 
+import LazyVideo from "@/components/helpers/lazy-video/lazy-video";
 const LatestInsight: React.FC<LatestInsightProps> = (props) => {
   const isAnimation = props?.isAnimation || false;
   const isLightAnimation = props?.isLightAnimation || false;
@@ -93,8 +94,7 @@ const LatestInsight: React.FC<LatestInsightProps> = (props) => {
       }
       {props.mediaSrc &&
         <div className="relative col-[1/span_5] row-1 md:col-[1/span_4] md:row-[2/span_3] h-full -ml-(--padding-side)">
-          {props.media1Type === "image" && <Image
-            unoptimized
+          {props.media1Type === "image" && <Image sizes="(min-width: 768px) 50vw, 100vw"
             src={props.mediaSrc}
             alt={props.mediaAlt || ""}
             width={props.mediaWidth || 535}
@@ -108,13 +108,8 @@ const LatestInsight: React.FC<LatestInsightProps> = (props) => {
             data-mobile-middle='{"clip-path": "inset(0 0 0% 0)"}'
           />}
           {
-            props.media1Type === "video" && <video
+            props.media1Type === "video" && <LazyVideo
               src={props.mediaSrc}
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="auto"
               className="w-full h-full object-cover"
               data-animation-atoms
               data-from='{"clip-path": "inset(100% 0% 0%)"}'
@@ -149,14 +144,13 @@ const LatestInsight: React.FC<LatestInsightProps> = (props) => {
         className="col-span-1 row-1 relative h-full md:col-[span_8/-1] md:row-4 -ml-4 -mr-(--padding-side) overflow-clip md:min-h-0 md:max-h-full"
       >
         {props?.mediaBottomType === "image" && props.mediaSrcBottom &&
-          <Image
+          <Image sizes="(min-width: 768px) 50vw, 100vw"
             data-animation-atoms
             data-from='{"x": "100%"}'
             data-middle='{"x": "0%" }'
             data-to='{"x": "-100%"}'
             data-mobile-from='{"scaleY": "0"}'
             data-mobile-middle='{"scaleY": "1"}'
-            unoptimized
             src={props.mediaSrcBottom}
             alt={props.mediaAltBottom || ""}
             width={props.mediaWidthBottom || 535}
@@ -166,13 +160,8 @@ const LatestInsight: React.FC<LatestInsightProps> = (props) => {
         }
         {
           props?.mediaBottomType === "video" && props.mediaSrcBottom && 
-          <video 
+          <LazyVideo 
             src={props.mediaSrcBottom} 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
-            preload="auto" 
             className={`absolute inset-0 w-full mt-auto h-3/5 md:h-full object-cover`} />
         }
       </div>

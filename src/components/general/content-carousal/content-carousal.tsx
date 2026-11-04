@@ -7,6 +7,7 @@ import { LeftArrowIcon, RightArrowIcon } from "@/components/helpers/icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
+import LazyVideo from "@/components/helpers/lazy-video/lazy-video";
 const ContentCarousal: React.FC<ContentCarousalProps> = (props) => {
 
   const colsRefs = useRef<Array<HTMLDivElement>>([]);
@@ -218,15 +219,14 @@ const ContentCarousal: React.FC<ContentCarousalProps> = (props) => {
                         {
                           item?.mediaType === 'image' && item?.mediaSrc && showImage && (
                             <div className="overflow-hidden h-[40%] md:h-[46%] xl:h-[56%]">
-                              <Image draggable={false}
-                                unoptimized={true} src={item?.mediaSrc} alt={item?.mediaAlt || ''} width={731} height={337} className="w-full group-hover:scale-120 transition-all duration-600 ease-in-out h-full object-cover" />
+                              <Image sizes="(min-width: 768px) 50vw, 100vw" draggable={false} src={item?.mediaSrc} alt={item?.mediaAlt || ''} width={731} height={337} className="w-full group-hover:scale-120 transition-all duration-600 ease-in-out h-full object-cover" />
                             </div>
                           )
                         }
                         {
                           item?.mediaType === 'video' && item?.mediaSrc && showImage && (
                             <div className="">
-                              <video autoPlay loop muted playsInline aria-hidden="true" draggable={false} src={item?.mediaSrc} width={731} height={337} className="w-full  object-cover" />
+                              <LazyVideo aria-hidden="true" draggable={false} src={item?.mediaSrc} width={731} height={337} className="w-full  object-cover" />
                             </div>
                           )
                         }

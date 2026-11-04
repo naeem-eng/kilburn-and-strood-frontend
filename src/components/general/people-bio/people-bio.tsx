@@ -80,7 +80,7 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                   data-to='{"clip-path": "inset(0 0 0 100%)"}'
                   className="absolute top-1  md:bottom-0 right-0 w-full md:w-[70%]"
                 >
-                  <Image unoptimized src={props?.imageSrc} alt={props?.imageAlt || ''} width={props?.imageWidth || 731} height={props?.imageHeight || 337} className="w-full h-full object-cover" />
+                  <Image sizes="(min-width: 768px) 70vw, 100vw" loading="eager" fetchPriority="high" src={props?.imageSrc} alt={props?.imageAlt || ''} width={props?.imageWidth || 731} height={props?.imageHeight || 337} className="w-full h-full object-cover" />
                 </div>}
                 {/* profileImage */}
 
@@ -221,9 +221,7 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                             data-middle='{"clip-path": "inset(0 0% 0 0%)"}'
                             data-to='{"clip-path": "inset(inset(0 100% 0 0)"}'
                             className="overflow-hidden md:bottom-0 left-0 right-0 md:pl-xl md:w-[80%]">
-                          <Image 
-                            
-                            unoptimized src={props?.patternImageSrc} alt={props?.patternImageAlt || ''} width={props?.patternImageWidth || 731} height={props?.patternImageHeight || 337} className="w-full h-full object-cover" />
+                          <Image sizes="(min-width: 768px) 70vw, 100vw" src={props?.patternImageSrc} alt={props?.patternImageAlt || ''} width={props?.patternImageWidth || 731} height={props?.patternImageHeight || 337} className="w-full h-full object-cover" />
                         </div>}
                       </>
                     )

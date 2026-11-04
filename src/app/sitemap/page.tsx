@@ -22,7 +22,7 @@ const SitemapSection = ({ title, children, slug }: any) => {
       {title && <Link href={slug} className="font-modern-era-medium text-2md mb-4 hover:underline hover:text-bright-red transition-colors block">
         {title}
       </Link>}
-      {children &&<ul className="space-y-2 list-disc pl-5">
+      {children &&<ul className="space-y-2 dashList">
         {children}
       </ul>}
     </div>

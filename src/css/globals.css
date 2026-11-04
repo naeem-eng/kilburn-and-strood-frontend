@@ -453,6 +453,7 @@ body.blur-background::after {
   display: none;
 }
 
+/* K&S brand: bullets are dashes, not dots. The dash sits on the first line of a wrapped item. */
 .unorderedList {
   @apply mt-md text-md;
 
@@ -460,8 +461,8 @@ body.blur-background::after {
     @apply flex flex-row justify-start items-start my-md;
 
     &:before {
-      content: "";
-      @apply bg-[#4C7A9D] min-w-[2vw] w-[2vw] min-h-[2vw] h-[2vw] md:min-w-[.5vw] md:w-[.5vw] md:min-h-[.5vw] md:h-[.5vw] rounded-full mr-sm mt-0;
+      content: "-";
+      @apply shrink-0 text-dark-gray mr-sm;
     }
   }
 
@@ -469,15 +470,29 @@ body.blur-background::after {
     @apply mt-xs;
 
     li {
-      @apply flex flex-row justify-start items-center my-xs;
+      @apply flex flex-row justify-start items-start my-xs;
 
       &:before {
-        content: "";
-        @apply bg-[#A8A8A8] min-w-[2vw] w-[2vw] min-h-[2vw] h-[2vw] md:min-w-[.5vw] md:w-[.5vw] md:min-h-[.5vw] md:h-[.5vw] rounded-full mr-sm mt-0;
+        content: "-";
+        @apply shrink-0 text-dark-gray mr-sm;
       }
     }
   }
 
+}
+
+/* plain lists (e.g. the sitemap) with the same dash bullet */
+.dashList {
+  @apply list-none;
+
+  li {
+    @apply flex flex-row justify-start items-start;
+
+    &:before {
+      content: "-";
+      @apply shrink-0 text-dark-gray mr-xs;
+    }
+  }
 }
 
 .orderedList {

@@ -152,7 +152,7 @@ const TextImageSlider: React.FC<TextImageSliderProps> = (props) => {
           data-mobile-middle='{"y": "0%", "x": "0%" }'
           data-mobile-to='{"y": "-50%"}'
         >
-          <Image unoptimized={true} src={item.imageSrc} alt={item.imageAlt || ""} width={item?.imageWidth || 710} height={item?.imageHeight || 473} className="absolute inset-0 w-full h-full object-cover" />
+          <Image sizes="(min-width: 768px) 50vw, 100vw" src={item.imageSrc} alt={item.imageAlt || ""} width={item?.imageWidth || 710} height={item?.imageHeight || 473} className="absolute inset-0 w-full h-full object-cover" />
         </div>}
         <div className={
           `flex-1 flex gap-y-sm flex-col mt-2xl md:mt-0 md:mr-2xl px-sm md:px-0 transition-all md:pb-sm  ${textActive ? 'duration-500 opacity-100' : 'duration-300 transition-delay-1000 opacity-0'} ${activeIndex === index ? 'translate-y-0' : activeIndex > index ? 'translate-y-1/4 -translate-x-full' : '-translate-y-1/4 translate-x-full'}`

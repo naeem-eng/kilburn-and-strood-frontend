@@ -8,7 +8,7 @@ const GridCard: React.FC<GridCardProps> = (props) => {
     return (
       <Link href={props?.href || "#"} className="articalHover min-w-full w-full max-w-full sm:min-w-1/2 sm:w-1/2 sm:max-w-1/2 md:min-w-1/3 md:w-1/3 md:max-w-1/3 px-sm relative cursor-pointer text-left content-start">
           <div className="articalImageHover relative">
-              {props?.imageSrc && <Image unoptimized src={props.imageSrc} alt={props?.imageAlt || ''} width={props?.imageWidth || 731} height={props?.imageHeight || 337} className="w-full" />}
+              {props?.imageSrc && <Image sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" src={props.imageSrc} alt={props?.imageAlt || ''} width={props?.imageWidth || 731} height={props?.imageHeight || 337} className="w-full" />}
           </div>
           <div className="mt-sm">
               {props?.tag && <Text className="text-medium-gray mb-2xs">{props.tag}</Text>}

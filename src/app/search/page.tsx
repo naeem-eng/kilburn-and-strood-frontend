@@ -136,7 +136,6 @@ const SearchPage = () => {
                 <div className='flex flex-row justify-start items-center'>
                     {headerPhoto && <div className='min-w-[20%] max-w-[20%] flex-1'>
                         <Image
-                            unoptimized={true}
                             src={headerPhoto}
                             alt={title}
                             width={105}

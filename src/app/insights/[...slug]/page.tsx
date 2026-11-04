@@ -21,10 +21,15 @@ import Link from 'next/link';
 import RightArrowIcon from '@/components/helpers/icons/rightarrow-icon/rightarrow-icon';
 import { getInTouchParser } from '@/parsers/get-in-touch-parser/get-in-touch-parser';
 import GetInTouch from '@/components/general/get-in-touch/get-in-touch';
-
-
+export const dynamic = 'force-static';
+export const fetchCache = 'force-cache';
 export const revalidate = 3600;
 
+// No list at build time: each page renders on its first visit, then is served from the cache
+// (cleared by the Strapi webhook). Without this, draftMode() made every visit a fresh render.
+export async function generateStaticParams() {
+  return [];
+}
 export async function generateMetadata({
   params,
 }: {
@@ -110,11 +115,13 @@ const Article = async ({
     isPreview: isEnabled,
   });
 
+  console.log(resolvedParams.slug, !page, {page});
 
   if (!page) notFound();
 
   const data = page;
   const sections = await withVideoTranscripts(data?.sections);
+  console.log({data});
 
   const speakers = speakerParser(data?.author?.length ? data?.author : data?.people);
   const guestSpeakers = guestSpeakerParser(data?.guestSpeakers);

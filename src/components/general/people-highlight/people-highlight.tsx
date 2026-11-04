@@ -362,8 +362,7 @@ const PeopleHighlight: React.FC<PeopleHighlightProps> = (props) => {
         {/* leftBox */}
         {/* rightBottomPatternBox */}
         {item?.imageSrc && <div className="relative col-span-full md:col-[span_8/-1] row-[1/span_2] md:row-[1/-1] h-full -mr-(--padding-side) md:mt-0">
-          <Image
-            unoptimized
+          <Image sizes="(min-width: 768px) 33vw, 100vw"
             src={item?.imageSrc}
             alt={item?.imageAlt || ''}
             width={item?.imageWidth || 731}
@@ -381,8 +380,7 @@ const PeopleHighlight: React.FC<PeopleHighlightProps> = (props) => {
 
         {/* leftBottomPatternBox */}
         {item?.patternImageSrc && <div className="relative col-span-full h-full md:col-span-4 row-[span_2/-1] md:row-2 -mx-(--padding-side) md:ml-0 md:-mr-5 overflow-clip">
-          <Image
-            unoptimized
+          <Image sizes="(min-width: 768px) 33vw, 100vw"
             src={item?.patternImageSrc}
             // presentational image, no alt text needed
             alt=""

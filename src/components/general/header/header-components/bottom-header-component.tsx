@@ -192,7 +192,7 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                                         {/*TODO: video component react video */}
                                     </> : 
                                     <div className="w-full">
-                                        <Image unoptimized src={ctaContainer.ctaMedia} alt=""  width={600} height={400} className="w-full max-w-none object-cover" />
+                                        <Image sizes="(min-width: 768px) 25vw, 100vw" src={ctaContainer.ctaMedia} alt=""  width={600} height={400} className="w-full max-w-none object-cover" />
                                     </div>
                                 )}
 

@@ -13,6 +13,7 @@ import BodyMarkdown from "@/components/helpers/body-markdown/BodyMarkdown";
 import ImageReveal from "@/components/interactive/image-reveal/ImageReveal";
 
 
+import LazyVideo from "@/components/helpers/lazy-video/lazy-video";
 const CaseStudiesTypeOne: React.FC<CaseStudiesTypeOneProps> = (props) => {
   const isAnimation = props?.isAnimation || false;
   const isLightAnimation = props?.isLightAnimation || false;
@@ -75,8 +76,7 @@ const CaseStudiesTypeOne: React.FC<CaseStudiesTypeOneProps> = (props) => {
         className="col-span-2 -ml-(--padding-side) -mr-4  min-h-0 max-h-[80%]">
         {
           props?.media2Type === "image" && props?.media2Src &&
-          <Image
-            unoptimized
+          <Image sizes="(min-width: 768px) 50vw, 100vw"
             src={props?.media2Src}
             alt={props?.media2Alt || ''}
             width={props?.media2Width || 0}
@@ -86,13 +86,8 @@ const CaseStudiesTypeOne: React.FC<CaseStudiesTypeOneProps> = (props) => {
         }
         {
           props?.media2Type === "video" && props?.media2Src &&
-          <video
+          <LazyVideo
             src={props?.media2Src}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
             className="w-full object-cover h-full object-center max-h-[25rem] md:max-h-none"
           />
         }
@@ -120,8 +115,7 @@ const CaseStudiesTypeOne: React.FC<CaseStudiesTypeOneProps> = (props) => {
             />
           )
            :
-            props?.mediaSrc && <Image
-              unoptimized
+            props?.mediaSrc && <Image sizes="(min-width: 768px) 50vw, 100vw"
               src={props?.mediaSrc}
               alt={props?.mediaAlt || ''}
               width={props?.mediaWidth || 0}
@@ -132,13 +126,8 @@ const CaseStudiesTypeOne: React.FC<CaseStudiesTypeOneProps> = (props) => {
 
         {
           props?.media1Type === "video" && props?.mediaSrc &&
-          <video
+          <LazyVideo
             src={props?.mediaSrc}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
             className="w-full max-w-none max-h-[33rem] xl:max-h-[85vh] object-cover min-h-full"
           />
         }

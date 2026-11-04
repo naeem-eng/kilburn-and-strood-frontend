@@ -9,6 +9,7 @@ import { FractalGlass } from "@/components/interactive/fractal-glass";
 
 import { Fragment, memo, useEffect, useMemo, useState } from "react";
 
+import LazyVideo from "@/components/helpers/lazy-video/lazy-video";
 const Services: React.FC<ServicesProps> = (props) => {
   const isAnimation = props?.isAnimation || false;
   const isLightAnimation = props?.isLightAnimation || false;
@@ -65,7 +66,7 @@ const Services: React.FC<ServicesProps> = (props) => {
                      edgePadding={0}
                      className="w-full h-full"
               >
-                  <Image unoptimized src={props?.imageSrc} alt={props?.imageAlt || ''} width={props?.imageWidth || 1200} height={props?.imageHeight || 800} className="w-full h-full object-cover" />
+                  <Image sizes="(min-width: 768px) 50vw, 100vw" src={props?.imageSrc} alt={props?.imageAlt || ''} width={props?.imageWidth || 1200} height={props?.imageHeight || 800} className="w-full h-full object-cover" />
               </FractalGlass>
               <div className="absolute h-full bottom-0 left-0 right-0" style={{
                 background: "linear-gradient(86deg, rgba(0, 0, 0, 0.60) 23.27%, rgba(0, 0, 0, 0.00) 85.75%)"
@@ -95,7 +96,7 @@ const Services: React.FC<ServicesProps> = (props) => {
           data-middle='{"y": "0%"}'
           data-to='{"y": "-100%"}'
         >
-          <Image unoptimized src={props?.image2Src} alt={props?.image2Alt || ''} width={props?.image2Width || 613} height={props?.image2Height || 129} className="w-[80%] h-auto block ml-auto" />
+          <Image sizes="(min-width: 768px) 50vw, 100vw" src={props?.image2Src} alt={props?.image2Alt || ''} width={props?.image2Width || 613} height={props?.image2Height || 129} className="w-[80%] h-auto block ml-auto" />
         
         </div>}
 
@@ -119,8 +120,8 @@ const Services: React.FC<ServicesProps> = (props) => {
                                 data-middle='{"y": "0%"}'
                                 data-to={`{"y": "-100%"}`}
                                 >
-                                  {props?.media3Type === "image" && <Image unoptimized={Boolean(props?.media3Src)} src={props?.media3Src || "/images/services-list-end.png"} alt={props?.media3Alt || "Services Pattern"} width={props?.media3Width || 613} height={props?.media3Height || 129} className="w-full h-full object-cover" />}
-                                  {props?.media3Type === "video" && <video src={props?.media3Src} autoPlay loop muted playsInline preload="auto" className="w-full h-full object-cover" />}
+                                  {props?.media3Type === "image" && <Image sizes="(min-width: 768px) 50vw, 100vw" src={props?.media3Src || "/images/services-list-end.png"} alt={props?.media3Alt || "Services Pattern"} width={props?.media3Width || 613} height={props?.media3Height || 129} className="w-full h-full object-cover" />}
+                                  {props?.media3Type === "video" && <LazyVideo src={props?.media3Src} className="w-full h-full object-cover" />}
                                 </div>}
                         </Fragment>
                       // } else {
@@ -203,7 +204,7 @@ const Services: React.FC<ServicesProps> = (props) => {
             data-middle='{"y": "0%"}'
             data-to={`{"y": "-100%"}`}
             >
-              <Image unoptimized={Boolean(props?.image3Src)} src={props?.image3Src || "/images/services-list-end.png"} alt={props?.image3Alt || "Services Pattern"} width={props?.image3Width || 613} height={props?.image3Height || 129} className="w-full h-full object-cover" />
+              <Image sizes="(min-width: 768px) 50vw, 100vw" src={props?.image3Src || "/images/services-list-end.png"} alt={props?.image3Alt || "Services Pattern"} width={props?.image3Width || 613} height={props?.image3Height || 129} className="w-full h-full object-cover" />
             </div>}
           </>} */}
          

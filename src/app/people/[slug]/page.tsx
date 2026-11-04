@@ -19,9 +19,15 @@ import FullPageSlider from '@/components/interactive/fullpage/full-pageslider';
 import { getSeoObject } from '@/utils/utils';
 import GetInTouch from '@/components/general/get-in-touch/get-in-touch';
 import { getInTouchParser } from '@/parsers/get-in-touch-parser/get-in-touch-parser';
+export const dynamic = 'force-static';
+export const fetchCache = 'force-cache';
+export const revalidate = 3600;
 
- export const revalidate = 3600;
-
+// No list at build time: each page renders on its first visit, then is served from the cache
+// (cleared by the Strapi webhook). Without this, draftMode() made every visit a fresh render.
+export async function generateStaticParams() {
+  return [];
+}
 export async function generateMetadata({
   params,
 }: {

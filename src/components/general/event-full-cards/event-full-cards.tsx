@@ -49,7 +49,7 @@ const EventFullCards: React.FC<EventFullCardsProps> = (props) => {
       return (
         <>
            <div className="relative flex w-full min-w-full md:w-[50%] md:min-w-[50%]">
-                {props?.imageSrc && <Image unoptimized src={props.imageSrc} alt={props?.imageAlt || ""} width={props.imageWidth || 731} height={props.imageHeight || 337} className="w-full object-cover" />}
+                {props?.imageSrc && <Image sizes="(min-width: 768px) 50vw, 100vw" src={props.imageSrc} alt={props?.imageAlt || ""} width={props.imageWidth || 731} height={props.imageHeight || 337} className="w-full object-cover" />}
                 
                 <div className={`min-w-[7%] w-[7%] absolute right-0 top-0 bottom-0 bg-[var(--dynamic-colors)]`} style={{ "--dynamic-colors": colorParser(props?.color || 'bright-red') } as any}></div>
 

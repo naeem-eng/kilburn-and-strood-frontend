@@ -11,6 +11,7 @@ import { createIncrementalAnimationAttributes } from "@/components/helpers/anima
 import BodyMarkdown from "@/components/helpers/body-markdown/BodyMarkdown";
 import React, { useRef, useEffect } from "react";
 
+import LazyVideo from "@/components/helpers/lazy-video/lazy-video";
 const CaseStudiesTypeTwo: React.FC<CaseStudiesTypeTwoProps> = (props) => {
 
   type AnimatedFieldKey = 'title' | 'button' | 'text'
@@ -72,9 +73,9 @@ const CaseStudiesTypeTwo: React.FC<CaseStudiesTypeTwoProps> = (props) => {
           data-mobile-middle='{"clip-path": "inset(0 0% 0 0%)"}'
           data-mobile-to='{"clip-path": "inset(0 100% 0 0%)"}'
           className="w-[80vw] h-full relative right-0 top-0 bottom-0 self-end">
-          {props?.media1Type === "image" && props?.mediaSrc && <Image unoptimized src={props?.mediaSrc} alt={props?.mediaAlt || ""} width={props?.mediaWidth || 1197} height={props?.mediaHeight || 898} className="w-full max-w-none object-cover h-full max-h-[100vh]" />
+          {props?.media1Type === "image" && props?.mediaSrc && <Image sizes="(min-width: 768px) 50vw, 100vw" src={props?.mediaSrc} alt={props?.mediaAlt || ""} width={props?.mediaWidth || 1197} height={props?.mediaHeight || 898} className="w-full max-w-none object-cover h-full max-h-[100vh]" />
           }
-          {props?.media1Type === "video" && props?.mediaSrc && <video src={props?.mediaSrc} autoPlay loop muted playsInline preload="auto" className="w-full max-w-none object-cover h-full max-h-[100vh]" />
+          {props?.media1Type === "video" && props?.mediaSrc && <LazyVideo src={props?.mediaSrc} className="w-full max-w-none object-cover h-full max-h-[100vh]" />
           }
         </div>}
 
@@ -89,10 +90,10 @@ const CaseStudiesTypeTwo: React.FC<CaseStudiesTypeTwoProps> = (props) => {
               data-to='{"y": "-150%"}'
               className="w-full h-full max-w-full">
               {
-                props?.media2Type === "image" && props?.media2Src && <Image unoptimized src={props?.media2Src} alt={props?.media2Alt || "Image 2"} width={props?.media2Width || 496} height={props?.media2Height || 301} className="w-full max-w-full object-cover min-h-[15%]" />
+                props?.media2Type === "image" && props?.media2Src && <Image sizes="(min-width: 768px) 50vw, 100vw" src={props?.media2Src} alt={props?.media2Alt || "Image 2"} width={props?.media2Width || 496} height={props?.media2Height || 301} className="w-full max-w-full object-cover min-h-[15%]" />
               }
               {
-                props?.media2Type === "video" && props?.media2Src && <video src={props?.media2Src} autoPlay loop muted playsInline preload="auto" className="w-full max-w-full object-cover min-h-[15%]" />
+                props?.media2Type === "video" && props?.media2Src && <LazyVideo src={props?.media2Src} className="w-full max-w-full object-cover min-h-[15%]" />
               }
             </div>}
             <div
