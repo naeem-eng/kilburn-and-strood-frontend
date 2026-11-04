@@ -110,13 +110,13 @@ const Article = async ({
     isPreview: isEnabled,
   });
 
-  console.log(resolvedParams.slug, !page, {page});
+  // console.log(resolvedParams.slug, !page, {page});
 
   if (!page) notFound();
 
   const data = page;
   const sections = await withVideoTranscripts(data?.sections);
-  console.log({data});
+  // console.log({data});
 
   const speakers = speakerParser(data?.author?.length ? data?.author : data?.people);
   const guestSpeakers = guestSpeakerParser(data?.guestSpeakers);
