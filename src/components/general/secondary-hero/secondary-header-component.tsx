@@ -78,7 +78,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                             >
                                 {props?.goBackCta?.text}
                             </Button>}
-                        {(props?.title || props?.text) && <div className="mb-auto">
+                        {(props?.title || props?.text) && <div className="mt-auto">
                             {props?.title &&
                                 <TitleMd as="h1" className="" attributes={{ ...getAnimationAttributes('title'), ...getTabletAnimationAttributes('title'), ...getMobileAnimationAttributes('title') }}>
                                     {props?.title}

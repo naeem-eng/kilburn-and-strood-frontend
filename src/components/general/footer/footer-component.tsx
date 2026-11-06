@@ -201,9 +201,9 @@ const FooterComponent = (props: FooterComponentProps) => {
                                             return (
                                                 <Button key={index} href={item.link || '#'} type="text" dynamicIconColor={`var(--color-dark-purple)`}
                                                     outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
-                                                    buttonClassName="mb-xs text-md! font-modern-era-medium text-dark-gray! "
+                                                    buttonClassName="mb-xs sm:mb-0 font-modern-era-medium text-dark-gray!"
                                                 >
-                                                    <Small className="text-inherit font-modern-era!">
+                                                    <Small className="text-inherit font-modern-era!" textSize="text-xs! md:text-xs!">
                                                         {item.text}
                                                     </Small>
                                                 </Button>

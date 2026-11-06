@@ -81,17 +81,17 @@ const Pages = async ({
         },
       contact: { populate: '*' }
     },
-    specificPopulate: {
-      '/api/offices': {
-        key_contacts: {
-          populate: {
-            people_roles: { populate: '*' },
-            profile_photo: { populate: '*' }
-          },
-        },
+    // specificPopulate: {
+    //   '/api/offices': {
+    //     key_contacts: {
+    //       populate: {
+    //         people_roles: { populate: '*' },
+    //         profile_photo: { populate: '*' }
+    //       },
+    //     },
         
-      }
-    },
+    //   }
+    // },
     isPreview: isPreview, // ← no draftMode
   });
 
