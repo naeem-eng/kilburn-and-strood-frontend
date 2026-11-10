@@ -60,6 +60,17 @@ export const GRID_FILTERS: Record<string, FilterConfig> = {
             Casestudies: [{ relation: "sectors", field: "name" }],
         },
     },
+    "Services": {
+        key: "services",
+        label: "Services",
+        // services are labelled by name (their title is empty)
+        options: { url: "/api/services", fields: ["name"], populate: { sectors: { fields: ["title"] } } },
+        fields: {
+            Insights: [{ relation: "services", field: "name" }],
+            Events: [{ relation: "services", field: "name" }],
+            Casestudies: [{ relation: "services", field: "name" }],
+        },
+    },
     "Sub Sectors": {
         key: "sub_sectors",
         label: "Sub Sectors",

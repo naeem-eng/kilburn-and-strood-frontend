@@ -1,6 +1,7 @@
 import articleHeaderparser from "./article-header-parser";
 import articleHeroParser from "./article-hero-parser";
 import bodyParser from "./body-parser";
+import bodyMenuParser from "./body-menu-parser";
 import caseStudyHighlightParser from "./casestudy-highlight-parser";
 import featuredBlocksParser from "./featured-blocks-parser";
 import getIntTouchSectionParser from "./get-in-touch-section-parser";
@@ -45,6 +46,7 @@ const components = [
         "components.article-hero": articleHeroParser,
         "components.inline-image-and-video": inlineImageAndVideoParser,
         "components.newsletter": newsletterParser,
+        "components.body-menu": bodyMenuParser,
         "components.stats-block": statsBlockParser,
         "components.video": videoParser,
         "components.grid": gridParser

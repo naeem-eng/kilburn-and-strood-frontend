@@ -1,2 +1,1 @@
-
-export { default } from './newsletter-parser';
+export { default, globalNewsletterParser } from './newsletter-parser';

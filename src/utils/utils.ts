@@ -170,6 +170,7 @@ export const getComponentsPopulateObj = ():{[key:string]:{
     "components.article-hero",
     "components.inline-image-and-video",
     "components.newsletter",
+    "components.body-menu",
     "components.stats-block",
     "components.video",
     "components.grid"
@@ -212,6 +213,18 @@ export const getComponentsPopulateObj = ():{[key:string]:{
           media_2: {
             populate: "*"
           },
+        }
+      };
+      return;
+    }
+    if(component === "components.body-menu") {
+      todo[component] = {
+        populate: {
+          items: { populate: "*" },
+          cta: { populate: "*" },
+          color: { populate: "*" },
+          media_1: { populate: "*" },
+          media_2: { populate: "*" },
         }
       };
       return;

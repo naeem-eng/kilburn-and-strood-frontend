@@ -6,6 +6,7 @@ const urls = [
   "/api/services",
   "/api/sector-pages",
   "/api/offices",
+  "/api/casestudies",
   // "/api/articles",
 ];
 

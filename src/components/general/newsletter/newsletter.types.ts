@@ -3,8 +3,9 @@ export type NewsletterProps = {
     isAnimation?: boolean;
     index?: number;
     color?: 'dark-purple' | 'dark-yellow' | 'bright-red' | 'dark-blue' | 'dark-green' | 'dark-red';
-    title?: any;
-    text?: any;
+    eyebrow?: string;
+    title?: string;
+    text?: string;
     cta?: {
         text?: string;
         link?: string;
