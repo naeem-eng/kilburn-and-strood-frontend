@@ -16,9 +16,13 @@ import TestimonialSlider from '@/components/general/testimonial-slider';
 import FullCta from '@/components/general/full-cta';
 import { draftMode } from 'next/headers';
 import FullPageSlider from '@/components/interactive/fullpage/full-pageslider';
-import { getSeoObject } from '@/utils/utils';
+import { getComponentsPopulateObj, getSeoObject } from '@/utils/utils';
 import GetInTouch from '@/components/general/get-in-touch/get-in-touch';
 import { getInTouchParser } from '@/parsers/get-in-touch-parser/get-in-touch-parser';
+import PeopleGetInTouch from '@/components/general/people-get-in-touch';
+import peopleGetInTouchParser from '@/parsers/people-get-in-touch-parser';
+import Newsletter from '@/components/general/newsletter';
+import { globalNewsletterParser } from '@/parsers/section-parser/newsletter-parser';
 export const dynamic = 'force-static';
 export const fetchCache = 'force-cache';
 export const revalidate = 3600;
@@ -93,6 +97,14 @@ const People = async ({
       "header_photo": {
         populate: "*"
       },
+      "profile_photo": {
+        populate: "*"
+      },
+      "global_newsletters": {
+        populate: {
+          newsletter: getComponentsPopulateObj()['components.newsletter'],
+        },
+      },
       "testimonial": {
         populate: "*"
       },
@@ -121,6 +133,8 @@ const People = async ({
   const getFullCtaParser = fullCtaParser(data?.fullCta);
   const getPeopleBioParser = peopleBioParser(data);
   const contactParser = getInTouchParser(data?.contact);
+  const peopleGetInTouch = peopleGetInTouchParser(data);
+  const globalNewsletter = globalNewsletterParser(data?.globalNewsletters);
 
 
 
@@ -178,6 +192,8 @@ const People = async ({
 
             {getPeopleBioParser?.testimonialsContainer && <TestimonialSlider {...getPeopleBioParser?.testimonialsContainer} isAnimation={false} />}
 
+            {peopleGetInTouch && <PeopleGetInTouch {...peopleGetInTouch} />}
+            {globalNewsletter && <Newsletter {...globalNewsletter.props} />}
             {getFullCtaParser && <FullCta {...getFullCtaParser.props} />}
             {contactParser && <GetInTouch {...contactParser.props} />}
         </FullPageSlider>

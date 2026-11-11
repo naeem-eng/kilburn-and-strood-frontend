@@ -96,6 +96,7 @@ const Pages = async ({
     specificPopulate: {
       '/api/pages': globalNewslettersPopulate,
       '/api/services': globalNewslettersPopulate,
+      '/api/sector-pages': globalNewslettersPopulate,
       // case studies have no full_cta field (qs drops undefined keys)
       '/api/casestudies': { ...globalNewslettersPopulate, full_cta: undefined },
       '/api/offices': {

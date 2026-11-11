@@ -57,7 +57,7 @@ const BodyMenu: React.FC<BodyMenuProps> = (props) => {
                         data-from='{"x": "-100%"}'
                         data-middle='{"x": "0%"}'
                         data-to='{"x": "-100%"}'
-                        className="text-container w-[93%] md:w-auto z-2 col-span-full md:col-[1/span_6] row-1 -ml-(--space-3xl) md:min-h-[50vh] md:justify-center bg-white py-xl md:pt-3xl md:pb-(--padding-top) px-sm md:px-(--space-3xl) flex flex-col gap-y-md min-h-0 body-menu-container overflow-clip"
+                        className="text-container w-[93%] md:w-auto z-2 col-span-full md:col-[1/span_5] row-1 -ml-(--space-3xl) md:min-h-[40vh] md:justify-center bg-white py-xl md:pt-3xl md:pb-(--padding-top) px-sm md:px-(--space-3xl) flex flex-col gap-y-md min-h-0 body-menu-container overflow-clip"
                     >
                         {props?.title && (
                             <TitleMd
@@ -72,7 +72,7 @@ const BodyMenu: React.FC<BodyMenuProps> = (props) => {
                                 color={color}
                                 components={{
                                     p: ({ children }) => <Text textSize="text-base"
-                                        className="xl:w-[80%] mb-sm last:mb-0"
+                                        className="mb-sm last:mb-0"
                                         attributes={{ ...getAnimationAttributes("text"), ...getMobileAnimationAttributes("text") }}>{children}</Text>,
                                 }}
                             >{props.text}</BodyMarkdown>
@@ -90,7 +90,7 @@ const BodyMenu: React.FC<BodyMenuProps> = (props) => {
 
                     {items.length > 0 && (
                         <div
-                            className="content-right z-1 col-span-full md:col-[span_6/-1] md:row-[1/span_2] -ml-4 -mr-(--padding-side) md:mr-0 self-start bg-dark-gray px-xl pb-xl pt-2xl overflow-clip"
+                            className="content-right z-1 col-span-full md:col-[span_7/-1] md:row-[1/span_2] -ml-4 -mr-(--padding-side) md:mr-0 self-start bg-dark-gray px-xl pb-xl pt-2xl overflow-clip md:h-[100%]"
                             data-animation-atoms
                             data-from='{"x": "20%"}'
                             data-middle='{"x": "0%"}'
@@ -129,7 +129,7 @@ const BodyMenu: React.FC<BodyMenuProps> = (props) => {
                     )}
 
                     {props?.media1?.url && (
-                        <div className="media-bottom md:row-span-full col-span-full md:col-[1/span_8] h-full -ml-(--space-3xl)">
+                        <div className="media-bottom md:row-span-full col-span-full md:col-[1/span_5] h-full md:h-auto md:aspect-[624/337] md:self-end overflow-hidden -ml-(--space-3xl)">
                             <Image
                                 sizes="(min-width: 768px) 66vw, 100vw"
                                 src={props.media1.url}
@@ -146,7 +146,7 @@ const BodyMenu: React.FC<BodyMenuProps> = (props) => {
                     )}
                     {props?.media2?.url && (
                         <div
-                            className="media-side absolute top-0 right-0 w-12 md:w-(--space-3xl)"
+                            className="media-side absolute top-0 right-0 w-12 md:w-(--space-3xl) md:h-[50%] overflow-hidden"
                             data-animation-atoms
                             data-from='{"clip-path": "inset(0% 0 100%)"}'
                             data-middle='{"clip-path": "inset(0% 0 0%)"}'
@@ -157,7 +157,7 @@ const BodyMenu: React.FC<BodyMenuProps> = (props) => {
                             data-mobile-start="top 65%"
                             data-mobile-duration="0.4"
                         >
-                            <Image src={props.media2.url} alt={props.media2.alt || ""} width={props.media2.width || 67} height={props.media2.height || 338} className="w-full" />
+                            <Image src={props.media2.url} alt={props.media2.alt || ""} width={props.media2.width || 67} height={props.media2.height || 338} className="w-full md:h-full md:object-cover" />
                         </div>
                     )}
                 </div>
