@@ -1,14 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { Text, TitleLg, TitleMd, TitleSm, TitleXl } from "@/components/helpers/typography";
+import { Text, TitleLg } from "@/components/helpers/typography";
 import { colorParser, textColorParser, textSafeColor } from "@/parsers";
 import { Button } from "@/components/helpers/buttons";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import remarkBreak from 'remark-breaks';
 import BodyMarkdown from "@/components/helpers/body-markdown/BodyMarkdown";
-import React, { useMemo, useEffect, useState, memo } from "react";
+import React, { memo } from "react";
 import { NewsletterProps } from "./newsletter.types";
 
 
@@ -17,16 +14,19 @@ import { NewsletterProps } from "./newsletter.types";
 const Newsletter: React.FC<NewsletterProps> = (props) => {
   const isAnimation = props?.isAnimation || false;
   const isLightAnimation = props?.isLightAnimation || false;
-  
+  const color = props?.color || 'dark-blue';
+  const colorVars = {
+    "--dynamic-colors": colorParser(color),
+    "--dynamic-text-colors": textColorParser(color),
+  } as React.CSSProperties;
 
-  console.log({props})
-  
   return (
     <div
       data-animation={isAnimation}
       data-light-animation={isLightAnimation}
       data-animation-component
-      className={`${isAnimation || isLightAnimation ? 'invisible' : ''} h-full md:min-h-screen md:h-screen w-full relative flex flex-col md:flex-row py-[40px] sm:py-[10vh] justify-center items-start bg-white overflow-hidden`} style={{
+      data-section-type="newsletter"
+      className={`${isAnimation || isLightAnimation ? 'invisible' : ''} h-full md:min-h-screen md:h-screen w-full relative flex flex-col md:flex-row px-sm md:px-xl py-[40px] sm:py-[10vh] justify-center items-start bg-white overflow-hidden`} style={{
         zIndex: props.index
       }}>
 
@@ -56,50 +56,46 @@ const Newsletter: React.FC<NewsletterProps> = (props) => {
             <div className="p-[24px] md:p-[2.5vw] flex-1  max-w-[90%] min-h-0">
               <div className="text-content flex flex-col gap-y-4">
                   
+                  {props?.eyebrow && (
                     <Text
                       textSize="text-base"
                       className="text-[var(--dynamic-text-colors)]"
-                      style={{
-                        "--dynamic-colors": colorParser(props?.color || 'dark-blue'),
-                                        "--dynamic-text-colors": textColorParser(props?.color || 'dark-blue')
-                      }}
+                      style={colorVars}
                     >
-                      Newsletter
+                      {props.eyebrow}
                     </Text>
-                  {(props?.title ) && (
+                  )}
+                  {props?.title && (
                     <TitleLg
-                      className="[&_span]:text-[var(--dynamic-text-colors)]"
-                      style={{
-                        "--dynamic-colors": colorParser(props?.color || 'dark-blue'),
-                                        "--dynamic-text-colors": textColorParser(props?.color || 'dark-blue')
-                      }}>
-                      {props?.title} 
+                      className="whitespace-pre-line [&_span]:text-[var(--dynamic-text-colors)]"
+                      style={colorVars}>
+                      {props.title}
                     </TitleLg>
                   )}
                   {props.text &&
                     <BodyMarkdown
-                      color={props?.color || "bright-red"}
+                      color={color}
                       components={{
+                        h1: ({ children }) => <TitleLg>{children}</TitleLg>,
+                        h2: ({ children }) => <TitleLg>{children}</TitleLg>,
+                        h3: ({ children }) => <TitleLg>{children}</TitleLg>,
                         p: ({ children }) => <Text
                           as={"p"}
                           textSize="text-base"
                         >{children}</Text>,
                       }}
-                    >{props?.text}</BodyMarkdown>
+                    >{props.text}</BodyMarkdown>
                   }
     
                 </div>
-                {props?.cta && (
+                {props?.cta?.text && (
                   <div className="w-full link mt-5" >
                     <Button
                       href={props?.cta?.link}
                       icon='right-arrow'
                       type={"text"}
-                      textColor={
-                        `text-${textSafeColor(props?.color)}`
-                      }
-                      dynamicIconColor={colorParser(props?.color)}
-    
+                      textColor={`text-${textSafeColor(color)}`}
+                      dynamicIconColor={colorParser(color)}
                     >
                       {props?.cta?.text}
                               </Button>
@@ -107,9 +103,7 @@ const Newsletter: React.FC<NewsletterProps> = (props) => {
                           )}
               
             </div>
-            <div className={`w-[10%] h-full`} style={{
-              backgroundColor: colorParser(props?.color)
-            } as any }/>
+            <div className="w-[10%] h-full" style={{ backgroundColor: colorParser(color) || undefined }} />
           </div>
         </div>
         {/*  */}

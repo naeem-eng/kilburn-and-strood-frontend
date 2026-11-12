@@ -19,6 +19,8 @@ const nextConfig = {
 
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Only allowed quality: every <Image> (default 75) snaps to the closest value, so the whole site renders at 90
+    qualities: [90],
     // Strapi media URLs are content-hashed (a new upload gets a new URL), so optimised copies can be kept for a year
     minimumCacheTTL: 31536000,
     remotePatterns: [

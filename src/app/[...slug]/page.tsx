@@ -5,6 +5,8 @@ import KeyContacts from '@/components/general/key-contacts';
 import { FullPageSlider } from '@/components/interactive/fullpage';
 import Sections from '@/components/sections';
 import { fullCtaParser } from '@/parsers/fullcta-parser/fullcta-parser';
+import { globalNewsletterParser } from '@/parsers/section-parser/newsletter-parser';
+import Newsletter from '@/components/general/newsletter';
 import { getInTouchParser } from '@/parsers/get-in-touch-parser/get-in-touch-parser';
 import { getKeyContactsParser } from '@/parsers/key-contact-parser/key-contact-parser';
 import relatedContentParser from '@/parsers/related-content-parser';
@@ -19,6 +21,16 @@ import { notFound } from 'next/navigation';
 export const dynamic = 'force-static';
 export const fetchCache = 'force-cache'; // Forces all fetches to cache, even with Auth headers
 export const revalidate = 3600; 
+
+// Global newsletter relation, populated like full_cta. Only collections that have the
+// `global_newsletters` field get it: an unknown populate key makes Strapi return 400.
+const globalNewslettersPopulate = {
+  global_newsletters: {
+    populate: {
+      newsletter: getComponentsPopulateObj()['components.newsletter'],
+    },
+  },
+};
 
 export async function generateStaticParams() {
   const pages = await strapiFetch('/api/pages', {
@@ -81,17 +93,22 @@ const Pages = async ({
         },
       contact: { populate: '*' }
     },
-    // specificPopulate: {
-    //   '/api/offices': {
-    //     key_contacts: {
-    //       populate: {
-    //         people_roles: { populate: '*' },
-    //         profile_photo: { populate: '*' }
-    //       },
-    //     },
+    specificPopulate: {
+      '/api/pages': globalNewslettersPopulate,
+      '/api/services': globalNewslettersPopulate,
+      '/api/sector-pages': globalNewslettersPopulate,
+      // case studies have no full_cta field (qs drops undefined keys)
+      '/api/casestudies': { ...globalNewslettersPopulate, full_cta: undefined },
+      '/api/offices': {
+        key_contacts: {
+          populate: {
+            people_roles: { populate: '*' },
+            profile_photo: { populate: '*' }
+          },
+        },
         
-    //   }
-    // },
+      }
+    },
     isPreview: isPreview, // ← no draftMode
   });
 
@@ -107,6 +124,7 @@ const Pages = async ({
   const isAnimation      = data?.type === 'interactive' && !hasGridSection(data?.sections) && !data?.allowCarousal;
   const isLightAnimation = !isAnimation;
   const getFullCtaParser = fullCtaParser(data?.fullCta);
+  const globalNewsletter = globalNewsletterParser(data?.globalNewsletters);
   const contactParser    = getInTouchParser(data?.contact);
   const keyContactsParser = getKeyContactsParser(data?.keyContacts);
   const peopleParser = getKeyContactsParser(data?.people, data?.peopleTitle);
@@ -140,6 +158,13 @@ const Pages = async ({
         {peopleParser && <KeyContacts {...peopleParser} />}
         {contactParser && <GetInTouch {...contactParser.props} />}
 
+        {globalNewsletter && (
+          <Newsletter
+            {...globalNewsletter.props}
+            isAnimation={isAnimation}
+            isLightAnimation={isLightAnimation}
+          />
+        )}
         {getFullCtaParser && <FullCta isAnimation={isAnimation} {...getFullCtaParser.props} />}
       </FullPageSlider>
     </div>

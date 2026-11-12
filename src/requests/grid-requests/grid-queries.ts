@@ -25,7 +25,9 @@ const buildFilters = (render: GridRenderName, params: Params, enums: string[]) =
         if (!values.length) continue;
         const paths = config.fields[render];
         if (!paths?.length) return null;
-        and.push({ $or: paths.map(({ relation, field }) => ({ [relation]: { [field]: { $in: values } } })) });
+        // dropdown titles are trimmed, but some CMS names carry stray spaces (" Strategy"), so match those too
+        const padded = values.flatMap((value) => [value, ` ${value}`, `${value} `, ` ${value} `]);
+        and.push({ $or: paths.map(({ relation, field }) => ({ [relation]: { [field]: { $in: padded } } })) });
     }
 
     return and.length ? { $and: and } : undefined;

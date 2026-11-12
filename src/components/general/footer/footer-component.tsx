@@ -201,9 +201,9 @@ const FooterComponent = (props: FooterComponentProps) => {
                                             return (
                                                 <Button key={index} href={item.link || '#'} type="text" dynamicIconColor={`var(--color-dark-purple)`}
                                                     outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
-                                                    buttonClassName="mb-xs sm:mb-0 font-modern-era-medium text-dark-gray!"
+                                                    buttonClassName="mb-xs md:mb-0 text-md! font-modern-era-medium text-dark-gray! "
                                                 >
-                                                    <Small className="text-inherit font-modern-era!" textSize="text-xs! md:text-xs!">
+                                                    <Small textSize="text-xs sm:text-sm md:text-[.8vw]" className="text-inherit font-modern-era! whitespace-nowrap">
                                                         {item.text}
                                                     </Small>
                                                 </Button>
@@ -212,9 +212,18 @@ const FooterComponent = (props: FooterComponentProps) => {
                                     }
                                 </div>}
 
-                                <Small className="text-dark-gray font-modern-era! text-[2vw] md:text-[.8vw] ">
-                                    © Kilburn & Strode LLP, {new Date().getFullYear()}
-                                </Small>
+                                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-sm md:gap-md">
+                                    <Small className="text-dark-gray font-modern-era! text-[2vw] md:text-[.8vw] whitespace-nowrap">
+                                        © Kilburn & Strode LLP, {new Date().getFullYear()}
+                                    </Small>
+                                    <Image
+                                        src="/icons/bcorp.svg"
+                                        alt="Certified B Corporation"
+                                        width={137}
+                                        height={200}
+                                        className="h-[12vw] md:h-[4vw] w-auto"
+                                    />
+                                </div>
                             </div>
                         </div>
 

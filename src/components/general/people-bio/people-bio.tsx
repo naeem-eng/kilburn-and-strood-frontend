@@ -48,7 +48,12 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
       };
     },[])
 
-    const getQuoteWidthClass = (quoteText?: string) => {
+    // only contacts with a value (some people have no phone or vCard)
+    const contacts = (props?.contacts || []).filter((c) => c?.type === 'download' ? Boolean(c?.href) : Boolean(c?.text));
+    const hasContacts = contacts.length > 0;
+    const firstName = props?.title?.trim().split(/\s+/)[0];
+
+    const getQuoteWidthClass =(quoteText?: string) => {
       const quoteLength = quoteText?.length || 0;
       if (quoteLength < 150) {
         return 'md:w-[70%] xl:w-[60%]'; // default
@@ -90,7 +95,7 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                   data-from='{"clip-path": "inset(100% 0 0 0)"}'
                   data-middle='{"clip-path": "inset(0% 0 0% 0)"}'
                   data-to='{"clip-path": "inset(0 0 100% 0)"}'
-                  className="w-full bg-white px-lg py-lg md:py-2xl md:p-xl   md:pr-2xl flex flex-col justify-start items-start gap-y-sm md:mt-0 -mt-[20%] md:min-h-1/2 max-w-[90%] md:max-w-[90%] md:flex-1">
+                  className="w-full bg-white px-lg py-lg md:pt-2xl md:pb-lg md:p-xl  md:pr-xl flex flex-col justify-start items-start gap-y-lg md:mt-0 -mt-[20%] md:min-h-1/2 max-w-[90%] md:max-w-[90%] md:flex-1">
                     {
                       props?.backCTA && (
                         <div
@@ -129,11 +134,14 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                     </div>
                    
 
-                    <div   data-animation-atoms  data-from='{"y": "40rem"}'
+                    {hasContacts && <div  data-animation-atoms  data-from='{"y": "40rem"}'
                     data-middle='{"y": "0" }'
-                    data-to='{"y": "-40rem"}'  className="w-full grid grid-cols-1 md:grid-cols-2 gap-y-sm gap-x-lg xl:gap-x-2xl md:mt-auto">
+                    data-to='{"y": "-40rem"}'  className="w-full md:mt-auto mt-sm bg-light-gray p-sm md:p-md flex flex-col gap-y-md"
+                    style={{ "--dynamic-text-colors": textColorParser(props?.color || 'dark-purple') } as React.CSSProperties}>
+                    {firstName && <Text textSize="text-md-plus" className="text-[var(--dynamic-text-colors)]">Get in touch with {firstName}</Text>}
+                    <div className="w-full grid grid-cols-1 md:grid-cols-[minmax(0,auto)_minmax(0,auto)] md:justify-between gap-y-sm gap-x-lg pr-lg">
                     {
-                      props?.contacts && props?.contacts?.map((social, index)=>{
+                      contacts.map((social, index)=>{
                         if(social.type === 'email'){
                           return (
                             <Link target="_blank" href={`mailto:${social.text}`} key={index} className={
@@ -143,13 +151,13 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                                     "--dynamic-text-colors": textColorParser(props.color || 'dark-purple')
                               } as any} >
                                 {social?.icon && listOfIcons?.[social.icon]}
-                                <Text className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{social.text}</Text>
+                                <Text textSize="text-md md:text-base" className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{social.text}</Text>
                             </Link>
                           )
                         }
 
 
-                        if(social.type === 'download' && social.text){
+                        if(social.type === 'download'){
                           return (
                             <Link target="_blank" download rel="noopener noreferrer" href={social?.href || "#"} key={index} className={
                               `flex flex-1/2 gap-x-xs justify-start items-baseline hover:text-[var(--dynamic-text-colors)]  hover:fill-[var(--dynamic-colors)] cursor-pointer`}
@@ -158,7 +166,7 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                                     "--dynamic-text-colors": textColorParser(props.color || 'dark-purple')
                               } as any}> 
                                 {social?.icon && listOfIcons?.[social.icon]}
-                                <Text className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{social.text}</Text>
+                                <Text textSize="text-md md:text-base" className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{social.text}</Text>
                             </Link>
                           )
                         }
@@ -173,7 +181,7 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                                     "--dynamic-text-colors": textColorParser(props.color || 'dark-purple')
                               } as any}> 
                                   {social?.icon && listOfIcons?.[social.icon]} 
-                                <Text className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{social.text}</Text>
+                                <Text textSize="text-md md:text-base" className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{social.text}</Text>
                             </Link>
                           )
                         }
@@ -188,7 +196,7 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                                     "--dynamic-text-colors": textColorParser(props.color || 'dark-purple')
                               } as any}>
                                 {social?.icon && listOfIcons?.[social.icon]} 
-                                <Text className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{"Linkedin"}</Text>
+                                <Text textSize="text-md md:text-base" className={'flex-1 overflow-hidden text-ellipsis whitespace-nowrap'}>{"Linkedin"}</Text>
                             </Link>
                           )
                         }
@@ -197,6 +205,7 @@ const PeopleBio: React.FC<PeopleBioProps> = (props) => {
                       })
                     }
                     </div>
+                    </div>}
                   </div>
                   
                   {/* quote */}

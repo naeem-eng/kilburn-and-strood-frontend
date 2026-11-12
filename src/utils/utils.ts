@@ -170,6 +170,7 @@ export const getComponentsPopulateObj = ():{[key:string]:{
     "components.article-hero",
     "components.inline-image-and-video",
     "components.newsletter",
+    "components.body-menu",
     "components.stats-block",
     "components.video",
     "components.grid"
@@ -212,6 +213,18 @@ export const getComponentsPopulateObj = ():{[key:string]:{
           media_2: {
             populate: "*"
           },
+        }
+      };
+      return;
+    }
+    if(component === "components.body-menu") {
+      todo[component] = {
+        populate: {
+          items: { populate: "*" },
+          cta: { populate: "*" },
+          color: { populate: "*" },
+          media_1: { populate: "*" },
+          media_2: { populate: "*" },
         }
       };
       return;
@@ -326,7 +339,11 @@ export const getStrapiMedia = (
   const formats = imageOrUrl?.formats ?? imageOrUrl?.data?.attributes?.formats;
   const originalUrl = imageOrUrl?.url ?? imageOrUrl?.data?.attributes?.url;
 
-  const formatUrl = formats?.[preferredSize]?.url ?? originalUrl ?? '';
+  // 'medium'/'large' feed next/image, which resizes from `sizes` itself — so hand it the original upload.
+  // Strapi's medium (750px) / large (1000px) are pre-compressed and blur on large/retina screens.
+  // 'small'/'thumbnail' still use the Strapi format (favicons, raw <img>, etc.).
+  const useOriginal = preferredSize === 'medium' || preferredSize === 'large';
+  const formatUrl = (useOriginal ? originalUrl : formats?.[preferredSize]?.url) ?? originalUrl ?? '';
 
   if (!formatUrl) return '';
 

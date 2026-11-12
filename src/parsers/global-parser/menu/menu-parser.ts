@@ -97,8 +97,9 @@ export const menuParser = (data: any): MenuRequestProps[] | any => {
             url: Boolean(url) ? url : "/"+text?.trim(),
             menuOrderHeader: i,
             showInHeaderMenu: true,
-            menuHasLink: subNavSettings ? false : Boolean(url),
-            menuItemHasSubmenu: subNavSettings ? true : false,
+            // Strapi can return an empty subNavSettings (no sub-items) — treat that as a plain link, not a dropdown
+            menuHasLink: subNavSettings && children.length > 0 ? false : Boolean(url),
+            menuItemHasSubmenu: Boolean(subNavSettings) && children.length > 0,
             subMenuIsMegaMenu: navMegamenuContainer ? true : false, 
             ctaContainer: navMegamenuContainer ? {
                 backgroundColor: "light-gray",

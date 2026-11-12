@@ -66,7 +66,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
             <div className={`flex md:flex-row gap-x-2xl w-full justify-between items-stretch xl:items-start h-full flex-col`}>
                 <div className="md:max-w-1/2 flex-1 min-h-full flex items-stretch flex-col-reverse md:flex-col mt-auto">
                     {(props?.title || props?.goBackCta || props?.text) && <div
-                        className={`pl-sm md:pl-xl flex-1 w-full md:h-[40%] flex flex-col gap-y-sm relative ${contentMaxWidthClass} md:justify-center items-start mt-3xl mb-sm md:my-0`}
+                        className={`pl-sm md:pl-xl flex-1 w-full md:h-[40%] flex flex-col gap-y-sm relative ${contentMaxWidthClass} md:justify-center items-start mt-3xl mb-sm md:mb-0 mt-md`}
                     >
                         {props?.goBackCta &&
                             <Button
@@ -78,7 +78,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                             >
                                 {props?.goBackCta?.text}
                             </Button>}
-                        {(props?.title || props?.text) && <div className="mt-auto">
+                        {(props?.title || props?.text) && <div className="my-auto">
                             {props?.title &&
                                 <TitleMd as="h1" className="" attributes={{ ...getAnimationAttributes('title'), ...getTabletAnimationAttributes('title'), ...getMobileAnimationAttributes('title') }}>
                                     {props?.title}
@@ -125,7 +125,7 @@ const SecondaryHeaderComponent: React.FC<SecondaryHeaderComponentProps> = (props
                         data-from='{"y": "100%"}'
                         data-middle='{"y": "0%" }'
                         data-to='{"y": "-60%"}'
-                        className="hidden md:flex h-1/2 flex-1 mt-xl md:w-auto justify-end items-end">
+                        className="hidden md:flex h-content flex-1 mt-0 md:w-auto justify-end items-end">
                         <Image sizes="(min-width: 768px) 50vw, 100vw" loading={(props?.index ?? 0) === 0 ? "eager" : "lazy"} fetchPriority={(props?.index ?? 0) === 0 ? "high" : "auto"} src={props?.leftImageSrc} alt={props?.leftImageAlt || ""} width={props?.leftImageWidth || 600} height={props?.leftImageHeight || 400} className="w-full max-w-none object-cover h-full" />
                     </div>}
                 </div>

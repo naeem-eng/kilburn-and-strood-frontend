@@ -5,21 +5,10 @@ const urls = [
   "/api/pages",
   "/api/services",
   "/api/sector-pages",
+  "/api/offices",
   "/api/casestudies",
   // "/api/articles",
 ];
-
-// Relations a collection doesn't have. Strapi rejects the whole request (400 "Invalid key")
-// when populate names a missing field, so the page would 404.
-const MISSING_FIELDS: Record<string, string[]> = {
-  "/api/casestudies": ["full_cta"],
-};
-
-const withoutMissingFields = (endpoint: string, populate: Record<string, unknown>) => {
-  const missing = MISSING_FIELDS[endpoint];
-  if (!missing) return populate;
-  return Object.fromEntries(Object.entries(populate).filter(([key]) => !missing.includes(key)));
-};
 
 const fetchAllPages = async (props: PageRequestsType): Promise<any> => {
   const {
@@ -48,10 +37,10 @@ const fetchAllPages = async (props: PageRequestsType): Promise<any> => {
       endpoint,
       {
         filters,
-        populate : typeof populate === "object" ? withoutMissingFields(endpoint, {
+        populate : typeof populate === "object" ? { 
           ...populate,
           ...(specificPopulate?.[endpoint] || {})
-        }) : populate,
+        } : populate,
       },
       undefined,
       isPreview

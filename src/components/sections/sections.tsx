@@ -27,6 +27,7 @@ import Newsletter from "../general/newsletter/newsletter";
 import StatsBlock from "../general/stats-block";
 import Video from "../general/video";
 import Grid from "../general/grid";
+import BodyMenu from "../general/body-menu";
 type RenderCtx = {
     i: number;
     isAnimation?: boolean;
@@ -109,6 +110,9 @@ const SECTION_REGISTRY: Record<string, (section: any, ctx: RenderCtx) => React.R
 
     'components.newsletter': (s, { i, isAnimation, isLightAnimation }) =>
         <Newsletter {...s.props} isAnimation={isAnimation} isLightAnimation={isLightAnimation} index={i} />,
+
+    'components.body-menu': (s, { i, isAnimation, isLightAnimation }) =>
+        <BodyMenu className={i === 0 ? '' : 'pt-12 md:pt-(--padding-top)'} {...s.props} isAnimation={isAnimation} isLightAnimation={isLightAnimation} index={i} />,
 
     'components.video': (s, { i }) =>
         <Video {...s.props} index={i} />,
