@@ -98,25 +98,23 @@ const useCustomHeaderHook = (props: CustomHeaderProps) => {
 
 
     useEffect(() => {
-        if (!dropdownMenuRef?.current) return;
-        const menuHover = getLiveElements(dropdownMenuRef.current);
-        dropdownMenuRef.current = menuHover;
+        const header = headerRef.current;
+        if (!header) return;
+
+        // One delegated listener on the header instead of one per button: the buttons can be
+        // replaced by new DOM nodes after this effect runs (e.g. a re-render on /contact), which
+        // left per-button listeners on detached nodes and the menus dead.
+        const TRIGGERS = "[data-dropdown], [data-slide], [data-secondlevel-slide], [data-search-slide]";
 
         const handleMouseClicked = (e: Event) => {
+            const el = (e.target as HTMLElement | null)?.closest<HTMLButtonElement>(TRIGGERS);
+            if (!el || !header.contains(el)) return;
             e.stopPropagation();
-            // // //console.log("reset")
 
-            // menuHover.forEach((item) => { 
-            //     if(!item) return;
-            //     const panelNextEl = item?.nextElementSibling as HTMLElement;
-            //     if(item?.hasAttribute("data-secondlevel-slide")) {
-            //         slideOffSecondLevelPanel(panelNextEl);  
-            //     }
-            //     item?.classList.remove('activateDropper');
-            // });
-
-            const el = e.currentTarget as HTMLElement;
-            if (!el) return;
+            // drop detached nodes and make sure the clicked trigger is tracked (blur + reset read this list)
+            const live = getLiveElements(dropdownMenuRef.current);
+            if (!live.includes(el)) live.push(el);
+            dropdownMenuRef.current = live;
             const panelEl = el?.nextElementSibling as HTMLElement;
 
 
@@ -169,14 +167,10 @@ const useCustomHeaderHook = (props: CustomHeaderProps) => {
 
         };
 
-        menuHover.forEach((item) => {
-            item?.addEventListener('click', handleMouseClicked);
-        });
+        header.addEventListener('click', handleMouseClicked);
 
         return () => {
-            menuHover.forEach((item) => {
-                item?.removeEventListener('click', handleMouseClicked);
-            });
+            header.removeEventListener('click', handleMouseClicked);
         };
     }, [pathname]);
 
@@ -391,8 +385,9 @@ const useCustomHeaderHook = (props: CustomHeaderProps) => {
 
     const resetAllMenus = (e: HTMLElement | null) => {
         if (!dropdownMenuRef?.current) return;
-        const menuHover = dropdownMenuRef?.current
-        menuHover?.forEach((item) => {
+        const menuHover = getLiveElements(dropdownMenuRef.current);
+        dropdownMenuRef.current = menuHover;
+        menuHover.forEach((item) => {
             if (!item) return;
             const panelEl = item?.nextElementSibling as HTMLElement;
             if (item.hasAttribute("data-dropdown") && !e?.hasAttribute("data-secondlevel-slide")) {

@@ -107,7 +107,10 @@ export const menuParser = (data: any): MenuRequestProps[] | any => {
                 ctaMedia: getStrapiMedia(navMegamenuContainer?.rightArticle?.featuredImage, 'large'),
                 ctaTitle: navMegamenuContainer?.rightArticle?.title,
                 ctaText: navMegamenuContainer?.rightArticle?.text,
-                ctaLink: navMegamenuContainer?.rightArticle?.slug,
+                // rightArticle is an article: link to /insights/{slug} (a bare slug resolved relative to the current page)
+                ctaLink: navMegamenuContainer?.rightArticle?.slug
+                    ? `/insights/${navMegamenuContainer.rightArticle.slug.replace(/^\/+/, '')}`
+                    : undefined,
                 color: navMegamenuContainer?.rightArticle?.color?.name || 'bright-red',
                 arrow: true
             } : undefined,
