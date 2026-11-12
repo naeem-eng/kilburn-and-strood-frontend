@@ -101,7 +101,7 @@ const globalRequest = async (): Promise<{
     const header = {
         menu: menuParser(headerTodo?.data),
         logo: getStrapiMedia(globalTodo?.data?.logo, 'large'),
-        favicon: getStrapiMedia(globalTodo?.data?.smallLogo, 'medium')
+        favicon: getStrapiMedia(globalTodo?.data?.smallLogo, 'small')
     }
 
     

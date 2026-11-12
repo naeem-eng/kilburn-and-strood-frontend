@@ -2,7 +2,7 @@
 
 import { Text, TitleSm } from "@/components/helpers/typography";
 import { InlineImageAndVideoProps } from "./inline-image-and-video.types";
-import dynamic from "next/dynamic"; 
+import Image from "next/image";
 
 const InlineImageAndVideo: React.FC<InlineImageAndVideoProps> = (props) => {
     return (
@@ -10,7 +10,7 @@ const InlineImageAndVideo: React.FC<InlineImageAndVideoProps> = (props) => {
         
         {props?.mediaType === 'image' && (
           <div className="w-full">
-            {props?.mediaSrc && <img src={props?.mediaSrc} alt={props?.mediaAlt || ""} width={props?.mediaWidth} height={props?.mediaHeight} className="w-full" />}
+            {props?.mediaSrc && <Image src={props?.mediaSrc} alt={props?.mediaAlt || ""} width={props?.mediaWidth || 1200} height={props?.mediaHeight || 675} sizes="(min-width: 1280px) 90vw, 100vw" className="w-full h-auto" />}
           </div>
         )}
         {props?.mediaType === 'video' && (

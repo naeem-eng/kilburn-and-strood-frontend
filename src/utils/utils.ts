@@ -339,7 +339,11 @@ export const getStrapiMedia = (
   const formats = imageOrUrl?.formats ?? imageOrUrl?.data?.attributes?.formats;
   const originalUrl = imageOrUrl?.url ?? imageOrUrl?.data?.attributes?.url;
 
-  const formatUrl = formats?.[preferredSize]?.url ?? originalUrl ?? '';
+  // 'medium'/'large' feed next/image, which resizes from `sizes` itself — so hand it the original upload.
+  // Strapi's medium (750px) / large (1000px) are pre-compressed and blur on large/retina screens.
+  // 'small'/'thumbnail' still use the Strapi format (favicons, raw <img>, etc.).
+  const useOriginal = preferredSize === 'medium' || preferredSize === 'large';
+  const formatUrl = (useOriginal ? originalUrl : formats?.[preferredSize]?.url) ?? originalUrl ?? '';
 
   if (!formatUrl) return '';
 
