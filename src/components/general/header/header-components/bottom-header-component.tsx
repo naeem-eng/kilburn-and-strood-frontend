@@ -77,7 +77,7 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
                                     const isSubMenu = child.menuItemHasSubmenu && child.children.length > 0;
                                     const isLink = child.menuHasLink;
 
-                                    if(isLink && !(isMegaMenu || isSubMenu)) {
+                                    if(isLink && !isSubMenu) { // child of a mega menu: only a button when it has its own second-level items
                                         return (
                                             <div key={index} className="flex flex-row">
                                                 <Link href={child.url || '#'} className={`no-underline! flex flex-row p-sm hover:bg-light-gray bg-transparent transition-colors duration-300 w-full justify-between items-center group my-1`}>
@@ -218,7 +218,7 @@ const BottomHeaderComponent = forwardRef<HTMLButtonElement[], CustomHeaderProps>
 
                                     const isSubMenu = child.menuItemHasSubmenu && menu.children.length > 0;
                                     const isLink = child.menuHasLink;
-                                    if(isLink && !(isMegaMenu || isSubMenu)) {
+                                    if(isLink && !isSubMenu) {
                                         return (
                                             <div key={index} className="flex flex-row">
                                                 <Link href={child.url || '#'} className={`no-underline! flex flex-row p-sm hover:bg-light-gray bg-transparent transition-colors duration-300 w-full justify-between items-center group my-1`}>
