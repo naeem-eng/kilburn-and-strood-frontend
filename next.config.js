@@ -7,15 +7,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 
 const nextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/hs-forms/:path*',
-        destination: 'https://js-eu1.hsforms.net/:path*',
-      },
-    ]
-  },
-
   async redirects() {
     return [
       {

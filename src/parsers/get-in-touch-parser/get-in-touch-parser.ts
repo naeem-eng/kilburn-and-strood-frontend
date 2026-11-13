@@ -1,5 +1,6 @@
 
 import { getInTouchSectionParserType } from "../section-parser/get-in-touch-section-parser/get-in-touch-section-parser.types";
+import { toFormType } from "../section-parser/get-in-touch-section-parser/get-in-touch-section-parser";
  
   
 
@@ -10,20 +11,18 @@ export function getInTouchParser(props: any) {
   const {
     title,
     text,
-    embedCode,
-    formUrl,
     cta,
-    enableForm
+    enableForm,
+    formType
   } = props?.createForm
 
   return {
     component: 'components.get-in-touch',
     props: {
-       embedCode,
-       formUrl,
        title,
        text,
        enableForm,
+       formType: toFormType(formType),
        cta: cta && cta?.map((cta: any) => ({
         text: cta?.text,
         href: cta?.link,

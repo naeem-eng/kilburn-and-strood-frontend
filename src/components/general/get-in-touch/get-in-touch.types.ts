@@ -1,8 +1,9 @@
 export type GetInTouchProps = {
     title?: string;
     text?: string;
-    embedCode?: string;
-    formUrl?: string;
+    enableForm?: boolean;
+    formType?: "contact" | "signup"; // from Strapi form_type
+    index?: number;
     className?: string;
     cta?: {
         text?: string;

@@ -12,8 +12,7 @@ export type getInTouchSectionParserType = {
             textColor?: 'dark-purple' | 'dark-yellow' | 'bright-red' | 'dark-blue' | 'dark-green' | 'dark-red';
             backgroundColor?: 'dark-purple' | 'dark-yellow' | 'bright-red' | 'dark-blue' | 'dark-green' | 'dark-red';
         }[];
-        embedCode?: string;
-        formUrl?: string;
         enableForm?: boolean;
+        formType?: "contact" | "signup";
     }
 }
