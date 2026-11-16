@@ -12,7 +12,6 @@ type ServicesProps = {
 function servicesParser(list: any) {
   
     const servicesList = list?.map((item: any) => {
-        console.log({item})
         return {
             title: (item?.name)?.trim() || '',
             href: `services/${item?.slug}`,
@@ -26,7 +25,6 @@ function servicesParser(list: any) {
 function sectorsParser(list: any) {
   
     const sectorsList = list?.map((item: any) => {
-        console.log({item})
         return {
             title: (item?.name)?.trim() || '',
             href: `sectors/${item?.slug}`,

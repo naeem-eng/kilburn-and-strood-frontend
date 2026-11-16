@@ -1,4 +1,7 @@
 import FullCta from '@/components/general/full-cta';
+import PeopleAndExploring from '@/components/general/people-and-exploring';
+import { exploringParser } from '@/parsers/exploring-parser/exploring-parser';
+import { speakerParser } from '@/parsers/speaker-parser/speaker-parser';
 import PageCarousal from '@/components/general/page-carousal';
 import GetInTouch from '@/components/general/get-in-touch';
 import KeyContacts from '@/components/general/key-contacts';
@@ -98,7 +101,8 @@ const Pages = async ({
       '/api/services': globalNewslettersPopulate,
       '/api/sector-pages': globalNewslettersPopulate,
       // case studies have no full_cta field (qs drops undefined keys)
-      '/api/casestudies': { ...globalNewslettersPopulate, full_cta: undefined },
+      // services/sectors feed the "Keep Exploring" links next to the people
+      '/api/casestudies': { ...globalNewslettersPopulate, full_cta: undefined, services: true, sectors: true },
       '/api/offices': {
         key_contacts: {
           populate: {
@@ -127,7 +131,11 @@ const Pages = async ({
   const globalNewsletter = globalNewsletterParser(data?.globalNewsletters);
   const contactParser    = getInTouchParser(data?.contact);
   const keyContactsParser = getKeyContactsParser(data?.keyContacts);
-  const peopleParser = getKeyContactsParser(data?.people, data?.peopleTitle);
+  const isCaseStudy = data?._pageType === 'casestudies';
+  // case studies show their people next to "Keep Exploring" (same block as insights), not as key contacts
+  const peopleParser = isCaseStudy ? null : getKeyContactsParser(data?.people, data?.peopleTitle);
+  const caseStudyPeople = isCaseStudy ? speakerParser(data?.people) : null;
+  const caseStudyExploring = isCaseStudy ? exploringParser(data?.services, data?.sectors) : null;
 
 
   const relatedContentRaw = isServicePage && data?.name
@@ -143,6 +151,17 @@ const Pages = async ({
           sections={data?.sections || []}
           isAnimation={isAnimation}
         />
+        {isCaseStudy && (
+          <PeopleAndExploring
+            peopleTitle="Key contacts"
+            people={caseStudyPeople?.props}
+            exploring={[
+              ...(caseStudyExploring?.servicesList || []),
+              ...(caseStudyExploring?.sectorsList || []),
+            ]}
+            className="mb-xl"
+          />
+        )}
         {/* allow_carousal carousel: the page's related items per chosen type (incl. a service's related content), else the latest;
             with allow_carousal off, a service page still shows its related content here */}
         <PageCarousal

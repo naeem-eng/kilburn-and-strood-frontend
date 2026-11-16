@@ -4,7 +4,7 @@ import { Button } from "@/components/helpers/buttons";
 import ArticleCard from "../article-card";
 import GeneralFilters from "../general-filters";
 import { ArticleContainerProps } from "./article-container.types";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import fetchArticles from "@/requests/articles-requests";
 import articleListingParser from "@/parsers/article-listing-parser";
 import { uniqueObjects } from "@/utils/utils";
@@ -238,4 +238,4 @@ const ArticleContainer: React.FC<ArticleContainerProps> = (props) => {
     );
 };
 
-export default ArticleContainer;
+export default memo(ArticleContainer);
