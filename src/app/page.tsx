@@ -66,8 +66,8 @@ const Home = async () => {
 
   if (!page) notFound();
   const data = page
-  // a grid or the allow_carousal carousel needs normal scrolling, so no fullpage scroll hijack on those pages
-  const isAnimation = data?.type === "interactive" && !hasGridSection(data?.sections) && !data?.allowCarousal;
+  // a grid needs normal scrolling, so no fullpage scroll hijack on pages with a grid section
+  const isAnimation = data?.type === "interactive" && !hasGridSection(data?.sections);
   const isLightAnimation = !isAnimation;
 
   const getFullCtaParser = fullCtaParser(data?.fullCta);
@@ -80,9 +80,11 @@ const Home = async () => {
       
       <FullPageSlider interactive={isAnimation}>
         <Sections sections={data?.sections || []} isAnimation={isAnimation} isLightAnimation={isLightAnimation} />
-        {/* full cta */}
-        <PageCarousal collection="pages" documentId={data?.documentId} slug={data?.slug} isPreview={isPreview} />
-        {getFullCtaParser && <FullCta {...getFullCtaParser.props} />}
+        {/* everything after the CMS sections scrolls normally (no fullpage snapping), see FullPageSlider */}
+        <div data-fullpage-free>
+          <PageCarousal collection="pages" documentId={data?.documentId} slug={data?.slug} isPreview={isPreview} />
+          {getFullCtaParser && <FullCta {...getFullCtaParser.props} />}
+        </div>
       </FullPageSlider>
       
       

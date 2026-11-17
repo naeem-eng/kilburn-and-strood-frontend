@@ -24,6 +24,9 @@ type FooterComponentProps = {
     };
 }
 
+// footer links: grey text with a purple hover underline that follows the wrapped text
+const underlinePurple = { '--underline-color': 'var(--color-dark-purple)' } as React.CSSProperties;
+
 const FooterComponent = (props: FooterComponentProps) => {
 
     const [fixed, setFixed] = useState(false);
@@ -44,20 +47,23 @@ const FooterComponent = (props: FooterComponentProps) => {
         const resize = () => {
             if (!calculatedHegiht?.current || !footerLogoRef.current) return;
 
-          
+            // offsetTop includes the wrapper's top padding (pt-[7vw]), which the content height alone missed:
+            // on short screens the links' bottom row ended up hidden behind the fixed logo.
+            const contentBottom = calculatedHegiht.current.offsetTop + calculatedHegiht.current.offsetHeight;
+            const logoHeight = footerLogoRef.current.getBoundingClientRect().height;
 
-            if (window.innerHeight < calculatedHegiht.current.getBoundingClientRect().height
-                + footerLogoRef.current.getBoundingClientRect().height) {
-                setFixed(true);
-            } else {
-                setFixed(false);
-            }
+            setFixed(window.innerHeight < contentBottom + logoHeight);
         }
         window.addEventListener('resize', resize);
+        // fonts / the logo image can change the heights after mount
+        const observer = new ResizeObserver(resize);
+        observer.observe(calculatedHegiht.current);
+        observer.observe(footerLogoRef.current);
         resize();
 
         return () => {
             window.removeEventListener('resize', resize);
+            observer.disconnect();
         }
 
     }, [calculatedHegiht, footerLogoRef]);
@@ -134,7 +140,7 @@ const FooterComponent = (props: FooterComponentProps) => {
                 style={{
                     zIndex: 0
                 }}>
-                <div className={`${fixed ? 'relative' : 'md:fixed'} w-full top-0 [body.tablet_&]:top-[30vh] right-0 left-0  flex flex-col pt-3xl md:pt-[7vw] md:max-h-[70vh] md:[body.tablet_&]:min-h-[70vh]`}>
+                <div className={`${fixed ? 'relative' : 'md:fixed md:max-h-[70vh]'} w-full top-0 [body.tablet_&]:top-[30vh] right-0 left-0  flex flex-col pt-3xl md:pt-[7vw] md:[body.tablet_&]:min-h-[70vh]`}>
                     <div ref={calculatedHegiht} className="w-full px-sm md:px-xl  flex flex-row justify-start md:justify-between items-start flex-wrap">
 
                         <div className="w-1/2 md:flex-1 md:max-w-[40%] md:min-w-[40%] min-w-full mb-3xl md:mb-0">
@@ -172,9 +178,10 @@ const FooterComponent = (props: FooterComponentProps) => {
                                                 {
                                                     col.map((item, index) => {
                                                         return (
-                                                            <Button key={index} href={item.link || '#'} type="text" dynamicIconColor={`var(--color-dark-purple)`}
+                                                            <Button key={index} href={item.link || '#'} type="text" wrapUnderline dynamicIconColor={`var(--color-dark-purple)`}
                                                                 outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
                                                                 buttonClassName="mb-0 text-md! font-modern-era-medium max-w-fit !text-left text-dark-gray! "
+                                                                style={underlinePurple}
                                                             >
                                                                 {item.text}
                                                             </Button>
@@ -184,7 +191,7 @@ const FooterComponent = (props: FooterComponentProps) => {
                                                 {/* social links (LinkedIn etc.) sit at the end of the last column */}
                                                 {isLast && socialCta?.map((item, index) => {
                                                     return (
-                                                        <Button isExternal={item?.isExternal} href={item?.link || "#"} key={`social-${index}`} icon={item.icon} type="text" dynamicIconColor={`var(--color-dark-purple)`} outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
+                                                        <Button isExternal={item?.isExternal} href={item?.link || "#"} key={`social-${index}`} icon={item.icon} type="text" wrapUnderline style={underlinePurple} dynamicIconColor={`var(--color-dark-purple)`} outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
                                                             buttonClassName="mb-0 !text-left text-md! font-modern-era-medium max-w-fit text-dark-gray! " iconClassName="h-lg! w-lg! md:h-md! md:w-md! xl:h-md! xl:w-md! shrink-0" >{item.text}</Button>
                                                     )
                                                 })}
@@ -194,7 +201,7 @@ const FooterComponent = (props: FooterComponentProps) => {
                                 }
                             </div>
 
-                            <div className=" border-t-[.1vw] border-dark-gray flex-1 flex flex-row justify-between items-start md:items-center pt-sm">
+                            <div className=" border-t-[.1vw] border-dark-gray flex-1 flex flex-row flex-wrap gap-sm xl:flex-nowrap xl:gap-0 justify-between items-start md:items-center pt-sm">
 
                                 {subMenu?.length && <div className="flex gap-x-sm flex-col sm:flex-row">
                                     {

@@ -150,8 +150,9 @@ const People = async ({
             backCTAText={"Back to People"}
             {...getPeopleBioParser?.bio}
           />
-           
-          
+
+          {/* everything after the bio scrolls normally (no fullpage snapping), see FullPageSlider */}
+          <div data-fullpage-free>
           { !(getPeopleBioParser?.roleList?.join(',')?.toLowerCase()?.includes("trainee")) &&
             <>
               {(getPeopleBioParser?.services?.length || getPeopleBioParser?.sectors?.length) ? <PeopleExpertise 
@@ -196,6 +197,7 @@ const People = async ({
             {globalNewsletter && <Newsletter {...globalNewsletter.props} />}
             {getFullCtaParser && <FullCta {...getFullCtaParser.props} />}
             {contactParser && <GetInTouch {...contactParser.props} />}
+          </div>
         </FullPageSlider>
     </div>
   );

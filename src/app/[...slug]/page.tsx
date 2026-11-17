@@ -124,8 +124,8 @@ const Pages = async ({
 
   const data = page;
   const isServicePage = data?._pageType === 'services';
-  // a grid or the allow_carousal carousel needs normal scrolling, so no fullpage scroll hijack on those pages
-  const isAnimation      = data?.type === 'interactive' && !hasGridSection(data?.sections) && !data?.allowCarousal;
+  // a grid needs normal scrolling, so no fullpage scroll hijack on pages with a grid section
+  const isAnimation      = data?.type === 'interactive' && !hasGridSection(data?.sections);
   const isLightAnimation = !isAnimation;
   const getFullCtaParser = fullCtaParser(data?.fullCta);
   const globalNewsletter = globalNewsletterParser(data?.globalNewsletters);
@@ -151,6 +151,8 @@ const Pages = async ({
           sections={data?.sections || []}
           isAnimation={isAnimation}
         />
+        {/* everything after the CMS sections scrolls normally (no fullpage snapping), see FullPageSlider */}
+        <div data-fullpage-free>
         {isCaseStudy && (
           <PeopleAndExploring
             peopleTitle="Key contacts"
@@ -171,7 +173,7 @@ const Pages = async ({
           isPreview={isPreview}
           related={parsedRelatedContent?.items}
           fallback={parsedRelatedContent}
-          isAnimation={isAnimation}
+          isAnimation={false}
         />
         {keyContactsParser && <KeyContacts {...keyContactsParser} />}
         {peopleParser && <KeyContacts {...peopleParser} />}
@@ -180,11 +182,12 @@ const Pages = async ({
         {globalNewsletter && (
           <Newsletter
             {...globalNewsletter.props}
-            isAnimation={isAnimation}
-            isLightAnimation={isLightAnimation}
+            isAnimation={false}
+            isLightAnimation
           />
         )}
-        {getFullCtaParser && <FullCta isAnimation={isAnimation} {...getFullCtaParser.props} />}
+        {getFullCtaParser && <FullCta isAnimation={false} {...getFullCtaParser.props} />}
+        </div>
       </FullPageSlider>
     </div>
   );
