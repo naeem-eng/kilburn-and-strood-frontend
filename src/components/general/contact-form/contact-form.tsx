@@ -2,13 +2,14 @@
 
 import { Button } from "@/components/helpers/buttons";
 import { TALK_TO_OPTIONS } from "@/requests/hubspot-requests/hubspot-config";
-import { SelectField, TermsConsentField, TextAreaField, TextField } from "../hubspot-form/form-fields";
+import { SelectField, ContactConsentFields, TextAreaField, TextField } from "../hubspot-form/form-fields";
 import { FormError, FormSent } from "../hubspot-form/form-status";
 import { useHubspotSubmit } from "../hubspot-form/use-hubspot-submit";
+import Turnstile from "../hubspot-form/turnstile";
 
 // Contact us form → HubSpot "Contact" form (via /api/hubspot-submit)
 const ContactForm = () => {
-    const { status, error, fieldErrors, onSubmit } = useHubspotSubmit("contact");
+    const { status, error, fieldErrors, onSubmit, turnstileRef } = useHubspotSubmit("contact");
 
     if (status === "sent") {
         return <FormSent title="Thank you for getting in touch" text="We've received your message and will be in touch soon." />;
@@ -25,7 +26,8 @@ const ContactForm = () => {
                 <SelectField id="who_do_you_want_to_talk_to_contact_form" label="Who would you like to talk to?" optional placeholder="Select one option" options={TALK_TO_OPTIONS} />
             )}
             <TextAreaField id="message" label="Message" placeholder="Type your message" maxLength={5000} error={fieldErrors.message} />
-            <TermsConsentField idPrefix="contact" error={fieldErrors.consentToProcess} />
+            <ContactConsentFields idPrefix="contact" error={fieldErrors.consentMarketing} />
+            <Turnstile action="contact" controlRef={turnstileRef} />
             <FormError message={error} />
             <Button buttonClassName="mt-sm" type="filled" backgroundColor="bg-bright-red" icon="right-arrow" loader={status === "sending"} attributes={{ type: "submit", disabled: status === "sending" }}>
                 Submit

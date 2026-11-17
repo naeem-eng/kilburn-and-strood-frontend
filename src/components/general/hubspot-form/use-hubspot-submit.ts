@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { HUBSPOT_FORMS, HubspotFormKey } from "@/requests/hubspot-requests/hubspot-config";
+import { isTurnstileEnabled, TURNSTILE_FIELD, TurnstileControl } from "./turnstile";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -10,6 +11,8 @@ export const useHubspotSubmit = (form: HubspotFormKey) => {
     const [status, setStatus] = useState<Status>("idle");
     const [error, setError] = useState<string>();
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+    // pass to <Turnstile controlRef={turnstileRef} />; tokens are single-use, so the widget is reset after a failed submit
+    const turnstileRef = useRef<TurnstileControl | null>(null);
 
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -17,6 +20,12 @@ export const useHubspotSubmit = (form: HubspotFormKey) => {
         const data = new FormData(event.currentTarget);
 
         const fields = Object.fromEntries(HUBSPOT_FORMS[form].fields.map(({ name }) => [name, String(data.get(name) || "")]));
+        const turnstileToken = String(data.get(TURNSTILE_FIELD) || "");
+        if (isTurnstileEnabled && !turnstileToken) {
+            setError("Please wait a moment while we check you're not a bot, then try again.");
+            setStatus("error");
+            return;
+        }
 
         setStatus("sending");
         setError(undefined);
@@ -28,7 +37,8 @@ export const useHubspotSubmit = (form: HubspotFormKey) => {
                 body: JSON.stringify({
                     form,
                     fields,
-                    consent: { process: data.get("consentProcess") === "on", marketing: data.get("consentMarketing") === "on" },
+                    turnstileToken,
+                    consent: { marketing: data.get("consentMarketing") === "on" },
                     context: { pageUri: window.location.href, pageName: document.title },
                 }),
             });
@@ -37,14 +47,16 @@ export const useHubspotSubmit = (form: HubspotFormKey) => {
                 setFieldErrors(json?.fieldErrors || {});
                 setError(json?.error || "Sorry, something went wrong. Please try again.");
                 setStatus("error");
+                turnstileRef.current?.reset();
                 return;
             }
             setStatus("sent");
         } catch {
             setError("Sorry, something went wrong. Please check your connection and try again.");
             setStatus("error");
+            turnstileRef.current?.reset();
         }
     };
 
-    return { status, error, fieldErrors, onSubmit };
+    return { status, error, fieldErrors, onSubmit, turnstileRef };
 };
