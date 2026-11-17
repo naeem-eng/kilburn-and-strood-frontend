@@ -143,7 +143,7 @@ const FooterComponent = (props: FooterComponentProps) => {
                 <div className={`${fixed ? 'relative' : 'md:fixed md:max-h-[70vh]'} w-full top-0 [body.tablet_&]:top-[30vh] right-0 left-0  flex flex-col pt-3xl md:pt-[7vw] md:[body.tablet_&]:min-h-[70vh]`}>
                     <div ref={calculatedHegiht} className="w-full px-sm md:px-xl  flex flex-row justify-start md:justify-between items-start flex-wrap">
 
-                        <div className="w-1/2 md:flex-1 md:max-w-[40%] md:min-w-[40%] min-w-full mb-3xl md:mb-0">
+                        <div className="min-w-full mb-3xl xl:flex-1 xl:max-w-[42%] xl:min-w-[42%] xl:pr-xl xl:mb-0">
 
                             <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreak]}
                                 components={{
@@ -168,8 +168,10 @@ const FooterComponent = (props: FooterComponentProps) => {
                             }
                         </div>
 
-                        <div className="flex flex-col gap-y-2xl md:flex-1 w-full md:max-w-1/2">
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-md gap-y-xl">
+                        <div className="flex flex-col gap-y-2xl w-full xl:flex-1 xl:max-w-[58%]">
+                            {/* link columns, with the B Corp logo top right (as in the design) */}
+                            <div className="flex flex-col md:flex-row md:items-start gap-x-md gap-y-xl">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-md gap-y-xl flex-1">
                                 {
                                     cols.map((col, colIndex) => {
                                         const isLast = colIndex === cols.length - 1;
@@ -200,6 +202,14 @@ const FooterComponent = (props: FooterComponentProps) => {
                                     })
                                 }
                             </div>
+                            <Image
+                                src="/icons/bcorp.svg"
+                                alt="Certified B Corporation"
+                                width={137}
+                                height={200}
+                                className="hidden md:block md:h-[9vw] xl:h-[5.5vw] w-auto shrink-0 self-start md:ml-auto"
+                            />
+                            </div>
 
                             <div className=" border-t-[.1vw] border-dark-gray flex-1 flex flex-row flex-wrap gap-sm xl:flex-nowrap xl:gap-0 justify-between items-start md:items-center pt-sm">
 
@@ -211,7 +221,7 @@ const FooterComponent = (props: FooterComponentProps) => {
                                                     outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
                                                     buttonClassName="mb-xs md:mb-0 text-md! font-modern-era-medium text-dark-gray! "
                                                 >
-                                                    <Small textSize="text-xs sm:text-sm md:text-[.8vw]" className="text-inherit font-modern-era! whitespace-nowrap">
+                                                    <Small textSize="text-xs sm:text-sm xl:text-[.8vw]" className="text-inherit font-modern-era! whitespace-nowrap">
                                                         {item.text}
                                                     </Small>
                                                 </Button>
@@ -220,8 +230,9 @@ const FooterComponent = (props: FooterComponentProps) => {
                                     }
                                 </div>}
 
-                                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-sm md:gap-md">
-                                    <Small className="text-dark-gray font-modern-era! text-[2vw] md:text-[.8vw] whitespace-nowrap">
+                                {/* mobile: copyright and the B Corp logo share the last row; md+: copyright alone at the right, logo sits top right */}
+                                <div className="w-full md:w-auto md:ml-auto flex items-center justify-between gap-sm pt-sm md:pt-0">
+                                    <Small textSize="text-xs sm:text-sm xl:text-[.8vw]" className="text-dark-gray font-modern-era! whitespace-nowrap">
                                         © Kilburn & Strode LLP, {new Date().getFullYear()}
                                     </Small>
                                     <Image
@@ -229,7 +240,7 @@ const FooterComponent = (props: FooterComponentProps) => {
                                         alt="Certified B Corporation"
                                         width={137}
                                         height={200}
-                                        className="h-[12vw] md:h-[4vw] w-auto"
+                                        className="md:hidden h-[16vw] w-auto shrink-0"
                                     />
                                 </div>
                             </div>

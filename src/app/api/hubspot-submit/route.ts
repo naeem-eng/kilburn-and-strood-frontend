@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
     CONSENT_TEXT,
-    TERMS_CONSENT_TEXT,
     getMarketingSubscriptionId,
     HUBSPOT_FORMS,
     getHubspotTarget,
@@ -27,7 +26,35 @@ const isRateLimited = (key: string) => {
     return recent.length > MAX_PER_WINDOW;
 };
 
+// Cloudflare Turnstile: when TURNSTILE_SECRET_KEY is set, every submission needs a valid token
+const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY;
+const TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+const verifyTurnstile = async (token: string, ip: string) => {
+    if (!TURNSTILE_SECRET) return true;
+    if (!token) return false;
+    try {
+        const res = await fetch(TURNSTILE_VERIFY_URL, {
+            method: "POST",
+            body: new URLSearchParams({
+                secret: TURNSTILE_SECRET,
+                response: token,
+                ...(ip !== "unknown" ? { remoteip: ip } : {}),
+            }),
+            cache: "no-store",
+            signal: AbortSignal.timeout(10_000),
+        });
+        const result = await res.json().catch(() => null) as { success?: boolean; "error-codes"?: string[] } | null;
+        if (!result?.success) console.warn("Turnstile rejected", JSON.stringify(result?.["error-codes"] || []));
+        return result?.success === true;
+    } catch (error) {
+        console.warn("Turnstile verify failed", (error as Error)?.message);
+        return false;
+    }
+};
+
 type SubmitBody = {
+    turnstileToken?: unknown;
     form?: unknown;
     fields?: Record<string, unknown>;
     consent?: { process?: unknown; marketing?: unknown };
@@ -68,18 +95,22 @@ export async function POST(request: NextRequest) {
         return value ? [{ objectTypeId: "0-1", name: field.name, value }] : [];
     });
 
-    if (body.consent?.process !== true) {
-        fieldErrors.consentToProcess = body.form === "contact"
-            ? "Please accept the Terms and Conditions."
-            : "Please confirm we can store and process your personal data.";
+    // sign-up exists to receive emails, so its marketing tick-box is required; on contact it's optional
+    const isSignup = body.form === "signup";
+    const wantsMarketing = body.consent?.marketing === true;
+    if (isSignup && !wantsMarketing) {
+        fieldErrors.consentMarketing = "Please tick the box to receive our emails.";
     }
     if (Object.keys(fieldErrors).length) {
         return NextResponse.json({ error: "Please check the highlighted fields.", fieldErrors }, { status: 400 });
     }
 
-    // contact: the Terms and Conditions tick-box; sign-up: processing + optional marketing consent
-    const isSignup = body.form === "signup";
-    const subscriptionTypeId = isSignup ? getMarketingSubscriptionId() : undefined;
+    if (!(await verifyTurnstile(text(body.turnstileToken, 2048), ip))) {
+        return NextResponse.json({ error: "We couldn't confirm you're not a bot. Please try again." }, { status: 403 });
+    }
+
+    // no "process my data" tick-box any more: the privacy notice shown with the form is recorded as the processing basis
+    const subscriptionTypeId = getMarketingSubscriptionId();
     const hutk = request.cookies.get("hubspotutk")?.value;
     const pageUri = text(body.context?.pageUri, 1000) || request.headers.get("referer") || undefined;
 
@@ -95,13 +126,13 @@ export async function POST(request: NextRequest) {
         legalConsentOptions: {
             consent: {
                 consentToProcess: true,
-                text: isSignup ? CONSENT_TEXT.process : TERMS_CONSENT_TEXT,
+                text: isSignup ? CONSENT_TEXT.signupPrivacy + " Privacy Notice." : CONSENT_TEXT.contactPrivacy + " Privacy Notice.",
                 // marketing consent can only be recorded with its subscription type ID
                 ...(subscriptionTypeId ? {
                     communications: [{
-                        value: body.consent?.marketing === true,
+                        value: wantsMarketing,
                         subscriptionTypeId,
-                        text: CONSENT_TEXT.marketing,
+                        text: isSignup ? CONSENT_TEXT.signupMarketing : CONSENT_TEXT.contactMarketing,
                     }],
                 } : {}),
             },

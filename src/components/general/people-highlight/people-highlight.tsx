@@ -362,7 +362,8 @@ const PeopleHighlight: React.FC<PeopleHighlightProps> = (props) => {
         {/* leftBox */}
         {/* rightBottomPatternBox */}
         {item?.imageSrc && <div className="relative col-span-full md:col-[span_8/-1] row-[1/span_2] md:row-[1/-1] h-full -mr-(--padding-side) md:mt-0">
-          <Image sizes="(min-width: 768px) 33vw, 100vw"
+          {/* spans 8 of 12 columns plus the right gutter (~66vw), so ask for a matching size or it upscales and blurs on wide screens */}
+          <Image sizes="(min-width: 768px) 70vw, 100vw"
             src={item?.imageSrc}
             alt={item?.imageAlt || ''}
             width={item?.imageWidth || 731}

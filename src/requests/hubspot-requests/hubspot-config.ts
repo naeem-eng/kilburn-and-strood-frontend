@@ -31,19 +31,16 @@ export const HUBSPOT_FORMS: Record<HubspotFormKey, { fields: FieldConfig[] }> = 
 export const TALK_TO_OPTIONS: { label: string; value: string }[] = [];
 
 // Contact form: one required tick-box (as in the design), sent to HubSpot as the consent to process data.
-export const TERMS_CONSENT_TEXT = "I accept the Terms and Conditions";
-export const TERMS_URL = "/terms-and-conditions";
-
-// Sign-up form: HubSpot "separate consents", wording agreed with K&S (marketing optional, processing required).
+// Consent wording (K&S, 2026-11-17). Both forms show a privacy notice instead of a "process my data" tick-box;
+// the only tick-box is marketing emails: required on sign-up (that's what the form is for), optional on contact.
 export const CONSENT_TEXT = {
-    intro: "By checking the boxes below, you agree to receive communications from Kilburn & Strode. You can unsubscribe anytime.",
-    marketing: "Would you like to be kept up to date on our insights and events?",
-    processIntro: "To process your request, we need your permission to store and process your personal data. Please check the box below to confirm your consent:",
-    process: "I agree to allow Kilburn & Strode to store and process my personal data*",
-    privacy: "We care about your privacy. Learn how we handle your data in our",
+    signupMarketing: "I would like to receive emails from Kilburn & Strode about its insights, services and events. I understand I can unsubscribe at any time.",
+    signupPrivacy: "For information about how we use your personal data, please see our",
+    contactPrivacy: "We will use the information you provide to respond to your enquiry. For more information about how we handle your personal data, please see our",
+    contactMarketing: "I would also like to receive emails from Kilburn & Strode about its insights, services and events. I understand I can unsubscribe at any time.",
 };
 
-export const PRIVACY_POLICY_URL = "/privacy-policy";
+export const PRIVACY_NOTICE_URL = "/privacy-notice";
 
 // Marketing subscription "All thought leadership and event invites". The numeric subscription type ID is set in
 // HUBSPOT_MARKETING_SUBSCRIPTION_ID (server env); without it, marketing consent can't be recorded in HubSpot.
