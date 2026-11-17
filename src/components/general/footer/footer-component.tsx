@@ -100,20 +100,28 @@ const FooterComponent = (props: FooterComponentProps) => {
         };
     }, []);
 
+    // Strapi sends the footer links as one flat list (Services…, Sectors…, Contact…) with no column field.
+    // Start a new column at a heading without a link ("Sectors") and when a run of /sectors/ links ends,
+    // so each group stays together however many links it has. Falls back to chunks of 5.
     const cols = useMemo(() => {
+        const items = footerMenu?.footerCta || [];
+        if (!items.length) return [];
 
-        if (!footerMenu?.footerCta) return;
+        const isSector = (item?: CTAButtonProps) => Boolean(item?.link?.startsWith('/sectors/'));
+        const result: CTAButtonProps[][] = [];
+        items.forEach((item, i) => {
+            const prev = items[i - 1];
+            const startsColumn = i === 0 || !item.link || (isSector(prev) && !isSector(item));
+            if (startsColumn) result.push([]);
+            result[result.length - 1].push(item);
+        });
 
-        const size = 5;
-        const array = footerMenu?.footerCta || [];
-        const result: any[][] = [];
-        for (let i = 0; i < array.length; i += size) {
-            result.push(array.slice(i, i + size));
-        }
+        if (result.length > 1) return result;
 
-        return result;
-    }, []);
-
+        const chunked: CTAButtonProps[][] = [];
+        for (let i = 0; i < items.length; i += 5) chunked.push(items.slice(i, i + 5));
+        return chunked;
+    }, [footerMenu]);
 
 
     return (
@@ -154,43 +162,36 @@ const FooterComponent = (props: FooterComponentProps) => {
                             }
                         </div>
 
-                        <div className="flex flex-col gap-y-xl md:flex-1 max-w-full md:max-w-1/2">
-                            <div className="flex-1 flex flex-row justify-start items-start flex-wrap md:gap-x-md gap-y-lg">
-                                {/* column */}
+                        <div className="flex flex-col gap-y-2xl md:flex-1 w-full md:max-w-1/2">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-md gap-y-xl">
                                 {
-                                    cols?.map((col, index) => {
+                                    cols.map((col, colIndex) => {
+                                        const isLast = colIndex === cols.length - 1;
                                         return (
-                                            <div key={index} className="sm:w-1/3 md:w-auto flex flex-col gap-y-sm md:gap-y-md md:max-w-[30%] pr-4 sm:pr-0">
+                                            <div key={colIndex} className="flex flex-col items-start gap-y-sm md:gap-y-md min-w-0">
                                                 {
-                                                    col?.map((item, index) => {
+                                                    col.map((item, index) => {
                                                         return (
                                                             <Button key={index} href={item.link || '#'} type="text" dynamicIconColor={`var(--color-dark-purple)`}
                                                                 outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
-                                                                buttonClassName="mb-0 text-md! font-modern-era-medium max-w-fit text-dark-gray! "
+                                                                buttonClassName="mb-0 text-md! font-modern-era-medium max-w-fit !text-left text-dark-gray! "
                                                             >
                                                                 {item.text}
                                                             </Button>
                                                         )
                                                     })
                                                 }
+                                                {/* social links (LinkedIn etc.) sit at the end of the last column */}
+                                                {isLast && socialCta?.map((item, index) => {
+                                                    return (
+                                                        <Button isExternal={item?.isExternal} href={item?.link || "#"} key={`social-${index}`} icon={item.icon} type="text" dynamicIconColor={`var(--color-dark-purple)`} outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
+                                                            buttonClassName="mb-0 !text-left text-md! font-modern-era-medium max-w-fit text-dark-gray! " iconClassName="h-lg! w-lg! md:h-md! md:w-md! xl:h-md! xl:w-md! shrink-0" >{item.text}</Button>
+                                                    )
+                                                })}
                                             </div>
                                         )
                                     })
                                 }
-
-
-                                {/* column */}
-                                {socialCta?.length && <div className="w-1/2 md:w-auto flex flex-col gap-y-md  sm:max-w-[30%]  md:mt-0">
-                                    {
-                                        socialCta?.map((item, index) => {
-                                            return (
-                                                <Button isExternal={item?.isExternal} href={item?.link || "#"} key={index} icon={item.icon} type="text" dynamicIconColor={`var(--color-dark-purple)`} outlineColor="after:bg-[var(--color-dark-purple)]!" textColor="text-dark-purple"
-                                                    buttonClassName="sm:mt-0 !text-left text-md! font-modern-era-medium text-dark-gray! " iconClassName="h-lg! w-lg! md:h-md! md:w-md! xl:h-md! xl:w-md! shrink-0" >{item.text}</Button>
-                                            )
-                                        })
-                                    }
-                                </div>}
-                                {/* column */}
                             </div>
 
                             <div className=" border-t-[.1vw] border-dark-gray flex-1 flex flex-row justify-between items-start md:items-center pt-sm">

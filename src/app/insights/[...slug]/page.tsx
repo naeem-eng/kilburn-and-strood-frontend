@@ -17,6 +17,7 @@ import { guestSpeakerParser, speakerParser } from '@/parsers/speaker-parser/spea
 import PeopleCard from '@/components/general/people-card';
 import { FullPageSlider } from '@/components/interactive/fullpage';
 import { exploringParser } from '@/parsers/exploring-parser/exploring-parser';
+import PeopleAndExploring from '@/components/general/people-and-exploring';
 import Link from 'next/link';
 import RightArrowIcon from '@/components/helpers/icons/rightarrow-icon/rightarrow-icon';
 import { getInTouchParser } from '@/parsers/get-in-touch-parser/get-in-touch-parser';
@@ -157,47 +158,14 @@ const Article = async ({
         {sections.length > 0 && <Sections color={data?.color?.name} sections={sections} isAnimation={false} />}
         
 
-        <div className={`flex flex-col md:flex-row mt-4xl gap-y-[5vw] md:gap-x-[5vw] px-sm md:px-xl ${(guestSpeakers?.props || data?.fullCta) ? 'mb-xl' : ''}`}>
-          {speakers?.props && <div className='w-full md:max-w-1/2'>
-                <TextXl>
-                    Written by
-                </TextXl>
-                <div className={`mt-md flex flex-row flex-wrap gap-y-md bg-white justify-start items-start pb-lg content-start min-w-full `}>
-                    {speakers?.props.map((person: any) => (
-                        <PeopleCard type="list" {...person} key={person?.slug} />
-                    ))}
-                </div>
-          </div>}
-
-          {getExploringParser?.servicesList?.length > 0 || getExploringParser?.sectorsList?.length > 0 ? <div className='w-full md:max-w-1/2 '>
-                <TextXl>
-                    Keep Exploring
-                </TextXl>
-                <div className="mt-md flex flex-col">
-                  {[
-                    ...(getExploringParser?.servicesList || []),
-                    ...(getExploringParser?.sectorsList || []),
-                  ].map((item: any, i: number) => (
-                    <Link
-                      key={item.href + i}
-                      href={item.href?.startsWith("/") ? item.href : `/${item.href}`}
-                      className="group block border-t-2 border-bright-red py-md"
-                    >
-                      <Text as="span" className="block text-bright-red font-modern-era-medium mb-2xs">
-                        {item.type === "sectors" ? "Sector" : "Service"}
-                      </Text>
-                      <div className="flex items-center justify-between gap-x-md">
-                        <TextLg as="span" className="text-dark-gray">{item.title}</TextLg>
-                        <RightArrowIcon
-                          fill="currentColor"
-                          className="w-lg h-lg shrink-0 text-dark-gray transition-transform duration-300 ease-in-out group-hover:translate-x-1"
-                        />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-          </div> : <></>}
-        </div>
+        <PeopleAndExploring
+          people={speakers?.props}
+          exploring={[
+            ...(getExploringParser?.servicesList || []),
+            ...(getExploringParser?.sectorsList || []),
+          ]}
+          className={(guestSpeakers?.props || data?.fullCta) ? 'mb-xl' : ''}
+        />
         
         
         {guestSpeakers?.props && <div className={`${speakers?.props ? 'px-sm md:px-xl' : 'px-sm md:px-xl mt-4xl'  }`}>
