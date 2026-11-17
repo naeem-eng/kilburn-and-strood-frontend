@@ -477,6 +477,21 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       ...(footerComponent ? [footerComponent] : []),
     ])).sort((a, b) => a.offsetTop - b.offsetTop);
 
+    // Everything inside [data-fullpage-free] (the blocks after the CMS sections: carousel, key contacts,
+    // newsletter, CTA) and the footer scroll normally; snapping only covers the sections before it.
+    const freeZone = containerRef.current.querySelector<HTMLElement>('[data-fullpage-free]');
+    const isInFreeZone = (el: HTMLElement) => Boolean(freeZone && freeZone.contains(el));
+    const snapOnly = freeZone
+      ? components.filter((c) => !isInFreeZone(c) && c !== footerComponent)
+      : components;
+    // no animated section before the free zone (e.g. a people profile's bio): the first slide is the only snap point
+    const firstSlide = getSlideWrappers()[0];
+    const snapComponents = snapOnly.length
+      ? snapOnly
+      : freeZone
+        ? [firstSlide && !firstSlide.contains(freeZone) ? firstSlide : containerRef.current]
+        : components;
+
     const reduceMotion = prefersReducedMotion();
     // fullpage snapping only when the page opts in and the user hasn't asked for reduced motion
     const fullpage = Boolean(interactive) && !reduceMotion;
@@ -537,12 +552,15 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
         return [0];
       }
 
-      const rawPoints = components.map((section) => getSectionAnchorY(section) / maxScrollY);
+      const rawPoints = snapComponents.map((section) => getSectionAnchorY(section) / maxScrollY);
       const normalized = rawPoints.map((point) => gsap.utils.clamp(0, 1, point));
       const dedupedSorted = Array.from(new Set([0, ...normalized])).sort((a, b) => a - b);
 
       return dedupedSorted;
     };
+
+    // scrollY at which the last snapped section is shown; below it the page scrolls freely
+    const getFreeScrollStartY = () => getSectionAnchorY(snapComponents[snapComponents.length - 1]);
 
     // Main scroll snapping
     if (fullpage) {
@@ -554,6 +572,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
           scrub: 2,
           snap: {
             snapTo: (value: number) => {
+              if (freeZone && value * getMaxScrollY() > getFreeScrollStartY() + 1) return value;
               const snapPoints = getSectionSnapPoints();
               return gsap.utils.snap(snapPoints, value);
             },
@@ -568,13 +587,13 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
 
 
     const getClosestSectionIndex = () => {
-      if (!components.length) return 0;
+      if (!snapComponents.length) return 0;
 
       const currentY = window.scrollY;
       let closestIndex = 0;
       let closestDistance = Number.POSITIVE_INFINITY;
 
-      components.forEach((section, index) => {
+      snapComponents.forEach((section, index) => {
         const distance = Math.abs(getSectionAnchorY(section) - currentY);
         if (distance < closestDistance) {
           closestDistance = distance;
@@ -614,9 +633,9 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       let unlockedEarly = false;
 
       if (animating) return;
-      index = gsap.utils.clamp(0, components.length - 1, index);
+      index = gsap.utils.clamp(0, snapComponents.length - 1, index);
       currentIndex = index;
-      const targetY = index === 0 ? 0 : getSectionAnchorY(components[index]);
+      const targetY = index === 0 ? 0 : getSectionAnchorY(snapComponents[index]);
 
       // Avoid creating no-op tweens that can cause tiny top-offset drift.
       if (Math.abs(window.scrollY - targetY) < 1) {
@@ -653,7 +672,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       if (!target) return;
       const rect = target.getBoundingClientRect();
       if (rect.top >= 0 && rect.bottom <= window.innerHeight) return;
-      const sectionIndex = components.findIndex((section) => section.contains(target));
+      const sectionIndex = snapComponents.findIndex((section) => section.contains(target));
       if (sectionIndex === -1) return;
       activeScrollTween?.kill();
       animating = false;
@@ -671,7 +690,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       const isDesktopFullpage = fullpage && window.innerWidth >= 1280;
 
       if (isDesktopFullpage) {
-        const sectionIndex = components.findIndex(
+        const sectionIndex = snapComponents.findIndex(
           (section) => section === el || section.contains(el)
         );
         if (sectionIndex !== -1) {
@@ -711,6 +730,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
 
     const createdTimelines: gsap.core.Timeline[] = [];
     let observer: Observer | null = null;
+    let removeFreeScroll: (() => void) | null = null;
     mm.add('(min-width: 1280px)', () => {
       if (fullpage) {
         observer = Observer.create({
@@ -724,15 +744,50 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
             if (index <= 0) return;
             gotoSection(index - 1, -1)
           },
-          onUp: () => {
+          onUp: (self: Observer) => {
             if (animating) return;
             const index = getClosestSectionIndex();
-            if (index >= components.length - 1) return;
+            if (index >= snapComponents.length - 1) {
+              // past the last section: step into the free zone, the scroll listener then hands wheel back to the browser
+              if (freeZone) window.scrollTo(0, getFreeScrollStartY() + gsap.utils.clamp(2, 150, Math.abs(self.deltaY)));
+              return;
+            }
             gotoSection(index + 1, 1)
           },
           tolerance: 10,
           preventDefault: true,
         });
+
+        if (freeZone) {
+          // below the last section the browser scrolls natively (observer off); at or above it, snapping takes over again
+          const onFreeScroll = () => {
+            if (!observer) return;
+            const isFree = window.scrollY > getFreeScrollStartY() + 1;
+            if (isFree && observer.isEnabled) observer.disable();
+            if (!isFree && !observer.isEnabled) observer.enable();
+          };
+          // scrolling up out of the free zone stops exactly on the last section instead of overshooting into it;
+          // the short lock swallows the rest of the wheel/trackpad momentum so it doesn't snap on to the previous one
+          const onFreeWheel = (e: WheelEvent) => {
+            if (!observer || observer.isEnabled || e.deltaY >= 0) return;
+            if ((e.target as Element | null)?.closest?.(".dropdownPanel, .scrollable, [data-scroll-ignore]")) return;
+            const freeStartY = getFreeScrollStartY();
+            if (window.scrollY + e.deltaY > freeStartY) return;
+            e.preventDefault();
+            activeScrollTween?.kill();
+            window.scrollTo(0, freeStartY);
+            observer.enable();
+            animating = true;
+            window.setTimeout(() => { animating = false; }, 800);
+          };
+          window.addEventListener("scroll", onFreeScroll, { passive: true });
+          window.addEventListener("wheel", onFreeWheel, { passive: false });
+          onFreeScroll();
+          removeFreeScroll = () => {
+            window.removeEventListener("scroll", onFreeScroll);
+            window.removeEventListener("wheel", onFreeWheel);
+          };
+        }
       }
 
       if (reduceMotion) return;
@@ -774,8 +829,9 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
 
 
         const isLightAnimationSection =
+          isInFreeZone(section) || (
           section.hasAttribute("data-light-animation") &&
-          section.getAttribute("data-light-animation") === "true"
+          section.getAttribute("data-light-animation") === "true")
 
         elements.forEach((el, elIndex) => {
           const delay = parseFloat(el.getAttribute("data-delay") || "0")
@@ -946,6 +1002,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
     return () => {
       activeScrollTween?.kill();
       observer?.kill();
+      removeFreeScroll?.();
       document.removeEventListener("mousemove", trackCursor, { capture: true });
       document.removeEventListener("focusin", onFocusIn);
       createdTimelines.forEach((tl) => tl.kill());
@@ -1143,7 +1200,7 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
     <main ref={scrollRef} id="main-content" tabIndex={-1} className={`${className} overflow-hidden outline-none`} style={{ position: "relative", zIndex: 1 }}>
       <div ref={containerRef}>
         {items.map((child, i) => (
-          <div key={i} data-fullpage-slide className="firstOffset [&:has(.no-section)]:xl:h-auto section w-full xl:h-screen bg-white">
+          <div key={i} data-fullpage-slide className="firstOffset [&:has(.no-section)]:xl:h-auto [&:has([data-fullpage-free])]:xl:h-auto section w-full xl:h-screen bg-white">
             {child}
           </div>
         ))}

@@ -1,5 +1,13 @@
 import { getInTouchSectionParserType } from "./get-in-touch-section-parser.types";
 
+// Strapi form_type enum ("Contact us" / "Sign up") → which form component to render
+export const toFormType = (value?: string | null): "contact" | "signup" | undefined => {
+    const name = value?.toLowerCase().replace(/[^a-z]/g, "") || "";
+    if (name.includes("sign")) return "signup";
+    if (name.includes("contact")) return "contact";
+    return undefined;
+};
+
 
 
 const getIntTouchSectionParser = (section: any) => {
@@ -18,9 +26,8 @@ const getIntTouchSectionParser = (section: any) => {
                 textColor: cta?.textColor?.name,
                 backgroundColor: cta?.backgroundColor?.name
             })),
-            embedCode: section?.embedCode,
-            formUrl: section?.formUrl,
-            enableForm: section?.enableForm
+            enableForm: section?.enableForm,
+            formType: toFormType(section?.formType)
         } as getInTouchSectionParserType["props"]
     } as getInTouchSectionParserType
 }

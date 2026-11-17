@@ -86,12 +86,12 @@ export default async function RootLayout({
 
         {/* <MotionToggle /> */}
 
-        {/* HubSpot Tracking */}
-        <Script
+        {/* HubSpot Tracking (sets the hubspotutk cookie the form submissions send as hutk) */}
+        {/^\d+$/.test(process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID || "") && <Script
           id="hs-script-loader"
-          src="//js-eu1.hs-scripts.com/144529621.js"
+          src={`//js-eu1.hs-scripts.com/${process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID}.js`}
           strategy="afterInteractive"
-        />
+        />}
         {/* Google Tag Manager: GA4 (G-D2XBQE20QF) is loaded by the container's Google tag,
             so there is no separate gtag.js snippet (it would double-count page views) */}
         <Script id="gtm-init" strategy="afterInteractive">

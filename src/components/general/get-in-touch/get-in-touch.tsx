@@ -6,9 +6,13 @@ import { GetInTouchProps } from "./get-in-touch.types";
 import BodyMarkdown from "@/components/helpers/body-markdown/BodyMarkdown";
 import { TextMd, TitleXl } from "@/components/helpers/typography";
 import { memo } from "react";
-import EmbedCode from "../embed-code";
+import ContactForm from "../contact-form/contact-form";
+import SignUpForm from "../sign-up-form/sign-up-form";
 
-const GetInTouch: React.FC<GetInTouchProps> = (props) => { 
+const FORMS = { contact: ContactForm, signup: SignUpForm };
+
+const GetInTouch: React.FC<GetInTouchProps> = (props) => {
+    const Form = props?.enableForm !== false && props?.formType ? FORMS[props.formType] : null;
     return (
      <div id="contactForm" data-animation-component data-animation="true" className={`${props?.className ? props?.className : ''} relative z-2 bg-white py-4xl! min-h-screen `}>
 
@@ -40,9 +44,8 @@ const GetInTouch: React.FC<GetInTouchProps> = (props) => {
                   </div>
                 }
             </div>}
-            {props?.embedCode && <div className='flex-1 md:flex-1/2'>
-                <EmbedCode embedCode={props?.embedCode} />
-                {/* {} */}
+            {Form && <div className='flex-1 md:flex-1/2'>
+                <Form />
             </div>}
         </div>
       

@@ -128,10 +128,10 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
         text-base cursor-pointer group font-modern-era-medium flex  gap-x-1 max-w-fit relative items-center ${props?.outlineColor} max-h-fit ${underlineClasses}
         `;
 
-        // an inline background underline is painted under each line the text wraps onto
+        // an inline background underline is painted under each line the text wraps onto (colour: --underline-color, else the text colour)
         const children = props?.wrapUnderline ? (
             <span>
-                <span className="bg-[linear-gradient(currentColor,currentColor)] bg-no-repeat bg-left-bottom bg-[length:0%_.13vw] group-hover:bg-[length:100%_.13vw] transition-[background-size] duration-300">
+                <span className="bg-[linear-gradient(var(--underline-color,currentColor),var(--underline-color,currentColor))] bg-no-repeat bg-left-bottom bg-[length:0%_.13vw] group-hover:bg-[length:100%_.13vw] transition-[background-size] duration-300">
                     {props?.children}
                 </span>
             </span>
