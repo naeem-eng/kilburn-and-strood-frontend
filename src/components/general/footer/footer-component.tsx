@@ -82,16 +82,17 @@ const FooterComponent = (props: FooterComponentProps) => {
             const footer = document.getElementById('footer');
 
 
+            // the big logo slides up only at the very bottom of the page
             if (scrollPos >= pageHeight - (window.innerHeight - rect.height)) {
                 el.classList.add('-bottom-0!');
-                if(footer) {
-                    footer.style.opacity = '1';
-                }
             } else {
                 el.classList.remove('-bottom-0!');
-                if(footer) {
-                    footer.style.opacity = '0';
-                }
+            }
+
+            // the (fixed) footer links show as soon as the footer's space scrolls into view, so scrolling
+            // up a little no longer hides them and leaves a blank white area
+            if (footer) {
+                footer.style.opacity = footer.getBoundingClientRect().top < window.innerHeight ? '1' : '0';
             }
         }
 
