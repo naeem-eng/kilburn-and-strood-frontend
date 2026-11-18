@@ -65,8 +65,8 @@ const PeopleList = async () => {
             {data?.heroSections &&
             <FullPageSlider interactive={data?.type === "interactive"}>
                 {data?.heroSections && <Sections sections={data?.heroSections || []} isAnimation={false} />}
-                {/* everything after the hero sections scrolls normally (no fullpage snapping), see FullPageSlider */}
-                <div data-fullpage-free>
+                {/* the listing is snapped to its top, scrolled through normally, then the CTA and footer snap, see FullPageSlider */}
+                <div data-animation-component>
                 <PeopleCardsContainer
                     color='bright-red'
                     className='mt-xl'

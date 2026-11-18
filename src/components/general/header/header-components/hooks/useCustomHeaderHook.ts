@@ -41,7 +41,10 @@ const useCustomHeaderHook = (props: CustomHeaderProps) => {
         const onScroll = () => {
             const currentScrollY = window.scrollY;
             const hasActiveMenu = dropdownMenuRef.current.some((item) => item?.classList.contains('activateDropper'));
-            if (hasActiveMenu) {
+            // while a dropdown is open the page is scroll-locked, so the user can't be scrolling: any scroll now is the
+            // fullpage slider finishing a snap. Don't let that close the menu the user just opened.
+            const scrollLocked = document.body.classList.contains('blur-background');
+            if (hasActiveMenu && !scrollLocked) {
                 resetAllMenus(null);
             }
 
@@ -77,14 +80,24 @@ const useCustomHeaderHook = (props: CustomHeaderProps) => {
 
 
     useEffect(() => {
+    // Scroll lock while a nav dropdown is open. On Windows (classic 17px scrollbar) hiding the scrollbar used to widen
+    // the page: the insights grid grew, GSAP re-snapped, and that scroll closed the dropdown. Lock on <html> so its
+    // scrollbar-gutter (globals.css) keeps the space; if the browser still widens the page, pad the difference back.
+    const html = document.documentElement;
+    let locked = false;
     const observer = new MutationObserver(() => {
-        const el = document.getElementById('lockScrollbar')!;
-        if (document.body.classList.contains('blur-background')) {
-            document.getElementsByTagName('body')[0].style.overflow = 'hidden';
-            // el.style.scrollbarGutter = 'stable';
+        const shouldLock = document.body.classList.contains('blur-background');
+        if (shouldLock === locked) return;
+        locked = shouldLock;
+        if (shouldLock) {
+            // measure the laid-out body, not html.clientWidth: with a reserved gutter Chrome can report the old width
+            const widthBefore = document.body.getBoundingClientRect().width;
+            html.style.overflow = 'hidden';
+            const grew = Math.round(document.body.getBoundingClientRect().width - widthBefore);
+            if (grew > 0) html.style.paddingRight = `${grew}px`;
         } else {
-            document.getElementsByTagName('body')[0].style.overflow = '';
-            // el.style.scrollbarGutter = '';
+            html.style.overflow = '';
+            html.style.paddingRight = '';
         }
     });
 

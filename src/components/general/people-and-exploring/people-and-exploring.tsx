@@ -26,7 +26,7 @@ const PeopleAndExploring = ({ peopleTitle = 'Written by', people, exploring, cla
   if (!hasPeople && !hasExploring) return null;
 
   return (
-    <div className={`flex flex-col md:flex-row mt-4xl gap-y-[5vw] md:gap-x-[5vw] px-sm md:px-xl ${className}`}>
+    <div data-animation-component className={`flex flex-col md:flex-row mt-4xl gap-y-[5vw] md:gap-x-[5vw] px-sm md:px-xl ${className}`}>
       {hasPeople && <div className='w-full md:max-w-1/2'>
         <TextXl>
           {peopleTitle}

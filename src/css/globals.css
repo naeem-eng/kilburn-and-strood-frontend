@@ -398,6 +398,10 @@
 
 html {
   background: white;
+  /* Windows (classic scrollbars): opening a nav dropdown locks scrolling with body overflow:hidden, which used to
+     remove the 17px scrollbar, widen the page, re-trigger GSAP snapping and close the dropdown again.
+     Reserving the gutter keeps the width the same whether or not the page can scroll. No effect on macOS overlay scrollbars. */
+  scrollbar-gutter: stable;
 }
 
 body {

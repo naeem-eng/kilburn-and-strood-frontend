@@ -13,7 +13,6 @@ import { getComponentsPopulateObj, getSeoObject } from '@/utils/utils';
 import { draftMode } from 'next/headers';
 // import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { hasGridSection } from '@/parsers/section-parser/grid-parser';
 import React, { memo, useMemo } from 'react';
 
 export const dynamic = 'force-static';
@@ -67,7 +66,7 @@ const Home = async () => {
   if (!page) notFound();
   const data = page
   // a grid needs normal scrolling, so no fullpage scroll hijack on pages with a grid section
-  const isAnimation = data?.type === "interactive" && !hasGridSection(data?.sections);
+  const isAnimation = data?.type === "interactive";
   const isLightAnimation = !isAnimation;
 
   const getFullCtaParser = fullCtaParser(data?.fullCta);
@@ -80,8 +79,9 @@ const Home = async () => {
       
       <FullPageSlider interactive={isAnimation}>
         <Sections sections={data?.sections || []} isAnimation={isAnimation} isLightAnimation={isLightAnimation} />
-        {/* everything after the CMS sections scrolls normally (no fullpage snapping), see FullPageSlider */}
-        <div data-fullpage-free>
+        {/* the blocks after the CMS sections (carousel, key contacts, newsletter, CTA) snap like the sections above;
+            ones taller than the screen are scrolled through normally, see FullPageSlider */}
+        <div>
           <PageCarousal collection="pages" documentId={data?.documentId} slug={data?.slug} isPreview={isPreview} />
           {getFullCtaParser && <FullCta {...getFullCtaParser.props} />}
         </div>
