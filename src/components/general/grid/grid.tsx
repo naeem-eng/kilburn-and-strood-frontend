@@ -85,7 +85,7 @@ const Grid: React.FC<GridProps> = ({ name, allowFilters, allowSearch, filterEnum
     const showFilters = allowFilters && filterOptions.length > 0;
 
     return (
-        <section aria-label={name || "Grid"} className={`no-section w-full py-xl overflow-x-hidden flex flex-col justify-start items-start ${className || ''}`}>
+        <section data-animation-component aria-label={name || "Grid"} className={`no-section w-full py-xl overflow-x-hidden flex flex-col justify-start items-start ${className || ''}`}>
             {/* GeneralFilters is sticky (for the full listing pages); a wrapper of its own height keeps it in place here,
                 so a long dropdown (e.g. People) scrolls with the page */}
             {(showFilters || allowSearch) && (
@@ -110,7 +110,9 @@ const Grid: React.FC<GridProps> = ({ name, allowFilters, allowSearch, filterEnum
                 </div>
             ) : (
                 <>
-                    <div className="flex flex-row flex-wrap gap-y-xl justify-start items-start content-start self-stretch -mx-sm px-sm md:px-xl">
+                    {/* CSS grid, not flex-wrap with 1/3 widths: with Windows display scaling the three 33.33% cards could round
+                        a fraction over 100% and wrap to 2 per row */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-xl items-start content-start self-stretch -mx-sm px-sm md:px-xl">
                         {cards.map((card) => <GridCard {...card} key={card.id} />)}
                     </div>
                     {page < pageCount && (

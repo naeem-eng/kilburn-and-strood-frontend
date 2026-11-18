@@ -12,12 +12,13 @@ type PageCarousalProps = Parameters<typeof fetchCarousal>[0] & {
 // allow_carousal / carousal_enums carousel; renders nothing (or the fallback) when switched off
 const PageCarousal = async ({ fallback, isAnimation, ...props }: PageCarousalProps) => {
     const carousal = await fetchCarousal(props);
-    if (carousal) return <ContentCarousal title={carousal.title} items={carousal.items} />;
+    // data-animation-component: the carousel is its own fullpage snap stop (see FullPageSlider)
+    if (carousal) return <div data-animation-component><ContentCarousal title={carousal.title} items={carousal.items} /></div>;
     if (!fallback?.items?.length) return null;
     // pages that pass isAnimation used RelatedContentCarousel before; others (people) the plain ContentCarousal
-    return isAnimation === undefined
+    return <div data-animation-component>{isAnimation === undefined
         ? <ContentCarousal title={fallback.title} items={fallback.items} />
-        : <RelatedContentCarousel {...fallback} isAnimation={isAnimation} />;
+        : <RelatedContentCarousel {...fallback} isAnimation={isAnimation} />}</div>;
 };
 
 export default PageCarousal;

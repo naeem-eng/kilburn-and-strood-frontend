@@ -201,7 +201,7 @@ const PeopleCardsContainer: React.FC<PeopleCardsContainerProps> = (props) => {
         {props?.title && <TitleSm className="text-dark-gray mb-lg px-sm md:px-xl">
           {props?.title}
         </TitleSm>}
-        <div className={`px-sm md:px-xl flex flex-row flex-wrap gap-y-md bg-white justify-start items-start pb-lg content-start -mx-xs min-w-full`}>
+        <div className={`px-sm md:px-xl grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-md bg-white items-stretch pb-lg content-start -mx-xs min-w-full [&>*]:w-full! [&>*]:min-w-0! [&>*]:max-w-full! [&>*]:flex-none!`}>
           {peoples.map((person: PeopleCardProps, index: number) => (
             <PeopleCard {...person} key={index} />
           ))}

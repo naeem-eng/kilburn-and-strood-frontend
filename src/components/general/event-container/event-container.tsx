@@ -236,7 +236,7 @@ const EventContainer: React.FC<EventContainerProps> = (props) => {
                     No results found
                 </TextLg>
             </div> : <>
-              <div className={`flex flex-row flex-wrap gap-x-0 gap-y-xl bg-white justify-start items-start pb-lg content-start -mx-sm`}>
+              <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-0 gap-y-xl bg-white items-start pb-lg content-start -mx-sm [&>*]:w-full! [&>*]:min-w-0! [&>*]:max-w-full! [&>*]:flex-none!`}>
                   {getPastEvents?.map((event:ArticleCardProps, index:number) => (
                     <ArticleCard as="event" {...event} key={index} />
                   ))}

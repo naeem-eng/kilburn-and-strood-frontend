@@ -1,7 +1,7 @@
 // Shared by the /api/grid and /api/grid-filters routes and the Grid component.
 // Strapi grid section: filter_enums (which filters to show) and grid_renders (which collections to list).
 
-export const GRID_PAGE_SIZE = 6;
+export const GRID_PAGE_SIZE = 9; // 3 rows of 3 cards
 
 export type GridRenderName = "Insights" | "Events" | "Casestudies";
 

@@ -17,7 +17,6 @@ import fetchAllPages from '@/requests/allpage-requests';
 import fetchRelatedContent from '@/requests/related-content-requests';
 import { strapiFetch } from '@/requests/lib/strapi';
 import { getComponentsPopulateObj, getSeoObject } from '@/utils/utils';
-import { hasGridSection } from '@/parsers/section-parser/grid-parser';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 
@@ -124,8 +123,8 @@ const Pages = async ({
 
   const data = page;
   const isServicePage = data?._pageType === 'services';
-  // a grid needs normal scrolling, so no fullpage scroll hijack on pages with a grid section
-  const isAnimation      = data?.type === 'interactive' && !hasGridSection(data?.sections);
+  // pages set to "Interactive" in Strapi snap module by module; a grid (taller than the screen) is scrolled through normally
+  const isAnimation      = data?.type === 'interactive';
   const isLightAnimation = !isAnimation;
   const getFullCtaParser = fullCtaParser(data?.fullCta);
   const globalNewsletter = globalNewsletterParser(data?.globalNewsletters);
@@ -151,8 +150,9 @@ const Pages = async ({
           sections={data?.sections || []}
           isAnimation={isAnimation}
         />
-        {/* everything after the CMS sections scrolls normally (no fullpage snapping), see FullPageSlider */}
-        <div data-fullpage-free>
+        {/* the blocks after the CMS sections (carousel, key contacts, newsletter, CTA) snap like the sections above;
+            ones taller than the screen are scrolled through normally, see FullPageSlider */}
+        <div>
         {isCaseStudy && (
           <PeopleAndExploring
             peopleTitle="Key contacts"

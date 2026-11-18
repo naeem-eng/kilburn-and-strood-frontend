@@ -545,22 +545,60 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
       return gsap.utils.clamp(0, getMaxScrollY(), targetY);
     };
 
-    const getSectionSnapPoints = () => {
-      const maxScrollY = getMaxScrollY();
-
-      if (maxScrollY <= 0) {
-        return [0];
-      }
-
-      const rawPoints = snapComponents.map((section) => getSectionAnchorY(section) / maxScrollY);
-      const normalized = rawPoints.map((point) => gsap.utils.clamp(0, 1, point));
-      const dedupedSorted = Array.from(new Set([0, ...normalized])).sort((a, b) => a - b);
-
-      return dedupedSorted;
-    };
-
     // scrollY at which the last snapped section is shown; below it the page scrolls freely
     const getFreeScrollStartY = () => getSectionAnchorY(snapComponents[snapComponents.length - 1]);
+
+    // Modules taller than the screen (grid, listings, long carousels…) can't be shown in one snap. They get a stop
+    // at their top and one at their bottom; between the two the wheel scrolls them normally, then snapping resumes.
+    type TallRegion = { start: number; end: number };
+    const getTallRegions = (): TallRegion[] => {
+      const maxScrollY = getMaxScrollY();
+      const viewportHeight = window.innerHeight;
+      return snapComponents
+        .filter((section) => section.offsetHeight > viewportHeight + 2)
+        .map((section) => {
+          const top = components[0] === section ? 0 : section.offsetTop;
+          return {
+            start: gsap.utils.clamp(0, maxScrollY, top),
+            end: gsap.utils.clamp(0, maxScrollY, top + section.offsetHeight - viewportHeight),
+          };
+        })
+        .filter((region) => region.end - region.start > 2);
+    };
+
+    // every scrollY the page can rest on: each module's anchor, the bottom of tall modules, and the very bottom
+    // of the page (footer logo) when there's no free zone
+    const getStopsY = () => {
+      const maxScrollY = getMaxScrollY();
+      if (maxScrollY <= 0) return [0];
+      const stops = [
+        0,
+        ...snapComponents.map((section) => getSectionAnchorY(section)),
+        ...getTallRegions().map((region) => region.end),
+        ...(freeZone ? [] : [maxScrollY]),
+      ].map((y) => Math.round(gsap.utils.clamp(0, maxScrollY, y)));
+      // stops a few px apart (a slide's offset vs its section) would make one wheel notch feel stuck: keep the first
+      const MIN_GAP = 40;
+      return Array.from(new Set(stops))
+        .sort((a, b) => a - b)
+        .reduce<number[]>((kept, y) => {
+          const last = kept[kept.length - 1];
+          if (last === undefined || y - last >= MIN_GAP) kept.push(y);
+          else if (y === maxScrollY) kept[kept.length - 1] = y; // the very bottom always stays reachable
+          return kept;
+        }, []);
+    };
+
+    // the tall region the page is currently scrolled inside (between its top and bottom stops), if any
+    const getRegionAt = (y: number, direction: 1 | -1) => getTallRegions().find((region) =>
+      direction === 1 ? y >= region.start - 1 && y < region.end - 1 : y > region.start + 1 && y <= region.end + 1
+    );
+
+    const getSectionSnapPoints = () => {
+      const maxScrollY = getMaxScrollY();
+      if (maxScrollY <= 0) return [0];
+      return getStopsY().map((y) => y / maxScrollY);
+    };
 
     // Main scroll snapping
     if (fullpage) {
@@ -572,7 +610,10 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
           scrub: 2,
           snap: {
             snapTo: (value: number) => {
-              if (freeZone && value * getMaxScrollY() > getFreeScrollStartY() + 1) return value;
+              const y = value * getMaxScrollY();
+              if (freeZone && y > getFreeScrollStartY() + 1) return value;
+              // inside a tall module the page rests wherever the user scrolled it to
+              if (getTallRegions().some((region) => y > region.start + 1 && y < region.end - 1)) return value;
               const snapPoints = getSectionSnapPoints();
               return gsap.utils.snap(snapPoints, value);
             },
@@ -629,13 +670,31 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
 
     // 🧠 Helper: scroll to specific section
     function gotoSection(index: number, _direction: number) {
-      const earlyUnlockProgress = 0.82;
-      let unlockedEarly = false;
-
       if (animating) return;
       index = gsap.utils.clamp(0, snapComponents.length - 1, index);
       currentIndex = index;
-      const targetY = index === 0 ? 0 : getSectionAnchorY(snapComponents[index]);
+      gotoY(index === 0 ? 0 : getSectionAnchorY(snapComponents[index]));
+    }
+
+    // wheel inside a tall module: follow the wheel like normal scrolling, never past the module's top/bottom stop
+    function scrollWithin(targetY: number) {
+      activeScrollTween?.kill();
+      activeScrollTween = gsap.to(window, {
+        scrollTo: { y: targetY, autoKill: false },
+        duration: 0.4,
+        ease: "power2.out",
+        onUpdate: nudgeCursor,
+      });
+    }
+
+    // the momentum of the wheel that just snapped onto a tall module mustn't immediately scroll it
+    let settleUntil = 0;
+
+    function gotoY(targetY: number) {
+      const earlyUnlockProgress = 0.82;
+      let unlockedEarly = false;
+      // landing on the top/bottom of a tall module: wait for the snap to finish before the wheel scrolls inside it
+      const landsOnTallModule = getTallRegions().some((region) => Math.abs(region.start - targetY) < 2 || Math.abs(region.end - targetY) < 2);
 
       // Avoid creating no-op tweens that can cause tiny top-offset drift.
       if (Math.abs(window.scrollY - targetY) < 1) {
@@ -652,13 +711,14 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
         onUpdate: function () {
           // Synthetic mousemove so ImageReveal tracks cursor during scroll
           nudgeCursor();
-          if (!unlockedEarly && this.progress() >= earlyUnlockProgress) {
+          if (!landsOnTallModule && !unlockedEarly && this.progress() >= earlyUnlockProgress) {
             animating = false;
             unlockedEarly = true;
           }
         },
         onComplete: () => {
           animating = false;
+          if (landsOnTallModule) settleUntil = Date.now() + 350;
           // One final nudge after scroll finishes
           nudgeCursor();
         },
@@ -738,21 +798,36 @@ function FullPageSliderInner({ children, className, interactive }: FullPageSlide
           type: "wheel",
           ignore: ".dropdownPanel, .scrollable, [data-scroll-ignore]",
           wheelSpeed: -1,
-          onDown: () => {
-            if (animating) return;
-            const index = getClosestSectionIndex();
-            if (index <= 0) return;
-            gotoSection(index - 1, -1)
+          onDown: (self: Observer) => {
+            // a nav dropdown is open (header locks scrolling): don't move the page underneath it
+            if (animating || document.body.classList.contains("blur-background")) return;
+            const y = window.scrollY;
+            const region = getRegionAt(y, -1);
+            if (region) {
+              if (Date.now() < settleUntil) return;
+              scrollWithin(Math.max(region.start, y - Math.abs(self.deltaY)));
+              return;
+            }
+            const previous = getStopsY().filter((stop) => stop < y - 1).pop();
+            if (previous === undefined) return;
+            gotoY(previous);
           },
           onUp: (self: Observer) => {
-            if (animating) return;
-            const index = getClosestSectionIndex();
-            if (index >= snapComponents.length - 1) {
+            if (animating || document.body.classList.contains("blur-background")) return;
+            const y = window.scrollY;
+            const region = getRegionAt(y, 1);
+            if (region) {
+              if (Date.now() < settleUntil) return;
+              scrollWithin(Math.min(region.end, y + Math.abs(self.deltaY)));
+              return;
+            }
+            const next = getStopsY().find((stop) => stop > y + 1);
+            if (next === undefined || (freeZone && y >= getFreeScrollStartY() - 1)) {
               // past the last section: step into the free zone, the scroll listener then hands wheel back to the browser
               if (freeZone) window.scrollTo(0, getFreeScrollStartY() + gsap.utils.clamp(2, 150, Math.abs(self.deltaY)));
               return;
             }
-            gotoSection(index + 1, 1)
+            gotoY(next);
           },
           tolerance: 10,
           preventDefault: true,
