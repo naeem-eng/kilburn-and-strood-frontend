@@ -85,19 +85,35 @@ const useCustomHeaderHook = (props: CustomHeaderProps) => {
     // scrollbar-gutter (globals.css) keeps the space; if the browser still widens the page, pad the difference back.
     const html = document.documentElement;
     let locked = false;
+    // the header has transition-all, so its width correction would otherwise slide over 700ms
+    const withoutHeaderTransition = (change: () => void) => {
+        const header = document.getElementById('header');
+        if (!header) return change();
+        header.style.transition = 'none';
+        change();
+        void header.offsetWidth; // apply the new width before transitions come back
+        header.style.transition = '';
+    };
     const observer = new MutationObserver(() => {
         const shouldLock = document.body.classList.contains('blur-background');
         if (shouldLock === locked) return;
         locked = shouldLock;
         if (shouldLock) {
             // measure the laid-out body, not html.clientWidth: with a reserved gutter Chrome can report the old width
+            const header = document.getElementById('header');
             const widthBefore = document.body.getBoundingClientRect().width;
+            const headerBefore = header?.getBoundingClientRect().width ?? 0;
             html.style.overflow = 'hidden';
+            // page content and the fixed header can widen by different amounts (the header is sized to the viewport),
+            // so measure and correct each one separately
             const grew = Math.round(document.body.getBoundingClientRect().width - widthBefore);
             if (grew > 0) html.style.paddingRight = `${grew}px`;
+            const headerGrew = (header?.getBoundingClientRect().width ?? 0) - headerBefore;
+            if (headerGrew > 0.5) withoutHeaderTransition(() => html.style.setProperty('--scroll-lock-gap', `${headerGrew}px`));
         } else {
             html.style.overflow = '';
             html.style.paddingRight = '';
+            withoutHeaderTransition(() => html.style.removeProperty('--scroll-lock-gap'));
         }
     });
 

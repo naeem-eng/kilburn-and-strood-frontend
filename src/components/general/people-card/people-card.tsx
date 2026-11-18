@@ -90,7 +90,9 @@ const PeopleCard: React.FC<PeopleCardProps> = (props) => {
     <Link href={href} target={target} rel={rel} id="peopleHovered" type="button" className={`w-1/2 min-w-1/2 max-w-1/2 sm:w-1/3 sm:min-w-1/3 sm:max-w-1/3 md:w-1/4 md:min-w-1/4 md:max-w-1/4  cursor-pointer text-left px-xs min-h-0 flex-1 self-stretch group`}>
       <div className="relative h-full overflow-hidden">
         <div className="inner-people-card relative h-full group-hover:scale-120 transition-all duration-400 ease-in-out">
-          {props?.imageSrc && <Image sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw" src={props?.imageSrc} alt={props?.imageAlt || ''} width={props?.imageWidth || 301} height={props?.imageHeight || 401} className="w-full h-full object-cover" style={{
+          {/* sizes: headshots are uploaded landscape (~5:4) and cropped into this tall card, so the visible photo is
+              ~1.8x the card's width (plus the 1.2x hover zoom); the old 25vw hint fetched a file half the size needed */}
+          {props?.imageSrc && <Image sizes="(min-width: 1024px) 45vw, (min-width: 768px) 60vw, 100vw" src={props?.imageSrc} alt={props?.imageAlt || ''} width={props?.imageWidth || 301} height={props?.imageHeight || 401} className="w-full h-full object-cover" style={{
             width: "clamp(200px, 25vw, 25vw)",
             height: "clamp(260px, 33vw, 33vw)",
           }}

@@ -402,6 +402,15 @@ html {
      remove the 17px scrollbar, widen the page, re-trigger GSAP snapping and close the dropdown again.
      Reserving the gutter keeps the width the same whether or not the page can scroll. No effect on macOS overlay scrollbars. */
   scrollbar-gutter: stable;
+  /* thin grey page scrollbar (Windows/Linux classic scrollbars; macOS overlay scrollbars pick up the colour only) */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-medium-gray) var(--color-light-gray);
+}
+
+/* while a nav dropdown locks scrolling on Windows, keep the fixed header the same width as before the
+   scrollbar disappeared, so the nav items don't jump sideways (--scroll-lock-gap is set by useCustomHeaderHook) */
+#header {
+  width: calc(100% - var(--scroll-lock-gap, 0px));
 }
 
 body {

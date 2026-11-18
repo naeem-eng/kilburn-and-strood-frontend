@@ -79,7 +79,8 @@ const PeopleGetInTouch: React.FC<PeopleGetInTouchProps> = (props) => {
                 src={props.imageSrc}
                 alt={props?.imageAlt || ""}
                 fill
-                sizes="(min-width: 768px) 20vw, 100vw"
+                // square box, landscape (~5:4) headshot cropped to fit: the visible photo is ~1.25x the box width
+                sizes="(min-width: 768px) 26vw, 125vw"
                 className="object-cover object-top"
               />
             </div>
