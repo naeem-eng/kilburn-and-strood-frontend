@@ -4,7 +4,7 @@ import { MenuRequestProps } from "@/parsers/global-parser/menu/menu-parser.types
 import { getStrapiMedia } from "@/utils/utils";
 
 // used until gtm_container_id is filled in Strapi global-setting
-const DEFAULT_GTM_CONTAINER_ID = "GTM-N5QN3MS";
+const DEFAULT_GTM_CONTAINER_ID = "GTM-5NZ8XLFG";
 // used until contact_form_event / signup_form_event are filled in Strapi global-setting
 const DEFAULT_FORM_EVENTS = { contact: "contact_form_submit", signup: "newsletter_signup" };
 

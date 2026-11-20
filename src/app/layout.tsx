@@ -43,7 +43,7 @@ export default async function RootLayout({
   const header = global?.header;
   const footer = global?.footer;
   // validated as GTM-XXXX in globalRequest (from Strapi gtm_container_id, with a fallback)
-  const gtmContainerId: string = global?.gtmContainerId || "GTM-N5QN3MS";
+  const gtmContainerId: string = global?.gtmContainerId || "GTM-5NZ8XLFG";
 
   return (
     <html lang="en" suppressHydrationWarning>
