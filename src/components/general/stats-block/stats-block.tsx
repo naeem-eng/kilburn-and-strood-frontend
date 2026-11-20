@@ -68,7 +68,7 @@ const StatsBlock: React.FC<StatsBlockProps> = (props) => {
                     // {/* </TitleLg> */}
                     <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreak]}
                         components={{
-                            p: ({ children }) => <TitleXl attributes={{ ...getAnimationAttributes('title'), ...getMobileAnimationAttributes('title') }}>{children}</TitleXl>,
+                            p: ({ children }) => <TitleXl as="h2" attributes={{ ...getAnimationAttributes('title'), ...getMobileAnimationAttributes('title') }}>{children}</TitleXl>,
                             strong: ({ children }) => <TitleXl as="span" className={``} style={{ color: `var(--color-${props?.color || 'yellow'})` }} >{children}</TitleXl>
                         }}
                     >
@@ -94,7 +94,7 @@ const StatsBlock: React.FC<StatsBlockProps> = (props) => {
                       props?.stats?.map((stat, index) => {
                         return (
                           <div key={index} className="stat-item flex flex-col gap-y-2 border-t-dark-gray border-t-[2px] pt-xs">
-                            {stat?.title && <TitleXl  className="mb-0">{stat?.title}</TitleXl>}
+                            {stat?.title && <TitleXl as="p" className="mb-0">{stat?.title}</TitleXl>}
                             {stat?.text && <Text className="mb-0">{stat?.text}</Text>}
                           </div>
                         ) 

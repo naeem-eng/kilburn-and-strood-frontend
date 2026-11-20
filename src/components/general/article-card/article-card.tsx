@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { ArticleCardProps } from "./article-card.types";
-import { Text, TextLg, TextMd } from "@/components/helpers/typography";
+import { Text } from "@/components/helpers/typography";
+import CardTitle from "./card-title";
 import Link from "next/link";
 
 const ArticleCard: React.FC<ArticleCardProps> = (props) => {
@@ -13,7 +14,7 @@ const ArticleCard: React.FC<ArticleCardProps> = (props) => {
           </div>
           <div className="mt-sm">
               <Text className="text-medium-gray mb-2xs">{props?.tag}</Text>
-              <TextLg as="h3" className="text-dark-gray font-modern-era-medium animated-underline">{props?.title}</TextLg>
+              <CardTitle title={props?.title} />
               <Text className="text-medium-gray mt-md">{props?.date}</Text>
           </div>
       </Link>

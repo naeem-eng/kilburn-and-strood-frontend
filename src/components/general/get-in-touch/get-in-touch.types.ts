@@ -1,4 +1,6 @@
 export type GetInTouchProps = {
+    // h1 when this block is the page's title (e.g. /contact), h2 when it sits under a page header (offices…)
+    headingAs?: "h1" | "h2";
     title?: string;
     text?: string;
     enableForm?: boolean;

@@ -23,6 +23,16 @@
       "env": {
         "PROD_DOMAIN": "localhost:3005"
       }
+    },
+    {
+      "name": "strapi-local",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "cd ~/Desktop/ath/strapi/strapi && yarn develop"
+      ],
+      "port": 1337,
+      "url": "http://localhost:1337"
     }
   ]
 }

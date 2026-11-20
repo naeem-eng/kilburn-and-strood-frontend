@@ -12,16 +12,17 @@ import { GridCardProps, GridProps } from "./grid.types";
 
 type FilterOption = { key: string; title: string; items: { title: string }[] };
 
-// Cards from the grid's renders (insights, events, case studies), newest first, 6 at a time with Load more.
+// Cards from the grid's renders (insights, events, case studies), newest first, 9 at a time (GRID_PAGE_SIZE) with Load more.
 // Filters come from filter_enums; search from allow_search.
-const Grid: React.FC<GridProps> = ({ name, allowFilters, allowSearch, filterEnums, renders, className }) => {
-    const [cards, setCards] = useState<GridCardProps[]>([]);
+// initialData: the first page, fetched on the server (GridServer) so the cards are in the HTML for SEO
+const Grid: React.FC<GridProps & { initialData?: { data?: GridCardProps[]; pagination?: { pageCount?: number } | null } | null }> = ({ name, allowFilters, allowSearch, filterEnums, renders, className, initialData }) => {
+    const [cards, setCards] = useState<GridCardProps[]>(initialData?.data || []);
     const [page, setPage] = useState(1);
-    const [pageCount, setPageCount] = useState(0);
+    const [pageCount, setPageCount] = useState(initialData?.pagination?.pageCount || 0);
     const [search, setSearch] = useState<string>();
     const [selected, setSelected] = useState<Record<string, string[]>>({});
     const [filterOptions, setFilterOptions] = useState<FilterOption[]>([]);
-    const [loader, setLoader] = useState(true);
+    const [loader, setLoader] = useState(!initialData);
     const [buttonLoader, setButtonLoader] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -44,11 +45,17 @@ const Grid: React.FC<GridProps> = ({ name, allowFilters, allowSearch, filterEnum
         setButtonLoader(false);
     }, [query, search, selected]);
 
-    // page 1 again whenever search or filters change
+    // page 1 again whenever search or filters change (the server already rendered the unfiltered page 1)
+    // (keyed on search + filters rather than a one-shot flag, so React's dev double-run of effects doesn't refetch)
+    const serverRendered = useRef(Boolean(initialData));
     useEffect(() => {
+        if (serverRendered.current) {
+            if (!search && !Object.keys(selected).length) return;
+            serverRendered.current = false; // the user searched/filtered: from now on page 1 always comes from the API
+        }
         setPage(1);
         getCards(1);
-    }, [getCards]);
+    }, [getCards, search, selected]);
 
     useEffect(() => {
         if (!allowFilters || !query.enums.length) return;

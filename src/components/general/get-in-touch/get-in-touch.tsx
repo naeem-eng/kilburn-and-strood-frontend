@@ -21,7 +21,7 @@ const GetInTouch: React.FC<GetInTouchProps> = (props) => {
                 
                 {props?.title && <BodyMarkdown components={{
                   p: ({ children }) => {
-                    return <TitleXl>{children}</TitleXl>
+                    return <TitleXl as={props?.headingAs || "h1"}>{children}</TitleXl>
                   }
                 }}>
                   {props?.title}

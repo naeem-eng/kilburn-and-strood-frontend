@@ -42,18 +42,23 @@ export default async function RootLayout({
 
   const header = global?.header;
   const footer = global?.footer;
-  const ga4MeasurementId = global?.ga4MeasurementId !== "G-D2XBQE20QF" ? global?.ga4MeasurementId : undefined;
+  // validated as GTM-XXXX in globalRequest (from Strapi gtm_container_id, with a fallback)
+  const gtmContainerId: string = global?.gtmContainerId || "GTM-N5QN3MS";
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning={true}
         className={`font-modern-era antialiased`}
+        // dataLayer event names for HubSpot form successes (Strapi global-setting, validated in globalRequest);
+        // read by trackHubspotSuccess
+        data-contact-form-event={global?.formEvents?.contact}
+        data-signup-form-event={global?.formEvents?.signup}
       >
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-N5QN3MS"
+            src={`https://www.googletagmanager.com/ns.html?id=${gtmContainerId}`}
             height="0"
             width="0"
             title="Google Tag Manager"
@@ -92,36 +97,17 @@ export default async function RootLayout({
           src={`//js-eu1.hs-scripts.com/${process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID}.js`}
           strategy="afterInteractive"
         />}
-        {/* Google Tag Manager: GA4 (G-D2XBQE20QF) is loaded by the container's Google tag,
-            so there is no separate gtag.js snippet (it would double-count page views) */}
+        {/* Google Tag Manager is the only analytics loader: GA4 (G-D2XBQE20QF) is a Google tag inside the container.
+            Don't add a gtag.js snippet (or read a GA4 ID from Strapi) here: it would double-count page views and events. */}
         <Script id="gtm-init" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-N5QN3MS');
+            })(window,document,'script','dataLayer','${gtmContainerId}');
           `}
         </Script>
-
-        {/* GA4 from Strapi global-setting → ga4_measurement_id */}
-        {ga4MeasurementId && (
-          <>
-            <Script
-              id="ga4-loader"
-              src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`}
-              strategy="afterInteractive"
-            />
-            <Script id="ga4-init" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${ga4MeasurementId}');
-              `}
-            </Script>
-          </>
-        )}
 
         {/* iubenda Cookie Banner */}
         <Script id="iubenda-config" strategy="beforeInteractive">

@@ -177,7 +177,8 @@ const Pages = async ({
         />
         {keyContactsParser && <KeyContacts {...keyContactsParser} />}
         {peopleParser && <KeyContacts {...peopleParser} />}
-        {contactParser && <GetInTouch {...contactParser.props} />}
+        {/* below the page's own sections this is a sub-heading; on a page with no sections (e.g. /contact) it is the page title */}
+        {contactParser && <GetInTouch {...contactParser.props} headingAs={data?.sections?.length ? 'h2' : 'h1'} />}
 
         {globalNewsletter && (
           <Newsletter

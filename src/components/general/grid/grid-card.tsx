@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Text, TextLg } from "@/components/helpers/typography";
+import { Text } from "@/components/helpers/typography";
+import CardTitle from "../article-card/card-title";
 import { GridCardProps } from "./grid.types";
 
 // Same look as ArticleCard, but links to insights, events or case studies
@@ -12,7 +13,7 @@ const GridCard: React.FC<GridCardProps> = (props) => {
           </div>
           <div className="mt-sm">
               {props?.tag && <Text className="text-medium-gray mb-2xs">{props.tag}</Text>}
-              <TextLg as="h3" className="text-dark-gray font-modern-era-medium animated-underline">{props?.title}</TextLg>
+              <CardTitle title={props?.title} />
               {props?.date && <Text className="text-medium-gray mt-md">{props.date}</Text>}
           </div>
       </Link>

@@ -148,7 +148,8 @@ const FooterComponent = (props: FooterComponentProps) => {
 
                             <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreak]}
                                 components={{
-                                    p: ({ children }) => <TitleSm as="h2">{children}</TitleSm>,
+                                    // a <p>, not a heading: this strapline is on every page and used to be the first heading in the HTML (SEO)
+                                    p: ({ children }) => <TitleSm as="p">{children}</TitleSm>,
                                 }}
                             >
                                 {title}

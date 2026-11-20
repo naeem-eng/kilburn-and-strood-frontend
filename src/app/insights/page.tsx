@@ -65,6 +65,8 @@ export default async function ArticleList() {
 
   return (
     <div className="relative z-10 bg-white ">
+        {/* the hero shows a featured article, not a page title: give the page its own (visually hidden) H1 for SEO / screen readers */}
+        <h1 className="sr-only">{data?.seo?.metaTitle || 'Insights'}</h1>
         {data?.heroSections &&
             <FullPageSlider interactive={data?.type === "interactive"}>
                 {data?.heroSections && <Sections sections={data?.heroSections || []} isAnimation={false} />}

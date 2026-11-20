@@ -26,7 +26,7 @@ import InlineImageAndVideo from "../general/inline-image-and-video";
 import Newsletter from "../general/newsletter/newsletter";
 import StatsBlock from "../general/stats-block";
 import Video from "../general/video";
-import Grid from "../general/grid";
+import Grid from "../general/grid/grid-server"; // first page rendered on the server (SEO)
 import BodyMenu from "../general/body-menu";
 type RenderCtx = {
     i: number;

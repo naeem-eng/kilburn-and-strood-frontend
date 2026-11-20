@@ -3,6 +3,11 @@ import { strapiFetch } from "../lib/strapi";
 import { MenuRequestProps } from "@/parsers/global-parser/menu/menu-parser.types";
 import { getStrapiMedia } from "@/utils/utils";
 
+// used until gtm_container_id is filled in Strapi global-setting
+const DEFAULT_GTM_CONTAINER_ID = "GTM-N5QN3MS";
+// used until contact_form_event / signup_form_event are filled in Strapi global-setting
+const DEFAULT_FORM_EVENTS = { contact: "contact_form_submit", signup: "newsletter_signup" };
+
 
 
 const globalRequest = async (): Promise<{
@@ -11,7 +16,8 @@ const globalRequest = async (): Promise<{
         logo: string;
     },
     footer: any;
-    ga4MeasurementId?: string;
+    gtmContainerId: string;
+    formEvents: { contact: string; signup: string };
 } | any> => {
     const headerTodo = await strapiFetch(
         "/api/header",
@@ -105,12 +111,29 @@ const globalRequest = async (): Promise<{
     }
 
     
-    const ga4MeasurementId = typeof globalTodo?.data?.ga4MeasurementId === "string" ? globalTodo.data.ga4MeasurementId.trim().toUpperCase() : undefined;
+
+    // Google Tag Manager container from Strapi global-setting → gtm_container_id (GA4 and other tags live in the container).
+    // Falls back to the current container until the field is added/filled in Strapi; anything not shaped like GTM-XXXX is ignored.
+    const rawGtmId = typeof globalTodo?.data?.gtmContainerId === "string" ? globalTodo.data.gtmContainerId.trim().toUpperCase() : "";
+    const gtmContainerId = /^GTM-[A-Z0-9]+$/.test(rawGtmId) ? rawGtmId : DEFAULT_GTM_CONTAINER_ID;
+
+    // dataLayer event names for successful HubSpot submissions, from Strapi global-setting → contact_form_event /
+    // signup_form_event. They must match the Custom Event triggers in GTM. Falls back to the defaults when empty;
+    // anything other than letters, digits, _ . - is ignored.
+    const eventName = (value: unknown, fallback: string) => {
+        const name = typeof value === "string" ? value.trim() : "";
+        return /^[A-Za-z0-9_.-]{1,100}$/.test(name) ? name : fallback;
+    };
+    const formEvents = {
+        contact: eventName(globalTodo?.data?.contactFormEvent, DEFAULT_FORM_EVENTS.contact),
+        signup: eventName(globalTodo?.data?.signupFormEvent, DEFAULT_FORM_EVENTS.signup),
+    };
 
     return {
         header,
         footer: footerTodo?.data,
-        ga4MeasurementId: ga4MeasurementId && /^G-[A-Z0-9]+$/.test(ga4MeasurementId) ? ga4MeasurementId : undefined
+        gtmContainerId,
+        formEvents,
     }
 }
 
